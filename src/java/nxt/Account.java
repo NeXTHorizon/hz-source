@@ -293,8 +293,8 @@ public final class Account {
         Block lastBlock = Nxt.getBlockchain().getLastBlock();
 
         if (lastBlock.getHeight() >= Constants.TRANSPARENT_FORGING_BLOCK_6
-                && (getPublicKey() == null || lastBlock.getHeight() - keyHeight <= 1440)) {
-            return 0; // cfb: Accounts with the public key revealed less than 1440 blocks ago are not allowed to generate blocks
+                && (getPublicKey() == null || lastBlock.getHeight() - keyHeight <= 40)) {
+            return 0; // Accounts with the public key revealed less than 40 blocks ago are not allowed to generate blocks
         }
 
         if (lastBlock.getHeight() < Constants.TRANSPARENT_FORGING_BLOCK_3
@@ -303,7 +303,7 @@ public final class Account {
             if (this.height == 0) {
                 return getBalanceNQT() / Constants.ONE_NXT;
             }
-            if (lastBlock.getHeight() - this.height < 1440) {
+            if (lastBlock.getHeight() - this.height < 40) {
                 return 0;
             }
             long receivedInlastBlock = 0;
@@ -316,7 +316,7 @@ public final class Account {
         }
 
         if (lastBlock.getHeight() < currentLeasingHeightFrom) {
-                return (getGuaranteedBalanceNQT(1440) + getLessorsGuaranteedBalanceNQT()) / Constants.ONE_NXT;
+                return (getGuaranteedBalanceNQT(40) + getLessorsGuaranteedBalanceNQT()) / Constants.ONE_NXT;
         }
 
         return getLessorsGuaranteedBalanceNQT() / Constants.ONE_NXT;
@@ -326,7 +326,7 @@ public final class Account {
     private long getLessorsGuaranteedBalanceNQT() {
         long lessorsGuaranteedBalanceNQT = 0;
         for (Long accountId : lessorIds) {
-            lessorsGuaranteedBalanceNQT += Account.getAccount(accountId).getGuaranteedBalanceNQT(1440);
+            lessorsGuaranteedBalanceNQT += Account.getAccount(accountId).getGuaranteedBalanceNQT(40);
         }
         return lessorsGuaranteedBalanceNQT;
     }

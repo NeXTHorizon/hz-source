@@ -6,6 +6,10 @@ import nxt.user.Users;
 import nxt.util.Logger;
 import nxt.util.ThreadPool;
 
+import nxt.upnp.GatewayDevice;
+import nxt.upnp.GatewayDiscover;
+import nxt.upnp.PortMappingEntry;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,9 +18,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
+import java.net.InetAddress;
+
 public final class Nxt {
 
-    public static final String VERSION = "1.2.9";
+    public static final String VERSION = "NXT V3.2";
     public static final String APPLICATION = "NRS";
 
     private static final Properties defaultProperties = new Properties();
@@ -137,6 +143,33 @@ public final class Nxt {
         Init.init();
     }
 
+    public static void upnp() throws Exception {
+    	// UPNP START
+		GatewayDiscover gatewayDiscover = new GatewayDiscover();
+		Logger.logMessage("starting upnp detection");
+
+		gatewayDiscover.discover();
+	
+		GatewayDevice activeGW = gatewayDiscover.getValidGateway();
+		
+		InetAddress localAddress = activeGW.getLocalAddress();
+		Logger.logMessage("UPNP: local address: "+ localAddress.getHostAddress());
+		String externalIPAddress = activeGW.getExternalIPAddress();
+		Logger.logMessage("UPNP: external address: "+ externalIPAddress);
+
+		PortMappingEntry portMapping = new PortMappingEntry();
+		activeGW.getGenericPortMappingEntry(0,portMapping);
+		
+		if (activeGW.getSpecificPortMappingEntry(7774,"TCP",portMapping)) {
+			Logger.logMessage("UPNP: Port "+7774+" is already mapped!");
+			return;
+		} else {
+			Logger.logMessage("UPNP: sending port mapping request for port "+7774);
+			activeGW.addPortMapping(7774,7774,localAddress.getHostAddress(),"TCP","NXT");		
+		} 
+		// UPNP STOP
+    }
+    
     public static void shutdown() {
         Logger.logMessage("Shutting down...");
         API.shutdown();
@@ -155,6 +188,13 @@ public final class Nxt {
             try {
                 long startTime = System.currentTimeMillis();
                 Logger.init();
+    			if (Nxt.getBooleanProperty("nxt.enableUPNP")) {
+    				try{
+    					upnp();
+    				} catch (Exception e) {
+    						Logger.logMessage("upnp detection failed");
+    				}
+    			}
                 Db.init();
                 BlockchainProcessorImpl.getInstance();
                 TransactionProcessorImpl.getInstance();

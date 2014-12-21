@@ -30,7 +30,7 @@ public final class LeaseBalance extends CreateTransaction {
         short period;
         try {
             period = Short.parseShort(periodString);
-            if (period < 1440) {
+            if (period < 40) {
                 return INCORRECT_PERIOD;
             }
         } catch (NumberFormatException e) {

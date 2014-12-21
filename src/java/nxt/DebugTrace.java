@@ -241,7 +241,7 @@ public final class DebugTrace {
         Map<String,String> map = new HashMap<>();
         map.put("account", Convert.toUnsignedLong(accountId));
         Account account = Account.getAccount(accountId);
-        map.put("lessor guaranteed balance", String.valueOf(account.getGuaranteedBalanceNQT(1440)));
+        map.put("lessor guaranteed balance", String.valueOf(account.getGuaranteedBalanceNQT(40)));
         map.put("lessee", Convert.toUnsignedLong(lesseeId));
         map.put("timestamp", String.valueOf(Nxt.getBlockchain().getLastBlock().getTimestamp()));
         map.put("height", String.valueOf(Nxt.getBlockchain().getLastBlock().getHeight()));

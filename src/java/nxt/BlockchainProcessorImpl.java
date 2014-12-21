@@ -35,9 +35,9 @@ import java.util.TreeSet;
 
 final class BlockchainProcessorImpl implements BlockchainProcessor {
 
-    private static final byte[] CHECKSUM_TRANSPARENT_FORGING = new byte[]{27, -54, -59, -98, 49, -42, 48, -68, -112, 49, 41, 94, -41, 78, -84, 27, -87, -22, -28, 36, -34, -90, 112, -50, -9, 5, 89, -35, 80, -121, -128, 112};
-    private static final byte[] CHECKSUM_NQT_BLOCK = Constants.isTestnet ? new byte[]{-126, -117, -94, -16, 125, -94, 38, 10, 11, 37, -33, 4, -70, -8, -40, -80, 18, -21, -54, -126, 109, -73, 63, -56, 67, 59, -30, 83, -6, -91, -24, 34}
-            : new byte[]{-125, 17, 63, -20, 90, -98, 52, 114, 7, -100, -20, -103, -50, 76, 46, -38, -29, -43, -43, 45, 81, 12, -30, 100, -67, -50, -112, -15, 22, -57, 84, -106};
+    private static final byte[] CHECKSUM_TRANSPARENT_FORGING = new byte[]{-75, -47, 54, -19, 77, 48, 32, 97, 126, -111, -41, 90, 18, 116, 2, 45, -2, 68, -33, 38, 108, -105, -10, 69, -51, 112, 81, 110, 33, 59, 34, 23};
+	private static final byte[] CHECKSUM_BLOCK_1000 = new byte[]{ -119, -41, 39, -28, -91, -89, -63, -64, -105, -7, -120, -108, -104, 31, 23, 31,117, 29, -57, -71, 22, -31, 86, 77, -5, -94, 11, 61, 14, 91, 63, -24};
+    private static final byte[] CHECKSUM_NQT_BLOCK = new byte[]{106, -81, -37, -67, 107, 97, 86, -66, -76, -111, 3, -79, -50, -57, 81, 122, -50, -86, 34, 58, 72, -67, 33, -26, 94, -98, -12, -1, 81, 91, -63, -64};
 
     private static final BlockchainProcessorImpl instance = new BlockchainProcessorImpl();
 
@@ -503,6 +503,18 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                     }
                 }
 
+				if (previousLastBlock.getHeight() == Constants.BLOCK_1000) {
+                    byte[] checksum = calculateTransactionsChecksum();	
+                    if (CHECKSUM_BLOCK_1000 == null) {
+                        Logger.logMessage("Checksum calculated:\n" + Arrays.toString(checksum));
+                    } else if (!Arrays.equals(checksum, CHECKSUM_BLOCK_1000)) {
+                        Logger.logMessage("Checksum failed at block " + Constants.BLOCK_1000);
+                        throw new BlockNotAcceptedException("Checksum failed");
+                    } else {
+                        Logger.logMessage("Checksum passed at block " + Constants.BLOCK_1000);
+                    }
+                }
+				
                 if (previousLastBlock.getHeight() == Constants.NQT_BLOCK) {
                     byte[] checksum = calculateTransactionsChecksum();
                     if (CHECKSUM_NQT_BLOCK == null) {

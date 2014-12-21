@@ -197,7 +197,7 @@ public final class Generator {
 
         Block lastBlock = Nxt.getBlockchain().getLastBlock();
 
-        if (lastBlock.getHeight() < Constants.DIGITAL_GOODS_STORE_BLOCK) {
+        if (lastBlock.getHeight() < Constants.ASSET_EXCHANGE_BLOCK) {
             return;
         }
 
@@ -215,11 +215,16 @@ public final class Generator {
         }
 
         if (verifyHit(hits.get(accountId), effectiveBalance, lastBlock, timestamp)) {
-            while (! BlockchainProcessorImpl.getInstance().generateBlock(secretPhrase, timestamp)) {
-                if (Convert.getEpochTime() - timestamp > 10) {
-                    break;
-                }
-            }
+        	
+        	if (!Nxt.getBooleanProperty("nxt.dontForge")) {        	
+        		while (! BlockchainProcessorImpl.getInstance().generateBlock(secretPhrase, timestamp)) {
+        			if (Convert.getEpochTime() - timestamp > 10) {
+        				break;
+        			}
+        		}
+        	} else {
+        		Logger.logMessage("Forging is disabled in config!");
+        	}
         }
 
     }

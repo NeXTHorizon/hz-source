@@ -48,36 +48,37 @@ public final class Constants {
     public static final boolean isTestnet = Nxt.getBooleanProperty("nxt.isTestnet");
     public static final boolean isOffline = Nxt.getBooleanProperty("nxt.isOffline");
 
-    public static final int ALIAS_SYSTEM_BLOCK = 22000;
-    public static final int TRANSPARENT_FORGING_BLOCK = 30000;
-    public static final int ARBITRARY_MESSAGES_BLOCK = 40000;
-    public static final int TRANSPARENT_FORGING_BLOCK_2 = 47000;
-    public static final int TRANSPARENT_FORGING_BLOCK_3 = 51000;
-    public static final int TRANSPARENT_FORGING_BLOCK_4 = 64000;
-    public static final int TRANSPARENT_FORGING_BLOCK_5 = 67000;
-    public static final int TRANSPARENT_FORGING_BLOCK_6 = isTestnet ? 75000 : 130000;
-    public static final int TRANSPARENT_FORGING_BLOCK_7 = isTestnet ? 75000 : Integer.MAX_VALUE;
-    public static final int TRANSPARENT_FORGING_BLOCK_8 = isTestnet ? 117910 : 215000;
-    public static final int NQT_BLOCK = isTestnet ? 76500 : 132000;
-    public static final int FRACTIONAL_BLOCK = isTestnet ? NQT_BLOCK : 134000;
-    public static final int ASSET_EXCHANGE_BLOCK = isTestnet ? NQT_BLOCK : 135000;
-    public static final int REFERENCED_TRANSACTION_FULL_HASH_BLOCK = isTestnet ? 78000 : 140000;
-    public static final int REFERENCED_TRANSACTION_FULL_HASH_BLOCK_TIMESTAMP = isTestnet ? 13031352 : 15134204;
-    public static final int VOTING_SYSTEM_BLOCK = isTestnet ? 0 : Integer.MAX_VALUE;
-    public static final int DIGITAL_GOODS_STORE_BLOCK = isTestnet ? 117910 : 213000;
-    public static final int PUBLIC_KEY_ANNOUNCEMENT_BLOCK = isTestnet ? 117910 : 215000;
+    public static final int ALIAS_SYSTEM_BLOCK = 22;
+    public static final int TRANSPARENT_FORGING_BLOCK = 30;
+    public static final int ARBITRARY_MESSAGES_BLOCK = 40;
+    public static final int TRANSPARENT_FORGING_BLOCK_2 = 47;
+    public static final int TRANSPARENT_FORGING_BLOCK_3 = 51;
+    public static final int TRANSPARENT_FORGING_BLOCK_4 = 64;
+    public static final int TRANSPARENT_FORGING_BLOCK_5 = 67;
+	public static final int BLOCK_1000 = 1000;
+    public static final int TRANSPARENT_FORGING_BLOCK_6 =  65000;
+    public static final int TRANSPARENT_FORGING_BLOCK_7 =  Integer.MAX_VALUE;
+    public static final int TRANSPARENT_FORGING_BLOCK_8 = 222222;
+    public static final int NQT_BLOCK = 67000;
+    public static final int FRACTIONAL_BLOCK = 69000;
+    public static final int ASSET_EXCHANGE_BLOCK = 70000;
+    public static final int REFERENCED_TRANSACTION_FULL_HASH_BLOCK = 75000;
+    public static final int REFERENCED_TRANSACTION_FULL_HASH_BLOCK_TIMESTAMP = Integer.MAX_VALUE;
+    public static final int VOTING_SYSTEM_BLOCK = Integer.MAX_VALUE;
+    public static final int DIGITAL_GOODS_STORE_BLOCK = Integer.MAX_VALUE;
+    public static final int PUBLIC_KEY_ANNOUNCEMENT_BLOCK = Integer.MAX_VALUE;
 
     static final long UNCONFIRMED_POOL_DEPOSIT_NQT = (isTestnet ? 50 : 100) * ONE_NXT;
 
     public static final long EPOCH_BEGINNING;
     static {
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        calendar.set(Calendar.YEAR, 2013);
-        calendar.set(Calendar.MONTH, Calendar.NOVEMBER);
-        calendar.set(Calendar.DAY_OF_MONTH, 24);
-        calendar.set(Calendar.HOUR_OF_DAY, 12);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.YEAR, 2014);
+        calendar.set(Calendar.MONTH, Calendar.MARCH);
+        calendar.set(Calendar.DAY_OF_MONTH, 22);
+        calendar.set(Calendar.HOUR_OF_DAY, 22);
+        calendar.set(Calendar.MINUTE, 22);
+        calendar.set(Calendar.SECOND, 22);
         calendar.set(Calendar.MILLISECOND, 0);
         EPOCH_BEGINNING = calendar.getTimeInMillis();
     }
