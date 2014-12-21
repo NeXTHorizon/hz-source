@@ -42,11 +42,13 @@ var NRS = (function(NRS, $, undefined) {
 				}
 			};
 
-			$("#nxtforum_news").rss("https://nxtforum.org/index.php?type=rss;action=.xml;sa=news;", settings, NRS.newsLoaded);
-			$("#reddit_news").rss("http://www.reddit.com/r/NXT/.rss", settingsReddit, NRS.newsLoaded);
-			$("#nxtcoin_blogspot_news").rss("http://nxtcoin.blogspot.com/feeds/posts/default", settings, NRS.newsLoaded);
-			$("#nxter_news").rss("http://nxter.org/feed/", settings, NRS.newsLoaded);
-			$("#nxtcommunity_news").rss("http://www.nxtcommunity.org/rss.xml", settings, NRS.newsLoaded);
+			$("#nxtforum_news").rss("http://forum.nxtcrypto.org/index.php?type=rss;action=.xml;sa=news;", settings, NRS.newsLoaded);
+			// $("#nxtcrypto_news").rss("http://info.nxtcrypto.org/feed/", settings, NRS.newsLoaded);
+			$("#reddit_news").rss("http://www.reddit.com/r/NeXTHorizon/.rss", settingsReddit, NRS.newsLoaded);
+			// $("#nxtcoin_blogspot_news").rss("http://nxtcoin.blogspot.com/feeds/posts/default", settings, NRS.newsLoaded);
+			// $("#nextcoin_forums_news").rss("https://nextcoin.org/index.php?type=rss;action=.xml;sa=news;", settings, NRS.newsLoaded);
+			// $("#nxter_news").rss("http://nxter.org/feed/", settings, NRS.newsLoaded);
+			// $("#nxtcommunity_news").rss("http://www.nxtcommunity.org/rss.xml", settings, NRS.newsLoaded);
 		}
 
 		NRS.pageLoaded();

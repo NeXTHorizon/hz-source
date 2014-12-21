@@ -4,6 +4,7 @@
 var NRS = (function(NRS, $, undefined) {
 	NRS.defaultSettings = {
 		"submit_on_enter": 0,
+		"reed_solomon": 1,
 		"animate_forging": 1,
 		"news": -1,
 		"console_log": 0,
@@ -12,13 +13,18 @@ var NRS = (function(NRS, $, undefined) {
 		"asset_transfer_warning": "10000",
 		"24_hour_format": 1,
 		"remember_passphrase": 0,
+		"languages": -1,
 		"language": "en"
 	};
 
 	NRS.defaultColors = {
-		"header": "#084F6C",
+		"background": "#F9F9F9",
+		"header": "#408EBA",
 		"sidebar": "#F4F4F4",
-		"boxes": "#3E96BB"
+		"page_header": "#FBFBFB",
+		"boxes": "#3E96BB",
+		"box": "#fff",
+		"table": "#F3F4F5"
 	};
 
 	var userStyles = {};
@@ -472,6 +478,47 @@ var NRS = (function(NRS, $, undefined) {
 				$(".modal form").off("submit.onEnter");
 			}
 		}
+
+		if (!key || key == "languages") {
+			if (NRS.settings["languages"] == 0) {
+				i18n.setLng('en');
+			} else if (NRS.settings["languages"] == 1) {
+				i18n.setLng('de');
+			} else if (NRS.settings["languages"] == 2) {
+				i18n.setLng('es');
+			} else if (NRS.settings["languages"] == 3) {
+				i18n.setLng('zh');
+			} else if (NRS.settings["languages"] == 4) {
+                i18n.setLng('hu');
+            }
+			i18n.init(function(t) {
+
+				$(".nav").i18n();
+				$(".sidebar").i18n();
+				$(".dashboard").i18n();
+				$(".transactions").i18n();
+				$(".messages").i18n();
+				$(".contacts").i18n();
+				$(".polls").i18n();
+				$(".alias").i18n();
+				$(".openorders").i18n();
+				$(".myassets").i18n();
+				$(".aepage").i18n();
+				$(".config").i18n();
+				$(".peers").i18n();
+				$(".news").i18n();
+				$(".blocks").i18n();
+				$(".lockscreen").i18n();
+				$(".modals").i18n();
+				$(".js").i18n();
+
+				// programatical access
+				var appName = t("app.name");
+				});
+
+		}
+
+
 
 		if (!key || key == "animate_forging") {
 			if (NRS.settings["animate_forging"]) {

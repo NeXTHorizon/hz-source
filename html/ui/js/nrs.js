@@ -27,8 +27,8 @@ var NRS = (function(NRS, $, undefined) {
 	NRS.server = "";
 	NRS.state = {};
 	NRS.blocks = [];
-	NRS.genesis = "1739068987193023818";
-	NRS.genesisRS = "NXT-MRCC-2YLS-8M54-3CMAJ";
+	NRS.genesis = "15930057730606666280";
+	NRS.genesisRS = "NXT-F6KA-5DG6-TTUK-FHR6U";
 
 	NRS.account = "";
 	NRS.accountRS = ""
@@ -66,12 +66,15 @@ var NRS = (function(NRS, $, undefined) {
 	NRS.appPlatform = "";
 	NRS.assetTableKeys = [];
 
+	NRS.dgsBlockPassed = false;
+	NRS.PKAnnouncementBlockPassed = false;
+
 	var stateInterval;
 	var stateIntervalSeconds = 30;
 	var isScanning = false;
 
 	NRS.init = function() {
-		if (window.location.port && window.location.port != "6876") {
+		if (window.location.port && window.location.port != "6976") {
 			$(".testnet_only").hide();
 		} else {
 			NRS.isTestNet = true;
@@ -561,7 +564,8 @@ var NRS = (function(NRS, $, undefined) {
 				if (NRS.accountInfo.errorCode == 5) {
 					if (NRS.downloadingBlockchain) {
 						if (NRS.newlyCreatedAccount) {
-							$("#dashboard_message").addClass("alert-success").removeClass("alert-danger").html($.t("status_new_account", {
+							var translationKey = (NRS.dgsBlockPassed ? "status_new_account" : "status_new_account_old");
+							$("#dashboard_message").addClass("alert-success").removeClass("alert-danger").html($.t(translationKey, {
 								"account_id": String(NRS.accountRS).escapeHTML(),
 								"public_key": String(NRS.publicKey).escapeHTML()
 							}) + "<br /><br />" + $.t("status_blockchain_downloading")).show();
@@ -571,7 +575,8 @@ var NRS = (function(NRS, $, undefined) {
 					} else if (NRS.state && NRS.state.isScanning) {
 						$("#dashboard_message").addClass("alert-danger").removeClass("alert-success").html($.t("status_blockchain_rescanning")).show();
 					} else {
-						$("#dashboard_message").addClass("alert-success").removeClass("alert-danger").html($.t("status_new_account", {
+						var translationKey = (NRS.dgsBlockPassed ? "status_new_account" : "status_new_account_old");
+						$("#dashboard_message").addClass("alert-success").removeClass("alert-danger").html($.t(translationKey, {
 							"account_id": String(NRS.accountRS).escapeHTML(),
 							"public_key": String(NRS.publicKey).escapeHTML()
 						})).show();

@@ -69,7 +69,7 @@ var NRS = (function(NRS, $, undefined) {
 				});
 			} else {
 				//user uses an old version which does not supply the platform / version
-				var noticeDate = new Date(2014, 8, 20);
+				var noticeDate = new Date(2014, 8, 22);
 
 				if (new Date() > noticeDate) {
 					var isMac = navigator.platform.match(/Mac/i);
@@ -82,6 +82,7 @@ var NRS = (function(NRS, $, undefined) {
 				}
 			}
 		}
+
 	}
 
 	NRS.checkForNewVersion = function() {
@@ -126,6 +127,9 @@ var NRS = (function(NRS, $, undefined) {
 			return -1;
 		}
 
+                v1 = v1.substr(5);
+		v2 = v2.substr(5);
+		
 		//https://gist.github.com/TheDistantSea/8021359 (based on)
 		var v1last = v1.slice(-1);
 		var v2last = v2.slice(-1);
@@ -272,7 +276,8 @@ var NRS = (function(NRS, $, undefined) {
 			}, "*");
 			$("#nrs_modal").modal("hide");
 		} else {
-			$("#nrs_update_iframe").attr("src", "https://bitbucket.org/JeanLucPicard/nxt/downloads/nxt-client-" + NRS.downloadedVersion.versionNr + ".zip");
+			var filename = NRS.downloadedVersion.versionNr.toLowerCase();
+			$("#nrs_update_iframe").attr("src", "http://files.nxtcrypto.org/binaries/" + filename + ".zip");
 			$("#nrs_update_explanation").hide();
 			$("#nrs_update_drop_zone").show();
 

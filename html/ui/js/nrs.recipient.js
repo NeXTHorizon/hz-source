@@ -127,7 +127,7 @@ var NRS = (function(NRS, $, undefined) {
 					} else if (response.errorCode == 5) {
 						callback({
 							"type": "warning",
-							"message": $.t("recipient_unknown_pka"),
+							"message": $.t("recipient_unknown" + (NRS.PKAnnouncementBlockPassed ? "_pka" : "")),
 							"account": null,
 							"noPublicKey": true
 						});
@@ -141,7 +141,7 @@ var NRS = (function(NRS, $, undefined) {
 				} else {
 					callback({
 						"type": "warning",
-						"message": $.t("recipient_no_public_key_pka", {
+						"message": $.t("recipient_no_public_key" + (NRS.PKAnnouncementBlockPassed ? "_pka" : ""), {
 							"nxt": NRS.formatAmount(response.unconfirmedBalanceNQT, false, true)
 						}),
 						"account": response,
@@ -175,16 +175,17 @@ var NRS = (function(NRS, $, undefined) {
 
 			if (address.set(account)) {
 				NRS.getAccountError(account, function(response) {
-					if (response.noPublicKey) {
-						modal.find(".recipient_public_key").show();
-					} else {
-						modal.find("input[name=recipientPublicKey]").val("");
-						modal.find(".recipient_public_key").hide();
-					}
-					if (response.account && response.account.description) {
-						checkForMerchant(response.account.description, modal);
-					}
-
+					if (NRS.PKAnnouncementBlockPassed) {
+						if (response.noPublicKey) {
+							modal.find(".recipient_public_key").show();
+						} else {
+							modal.find("input[name=recipientPublicKey]").val("");
+							modal.find(".recipient_public_key").hide();
+						}
+						if (response.account && response.account.description) {
+							checkForMerchant(response.account.description, modal);
+						}
+                                       }
 					var message = response.message.escapeHTML();
 
 					callout.removeClass(classes).addClass("callout-" + response.type).html(message).show();

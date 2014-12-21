@@ -121,7 +121,17 @@ var NRS = (function(NRS, $, undefined) {
 			NRS.lastBlockHeight = blockHeight;
 		}
 
-		//no checks needed at the moment
+		if (!NRS.dgsBlockPassed) {
+			if ((!NRS.isTestNet && (NRS.lastBlockHeight >= 213000 || (NRS.downloadingBlockchain && NRS.state.lastBlockchainFeederHeight >= 213000))) || (NRS.isTestNet && NRS.lastBlockHeight >= 117910)) {
+				NRS.dgsBlockPassed = true;
+				$(".dgs_block").not(".advanced, .optional_message, .optional_note").show();
+			}
+		}
+		if (!NRS.PKAnnouncementBlockPassed) {
+			if ((!NRS.isTestNet && (NRS.lastBlockHeight >= 215000 || (NRS.downloadingBlockchain && NRS.state.lastBlockchainFeederHeight >= 215000))) || (NRS.isTestNet && NRS.lastBlockHeight >= 117910)) {
+				NRS.PKAnnouncementBlockPassed = true;
+			}
+		}
 	}
 
 	//we always update the dashboard page..

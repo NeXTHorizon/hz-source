@@ -355,7 +355,7 @@ var NRS = (function(NRS, $, undefined) {
 
 		var requestType = "sendMessage";
 
-		if ($("#inline_message_encrypt").is(":checked")) {
+		if (NRS.dgsBlockPassed && $("#inline_message_encrypt").is(":checked")) {
 			data.encrypt_message = true;
 		}
 
@@ -429,7 +429,7 @@ var NRS = (function(NRS, $, undefined) {
 		}
 
 		if (NRS.currentPage == "messages") {
-			var date = new Date(Date.UTC(2013, 10, 24, 12, 0, 0, 0)).getTime();
+			var date = new Date(Date.UTC(2014, 02, 22, 22, 22, 22, 0)).getTime();
 
 			var now = parseInt(((new Date().getTime()) - date) / 1000, 10);
 

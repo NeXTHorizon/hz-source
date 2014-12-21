@@ -592,7 +592,7 @@ var NRS = (function(NRS, $, undefined) {
 		if (typeof timestamp == "object") {
 			var date = timestamp;
 		} else {
-			var date = new Date(Date.UTC(2013, 10, 24, 12, 0, 0, 0) + timestamp * 1000);
+		var date = new Date(Date.UTC(2014, 02, 22, 22, 22, 22, 0) + timestamp * 1000);
 		}
 
 		if (!isNaN(date) && typeof(date.getFullYear) == 'function') {
@@ -645,7 +645,7 @@ var NRS = (function(NRS, $, undefined) {
 	}
 
 	NRS.formatTime = function(timestamp) {
-		var date = new Date(Date.UTC(2013, 10, 24, 12, 0, 0, 0) + timestamp * 1000);
+		var date = new Date(Date.UTC(2014, 02, 22, 22, 22, 22, 0) + timestamp * 1000);
 
 		if (!isNaN(date) && typeof(date.getFullYear) == 'function') {
 			var res = "";

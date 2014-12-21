@@ -206,6 +206,9 @@ var NRS = (function(NRS, $, undefined) {
 
 		if (text == $.t("advanced")) {
 			var not = ".optional_note";
+			if (!NRS.dgsBlockPassed) {
+				not += ", .dgs_block";
+			}
 			$modal.find(".advanced").not(not).fadeIn();
 		} else {
 			$modal.find(".advanced").hide();
