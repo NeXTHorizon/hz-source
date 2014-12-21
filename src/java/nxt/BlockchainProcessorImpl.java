@@ -704,7 +704,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
         }
 
         BlockImpl previousBlock = blockchain.getLastBlock();
-        if (previousBlock.getHeight() < Constants.DIGITAL_GOODS_STORE_BLOCK) {
+        if (previousBlock.getHeight() < Constants.ASSET_EXCHANGE_BLOCK) {
             return true;
         }
 
