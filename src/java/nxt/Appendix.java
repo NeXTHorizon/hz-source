@@ -35,7 +35,8 @@ public interface Appendix {
         }
 
         AbstractAppendix() {
-            this.version = 1;
+            //TODO: default to 1 after DGS
+            this.version = (byte)(Nxt.getBlockchain().getHeight() < Constants.TRANSACTIONS_VERSION_1_BLOCK ? 0 : 1);
         }
 
         abstract String getAppendixName();

@@ -310,7 +310,7 @@ final class TransactionProcessorImpl implements TransactionProcessor {
     }
 
     int getTransactionVersion(int previousBlockHeight) {
-        return previousBlockHeight < Constants.DIGITAL_GOODS_STORE_BLOCK ? 0 : 1;
+        return previousBlockHeight < Constants.TRANSACTIONS_VERSION_1_BLOCK ? 0 : 1;
     }
 
     private void processPeerTransactions(JSONArray transactionsData, final boolean sendToPeers) throws NxtException.ValidationException {
@@ -345,9 +345,6 @@ final class TransactionProcessorImpl implements TransactionProcessor {
                 int curTime = Convert.getEpochTime();
                 if (transaction.getTimestamp() > curTime + 15 || transaction.getExpiration() < curTime
                         || transaction.getDeadline() > 1440) {
-                    continue;
-                }
-                if (transaction.getVersion() < 1) {
                     continue;
                 }
 

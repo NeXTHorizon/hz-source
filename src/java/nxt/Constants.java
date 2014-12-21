@@ -58,15 +58,16 @@ public final class Constants {
 	public static final int BLOCK_1000 = 1000;
     public static final int TRANSPARENT_FORGING_BLOCK_6 =  65000;
     public static final int TRANSPARENT_FORGING_BLOCK_7 =  Integer.MAX_VALUE;
-    public static final int TRANSPARENT_FORGING_BLOCK_8 = 222222;
+    public static final int TRANSPARENT_FORGING_BLOCK_8 = Integer.MAX_VALUE;  //TODO
     public static final int NQT_BLOCK = 67000;
     public static final int FRACTIONAL_BLOCK = 69000;
     public static final int ASSET_EXCHANGE_BLOCK = 70000;
     public static final int REFERENCED_TRANSACTION_FULL_HASH_BLOCK = 75000;
     public static final int REFERENCED_TRANSACTION_FULL_HASH_BLOCK_TIMESTAMP = Integer.MAX_VALUE;
     public static final int VOTING_SYSTEM_BLOCK = Integer.MAX_VALUE;
-    public static final int DIGITAL_GOODS_STORE_BLOCK = Integer.MAX_VALUE;
-    public static final int PUBLIC_KEY_ANNOUNCEMENT_BLOCK = Integer.MAX_VALUE;
+    public static final int TRANSACTIONS_VERSION_1_BLOCK = Integer.MAX_VALUE; //TODO
+    public static final int DIGITAL_GOODS_STORE_BLOCK = Integer.MAX_VALUE; // dgs transactions are disabled
+    public static final int PUBLIC_KEY_ANNOUNCEMENT_BLOCK = Integer.MAX_VALUE; //TODO
 
     static final long UNCONFIRMED_POOL_DEPOSIT_NQT = (isTestnet ? 50 : 100) * ONE_NXT;
 
