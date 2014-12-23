@@ -68,7 +68,7 @@ public final class Peers {
     static final boolean getMorePeers;
 
     static final int DEFAULT_PEER_PORT = 7774;
-    static final int TESTNET_PEER_PORT = 6874;
+    static final int TESTNET_PEER_PORT = 6974;
     private static final String myPlatform;
     private static final String myAddress;
     private static final int myPeerServerPort;
