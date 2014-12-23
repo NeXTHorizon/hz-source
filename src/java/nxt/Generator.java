@@ -216,7 +216,7 @@ public final class Generator {
 
         if (verifyHit(hits.get(accountId), effectiveBalance, lastBlock, timestamp)) {
         	
-        	if (!Nxt.getBooleanProperty("nxt.dontForge")) {        	
+        	if (! Constants.dontForge) {        	
         		while (! BlockchainProcessorImpl.getInstance().generateBlock(secretPhrase, timestamp)) {
         			if (Convert.getEpochTime() - timestamp > 10) {
         				break;

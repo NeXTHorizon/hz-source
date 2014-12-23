@@ -284,11 +284,13 @@ public final class Account {
 
     public long getEffectiveBalanceNXT() {
 
-        /*
-        if (Constants.isTestnet && Constants.isOffline) {
-            return Constants.MAX_BALANCE_NXT;
+        
+        if (Constants.isTestnet) {
+        	if (getPublicKey() != null && getPublicKey().equals(Genesis.CREATOR_PUBLIC_KEY)) {
+        		return Constants.MAX_BALANCE_NXT;
+        	}
+        	return getBalanceNQT() / Constants.ONE_NXT;
         }
-        */
 
         Block lastBlock = Nxt.getBlockchain().getLastBlock();
 

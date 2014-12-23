@@ -491,42 +491,44 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                     throw new BlockNotAcceptedException("Invalid version " + block.getVersion());
                 }
 
-                if (previousLastBlock.getHeight() == Constants.TRANSPARENT_FORGING_BLOCK) {
-                    byte[] checksum = calculateTransactionsChecksum();
-                    if (CHECKSUM_TRANSPARENT_FORGING == null) {
-                        Logger.logMessage("Checksum calculated:\n" + Arrays.toString(checksum));
-                    } else if (!Arrays.equals(checksum, CHECKSUM_TRANSPARENT_FORGING)) {
-                        Logger.logMessage("Checksum failed at block " + Constants.TRANSPARENT_FORGING_BLOCK);
-                        throw new BlockNotAcceptedException("Checksum failed");
-                    } else {
-                        Logger.logMessage("Checksum passed at block " + Constants.TRANSPARENT_FORGING_BLOCK);
-                    }
+                if (! Constants.isTestnet) {
+	                if (previousLastBlock.getHeight() == Constants.TRANSPARENT_FORGING_BLOCK) {
+	                    byte[] checksum = calculateTransactionsChecksum();
+	                    if (CHECKSUM_TRANSPARENT_FORGING == null) {
+	                        Logger.logMessage("Checksum calculated:\n" + Arrays.toString(checksum));
+	                    } else if (!Arrays.equals(checksum, CHECKSUM_TRANSPARENT_FORGING)) {
+	                        Logger.logMessage("Checksum failed at block " + Constants.TRANSPARENT_FORGING_BLOCK);
+	                        throw new BlockNotAcceptedException("Checksum failed");
+	                    } else {
+	                        Logger.logMessage("Checksum passed at block " + Constants.TRANSPARENT_FORGING_BLOCK);
+	                    }
+	                }
+	
+					if (previousLastBlock.getHeight() == Constants.BLOCK_1000) {
+	                    byte[] checksum = calculateTransactionsChecksum();	
+	                    if (CHECKSUM_BLOCK_1000 == null) {
+	                        Logger.logMessage("Checksum calculated:\n" + Arrays.toString(checksum));
+	                    } else if (!Arrays.equals(checksum, CHECKSUM_BLOCK_1000)) {
+	                        Logger.logMessage("Checksum failed at block " + Constants.BLOCK_1000);
+	                        throw new BlockNotAcceptedException("Checksum failed");
+	                    } else {
+	                        Logger.logMessage("Checksum passed at block " + Constants.BLOCK_1000);
+	                    }
+	                }
+                
+	                if (previousLastBlock.getHeight() == Constants.NQT_BLOCK) {
+	                    byte[] checksum = calculateTransactionsChecksum();
+	                    if (CHECKSUM_NQT_BLOCK == null) {
+	                        Logger.logMessage("Checksum calculated:\n" + Arrays.toString(checksum));
+	                    } else if (!Arrays.equals(checksum, CHECKSUM_NQT_BLOCK)) {
+	                        Logger.logMessage("Checksum failed at block " + Constants.NQT_BLOCK);
+	                        throw new BlockNotAcceptedException("Checksum failed");
+	                    } else {
+	                        Logger.logMessage("Checksum passed at block " + Constants.NQT_BLOCK);
+	                    }
+	                }
                 }
-
-				if (previousLastBlock.getHeight() == Constants.BLOCK_1000) {
-                    byte[] checksum = calculateTransactionsChecksum();	
-                    if (CHECKSUM_BLOCK_1000 == null) {
-                        Logger.logMessage("Checksum calculated:\n" + Arrays.toString(checksum));
-                    } else if (!Arrays.equals(checksum, CHECKSUM_BLOCK_1000)) {
-                        Logger.logMessage("Checksum failed at block " + Constants.BLOCK_1000);
-                        throw new BlockNotAcceptedException("Checksum failed");
-                    } else {
-                        Logger.logMessage("Checksum passed at block " + Constants.BLOCK_1000);
-                    }
-                }
-				
-                if (previousLastBlock.getHeight() == Constants.NQT_BLOCK) {
-                    byte[] checksum = calculateTransactionsChecksum();
-                    if (CHECKSUM_NQT_BLOCK == null) {
-                        Logger.logMessage("Checksum calculated:\n" + Arrays.toString(checksum));
-                    } else if (!Arrays.equals(checksum, CHECKSUM_NQT_BLOCK)) {
-                        Logger.logMessage("Checksum failed at block " + Constants.NQT_BLOCK);
-                        throw new BlockNotAcceptedException("Checksum failed");
-                    } else {
-                        Logger.logMessage("Checksum passed at block " + Constants.NQT_BLOCK);
-                    }
-                }
-
+                
                 if (block.getVersion() != 1 && ! Arrays.equals(Crypto.sha256().digest(previousLastBlock.getBytes()), block.getPreviousBlockHash())) {
                     throw new BlockNotAcceptedException("Previous block hash doesn't match");
                 }

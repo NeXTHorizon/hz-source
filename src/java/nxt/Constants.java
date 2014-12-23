@@ -47,22 +47,22 @@ public final class Constants {
 
     public static final boolean isTestnet = Nxt.getBooleanProperty("nxt.isTestnet");
     public static final boolean isOffline = Nxt.getBooleanProperty("nxt.isOffline");
+    public static final boolean dontForge = Nxt.getBooleanProperty("nxt.dontForge");
 
-    public static final int ALIAS_SYSTEM_BLOCK = 22;
-    public static final int TRANSPARENT_FORGING_BLOCK = 30;
-    public static final int ARBITRARY_MESSAGES_BLOCK = 40;
-    public static final int TRANSPARENT_FORGING_BLOCK_2 = 47;
-    public static final int TRANSPARENT_FORGING_BLOCK_3 = 51;
-    public static final int TRANSPARENT_FORGING_BLOCK_4 = 64;
-    public static final int TRANSPARENT_FORGING_BLOCK_5 = 67;
+    public static final int ALIAS_SYSTEM_BLOCK = (isTestnet ? 0 : 22 );
+    public static final int TRANSPARENT_FORGING_BLOCK = (isTestnet ? 0 : 30);
+    public static final int ARBITRARY_MESSAGES_BLOCK = (isTestnet ? 0 : 40);
+    public static final int TRANSPARENT_FORGING_BLOCK_2 = (isTestnet ? 0 : 47);
+    public static final int TRANSPARENT_FORGING_BLOCK_3 = (isTestnet ? 0 : 51);
+    public static final int TRANSPARENT_FORGING_BLOCK_4 = (isTestnet ? 0 : 64);
+    public static final int TRANSPARENT_FORGING_BLOCK_5 = (isTestnet ? 0 : 67);
 	public static final int BLOCK_1000 = 1000;
-    public static final int TRANSPARENT_FORGING_BLOCK_6 =  65000;
+    public static final int TRANSPARENT_FORGING_BLOCK_6 =  (isTestnet ? 0 : 65000);
     public static final int TRANSPARENT_FORGING_BLOCK_7 =  Integer.MAX_VALUE;
     public static final int TRANSPARENT_FORGING_BLOCK_8 = Integer.MAX_VALUE;  //TODO
-    public static final int NQT_BLOCK = 67000;
-    public static final int FRACTIONAL_BLOCK = 69000;
-    public static final int ASSET_EXCHANGE_BLOCK = 70000;
-    public static final int REFERENCED_TRANSACTION_FULL_HASH_BLOCK = 75000;
+    public static final int NQT_BLOCK = (isTestnet ? 1 : 67000);
+    public static final int ASSET_EXCHANGE_BLOCK = (isTestnet ? 0 : 70000);
+    public static final int REFERENCED_TRANSACTION_FULL_HASH_BLOCK = (isTestnet ? 1 : 75000);
     public static final int REFERENCED_TRANSACTION_FULL_HASH_BLOCK_TIMESTAMP = Integer.MAX_VALUE;
     public static final int VOTING_SYSTEM_BLOCK = Integer.MAX_VALUE;
     public static final int TRANSACTIONS_VERSION_1_BLOCK = Integer.MAX_VALUE; //TODO
