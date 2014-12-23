@@ -443,8 +443,8 @@ var NRS = (function(NRS, $, undefined) {
 
 		if (!("recipient" in data)) {
 			//recipient == genesis
-			data.recipient = "15930057730606666280";  // testnet
-			data.recipientRS = "NHZ-F6KA-5DG6-TTUK-FHR6U";  // testnet
+			data.recipient = "12351629106086518949";  //TODO testnet
+			data.recipientRS = "NHZ-MA77-9DSU-SRDA-CFGUQ";  //TODO testnet
 		}
 
 		if (transaction.publicKey != NRS.accountInfo.publicKey) {
@@ -456,7 +456,7 @@ var NRS = (function(NRS, $, undefined) {
 		}
 
 		if (transaction.recipient !== data.recipient) {
-			if (data.recipient == "15930057730606666280" && transaction.recipient == "0") {  // testnet
+			if (data.recipient == "12351629106086518949" && transaction.recipient == "0") {   //TODO testnet
 				//ok
 			} else {
 				return false;

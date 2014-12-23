@@ -27,9 +27,9 @@ var NRS = (function(NRS, $, undefined) {
 	NRS.server = "";
 	NRS.state = {};
 	NRS.blocks = [];
-	NRS.genesis = "15930057730606666280";
-	NRS.genesisRS = "NHZ-F6KA-5DG6-TTUK-FHR6U";
-
+	NRS.genesis = "12351629106086518949"; //TODO testnet
+	NRS.genesisRS = "NHZ-MA77-9DSU-SRDA-CFGUQ"; //TODO testnet
+	
 	NRS.account = "";
 	NRS.accountRS = ""
 	NRS.publicKey = "";
@@ -78,8 +78,6 @@ var NRS = (function(NRS, $, undefined) {
 			$(".testnet_only").hide();
 		} else {
 			NRS.isTestNet = true;
-			NRS.genesis = "12351629106086518949";
-			NRS.genesisRS = "NHZ-MA77-9DSU-SRDA-CFGUQ";
 			$(".testnet_only, #testnet_login, #testnet_warning").show();
 		}
 
