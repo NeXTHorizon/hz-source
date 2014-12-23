@@ -1,2 +1,2 @@
 #!/bin/sh
-java -cp nxt.jar:lib/*:conf nxt.VerifyTrace
+java -cp nhz.jar:lib/*:conf nhz.VerifyTrace

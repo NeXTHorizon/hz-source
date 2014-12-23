@@ -271,7 +271,7 @@ var NRS = (function(NRS, $, undefined) {
 			price = new BigInteger(String(price));
 		}
 
-		return NRS.convertToNXT(price.multiply(new BigInteger("" + Math.pow(10, decimals))), returnAsObject);
+		return NRS.convertToNHZ(price.multiply(new BigInteger("" + Math.pow(10, decimals))), returnAsObject);
 	}
 
 	NRS.calculatePricePerWholeQNT = function(price, decimals) {
@@ -314,7 +314,7 @@ var NRS = (function(NRS, $, undefined) {
 			priceNQT = new BigInteger(String(priceNQT));
 		}
 
-		return NRS.convertToNXT(quantityQNT.multiply(priceNQT));
+		return NRS.convertToNHZ(quantityQNT.multiply(priceNQT));
 	}
 
 	NRS.calculatePercentage = function(a, b) {
@@ -326,7 +326,7 @@ var NRS = (function(NRS, $, undefined) {
 		return result.toString();
 	}
 
-	NRS.convertToNXT = function(amount, returnAsObject) {
+	NRS.convertToNHZ = function(amount, returnAsObject) {
 		var negative = "";
 		var afterComma = "";
 
@@ -555,7 +555,7 @@ var NRS = (function(NRS, $, undefined) {
 		var formattedAmount = "";
 
 		if (typeof amount == "object") {
-			var params = NRS.convertToNXT(amount, true);
+			var params = NRS.convertToNHZ(amount, true);
 
 			negative = params.negative;
 			amount = params.amount;
@@ -738,10 +738,10 @@ var NRS = (function(NRS, $, undefined) {
 	}
 
 	NRS.convertNumericToRSAccountFormat = function(account) {
-		if (/^NXT\-/i.test(account)) {
+		if (/^NHZ\-/i.test(account)) {
 			return String(account).escapeHTML();
 		} else {
-			var address = new NxtAddress();
+			var address = new NhzAddress();
 
 			if (address.set(account)) {
 				return address.toString().escapeHTML();
@@ -1002,7 +1002,7 @@ var NRS = (function(NRS, $, undefined) {
 					value = NRS.formatQuantity(value, 0);
 				}
 			} else if (key == "price" || key == "total" || key == "amount" || key == "fee" || key == "refund" || key == "discount") {
-				value = NRS.formatAmount(new BigInteger(String(value))) + " NXT";
+				value = NRS.formatAmount(new BigInteger(String(value))) + " NHZ";
 			} else if (key == "sender" || key == "recipient" || key == "account" || key == "seller" || key == "buyer") {
 				value = "<a href='#' data-user='" + String(value).escapeHTML() + "'>" + NRS.getAccountTitle(value) + "</a>";
 			} else {

@@ -42,7 +42,7 @@ function receiveMessages(form) {
     document.getElementById('load').disabled = true;
     document.getElementById('load').value = 'Loading... Please wait.';
 
-    var url = '/nxt?requestType=getAccountTransactionIds&account=' + document.getElementById('account').value + '&timestamp=0';
+    var url = '/nhz?requestType=getAccountTransactionIds&account=' + document.getElementById('account').value + '&timestamp=0';
 
     url += '&r=' + Math.random();
 
@@ -91,7 +91,7 @@ function sendMessage(form) {
     }
     params += '&r=' + Math.random();
     var request = new XMLHttpRequest();
-    request.open("POST", "/nxt", false);
+    request.open("POST", "/nhz", false);
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     request.send(params);
     var result = JSON.stringify(JSON.parse(request.responseText), null, 4);
@@ -103,7 +103,7 @@ function sendMessage(form) {
 
 function sendRequest(requestParameters, callback) {
     var request = new XMLHttpRequest();
-    request.open("GET", "nxt?requestType=" + requestParameters + "&" + Math.random());
+    request.open("GET", "nhz?requestType=" + requestParameters + "&" + Math.random());
     
     request.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -183,13 +183,13 @@ td {
     
 <body>
     
-<div id="header">Nxt Messages</div>
+<div id="header">Nhz Messages</div>
     
 <div id="content">
 
 <h4>Send a Message:</h4>
 
-<form action="/nxt" method="GET" onsubmit="return sendMessage(this);">
+<form action="/nhz" method="GET" onsubmit="return sendMessage(this);">
     <input type="hidden" name="requestType" value="sendMessage"/>
     <table>
         <tr>
@@ -226,7 +226,7 @@ td {
         
 <h4>Account Messages:</h4>
 
-<form action="/nxt" method="GET" onsubmit="return receiveMessages(this);">
+<form action="/nhz" method="GET" onsubmit="return receiveMessages(this);">
     <input type="hidden" name="requestType" value="getAccountTransactionIds"/>
     <input type="hidden" name="timestamp" value="0" />
     <table>

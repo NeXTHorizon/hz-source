@@ -184,7 +184,7 @@ var NRS = (function(NRS, $, undefined) {
 						decoded = "<i class='fa fa-warning'></i> " + decoded;
 					} else if (extra == "decrypted") {
 						if (type == "payment") {
-							decoded = "<strong>+" + NRS.formatAmount(messages[i].amountNQT) + " NXT</strong><br />" + decoded;
+							decoded = "<strong>+" + NRS.formatAmount(messages[i].amountNQT) + " NHZ</strong><br />" + decoded;
 						}
 
 						decoded = "<i class='fa fa-lock'></i> " + decoded;
@@ -278,7 +278,7 @@ var NRS = (function(NRS, $, undefined) {
 		if (option == "add_contact") {
 			$("#add_contact_account_id").val(account).trigger("blur");
 			$("#add_contact_modal").modal("show");
-		} else if (option == "send_nxt") {
+		} else if (option == "send_nhz") {
 			$("#send_money_recipient").val(account).trigger("blur");
 			$("#send_money_modal").modal("show");
 		} else if (option == "account_info") {
@@ -296,7 +296,7 @@ var NRS = (function(NRS, $, undefined) {
 
 		if (option == "update_contact") {
 			$("#update_contact_modal").modal("show");
-		} else if (option == "send_nxt") {
+		} else if (option == "send_nhz") {
 			$("#send_money_recipient").val(NRS.selectedContext.data("contact")).trigger("blur");
 			$("#send_money_modal").modal("show");
 		}
@@ -324,7 +324,7 @@ var NRS = (function(NRS, $, undefined) {
 
 		var data = {
 			"recipient": $.trim($("#inline_message_recipient").val()),
-			"feeNXT": "1",
+			"feeNHZ": "1",
 			"deadline": "1440",
 			"secretPhrase": $.trim($("#inline_message_password").val())
 		};

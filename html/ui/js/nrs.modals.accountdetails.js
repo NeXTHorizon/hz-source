@@ -20,15 +20,15 @@ var NRS = (function(NRS, $, undefined) {
 			$("#account_balance_warning").hide();
 
 			if (NRS.accountInfo.errorCode && NRS.accountInfo.errorCode == 5) {
-				$("#account_balance_balance, #account_balance_unconfirmed_balance, #account_balance_effective_balance, #account_balance_guaranteed_balance").html("0 NXT");
+				$("#account_balance_balance, #account_balance_unconfirmed_balance, #account_balance_effective_balance, #account_balance_guaranteed_balance").html("0 NHZ");
 				$("#account_balance_public_key").html(String(NRS.publicKey).escapeHTML());
 				$("#account_balance_account_rs").html(String(NRS.accountRS).escapeHTML());
 				$("#account_balance_account").html(String(NRS.account).escapeHTML());
 			} else {
-				$("#account_balance_balance").html(NRS.formatAmount(new BigInteger(NRS.accountInfo.balanceNQT)) + " NXT");
-				$("#account_balance_unconfirmed_balance").html(NRS.formatAmount(new BigInteger(NRS.accountInfo.unconfirmedBalanceNQT)) + " NXT");
-				$("#account_balance_effective_balance").html(NRS.formatAmount(NRS.accountInfo.effectiveBalanceNXT) + " NXT");
-				$("#account_balance_guaranteed_balance").html(NRS.formatAmount(new BigInteger(NRS.accountInfo.guaranteedBalanceNQT)) + " NXT");
+				$("#account_balance_balance").html(NRS.formatAmount(new BigInteger(NRS.accountInfo.balanceNQT)) + " NHZ");
+				$("#account_balance_unconfirmed_balance").html(NRS.formatAmount(new BigInteger(NRS.accountInfo.unconfirmedBalanceNQT)) + " NHZ");
+				$("#account_balance_effective_balance").html(NRS.formatAmount(NRS.accountInfo.effectiveBalanceNHZ) + " NHZ");
+				$("#account_balance_guaranteed_balance").html(NRS.formatAmount(new BigInteger(NRS.accountInfo.guaranteedBalanceNQT)) + " NHZ");
 
 				$("#account_balance_public_key").html(String(NRS.accountInfo.publicKey).escapeHTML());
 				$("#account_balance_account_rs").html(String(NRS.accountInfo.accountRS).escapeHTML());

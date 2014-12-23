@@ -68,17 +68,17 @@ var NRS = (function(NRS, $, undefined) {
 			}
 		});
 
-		//convert NXT to NQT...
+		//convert NHZ to NQT...
 		try {
-			var nxtFields = ["feeNXT", "amountNXT", "priceNXT", "refundNXT", "discountNXT"];
+			var nhzFields = ["feeNHZ", "amountNHZ", "priceNHZ", "refundNHZ", "discountNHZ"];
 
-			for (var i = 0; i < nxtFields.length; i++) {
-				var nxtField = nxtFields[i];
-				var field = nxtField.replace("NXT", "");
+			for (var i = 0; i < nhzFields.length; i++) {
+				var nhzField = nhzFields[i];
+				var field = nhzField.replace("NHZ", "");
 
-				if (nxtField in data) {
-					data[field + "NQT"] = NRS.convertToNQT(data[nxtField]);
-					delete data[nxtField];
+				if (nhzField in data) {
+					data[field + "NQT"] = NRS.convertToNQT(data[nhzField]);
+					delete data[nhzField];
 				}
 			}
 		} catch (err) {
@@ -103,10 +103,10 @@ var NRS = (function(NRS, $, undefined) {
 		if (requestType == "getAccountId") {
 			var accountId = NRS.getAccountId(data.secretPhrase);
 
-			var nxtAddress = new NxtAddress();
+			var nhzAddress = new NhzAddress();
 
-			if (nxtAddress.set(accountId)) {
-				var accountRS = nxtAddress.toString();
+			if (nhzAddress.set(accountId)) {
+				var accountRS = nhzAddress.toString();
 			} else {
 				var accountRS = "";
 			}
@@ -175,7 +175,7 @@ var NRS = (function(NRS, $, undefined) {
 		}
 
 		var type = ("secretPhrase" in data ? "POST" : "GET");
-		var url = NRS.server + "/nxt?requestType=" + requestType;
+		var url = NRS.server + "/nhz?requestType=" + requestType;
 
 		if (type == "GET") {
 			if (typeof data == "string") {
@@ -272,16 +272,16 @@ var NRS = (function(NRS, $, undefined) {
 			}
 
 			if (typeof data == "object" && "recipient" in data) {
-				if (/^NXT\-/i.test(data.recipient)) {
+				if (/^NHZ\-/i.test(data.recipient)) {
 					data.recipientRS = data.recipient;
 
-					var address = new NxtAddress();
+					var address = new NhzAddress();
 
 					if (address.set(data.recipient)) {
 						data.recipient = address.account_id();
 					}
 				} else {
-					var address = new NxtAddress();
+					var address = new NhzAddress();
 
 					if (address.set(data.recipient)) {
 						data.recipientRS = address.toString();
@@ -444,7 +444,7 @@ var NRS = (function(NRS, $, undefined) {
 		if (!("recipient" in data)) {
 			//recipient == genesis
 			data.recipient = "15930057730606666280";  // testnet
-			data.recipientRS = "NXT-F6KA-5DG6-TTUK-FHR6U";  // testnet
+			data.recipientRS = "NHZ-F6KA-5DG6-TTUK-FHR6U";  // testnet
 		}
 
 		if (transaction.publicKey != NRS.accountInfo.publicKey) {
@@ -1181,7 +1181,7 @@ var NRS = (function(NRS, $, undefined) {
 
 	NRS.broadcastTransactionBytes = function(transactionData, callback, originalResponse, originalData) {
 		$.ajax({
-			url: NRS.server + "/nxt?requestType=broadcastTransaction",
+			url: NRS.server + "/nhz?requestType=broadcastTransaction",
 			crossDomain: true,
 			dataType: "json",
 			type: "POST",

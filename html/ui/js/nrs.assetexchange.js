@@ -133,13 +133,13 @@ var NRS = (function(NRS, $, undefined) {
 			};
 		}
 
-		if (!/^\d+$/.test(data.id) && !/^NXT\-/i.test(data.id)) {
+		if (!/^\d+$/.test(data.id) && !/^NHZ\-/i.test(data.id)) {
 			return {
 				"error": $.t("error_asset_or_account_id_invalid")
 			};
 		}
 
-		if (/^NXT\-/i.test(data.id)) {
+		if (/^NHZ\-/i.test(data.id)) {
 			NRS.sendRequest("getAssetsByIssuer", {
 				"account": data.id
 			}, function(response) {
@@ -574,10 +574,10 @@ var NRS = (function(NRS, $, undefined) {
 			$(".asset_name").html(String(asset.name).escapeHTML());
 			$("#sell_asset_button").data("asset", assetId);
 			$("#buy_asset_button").data("asset", assetId);
-			$("#sell_asset_for_nxt").html($.t("sell_asset_for_nxt", {
+			$("#sell_asset_for_nhz").html($.t("sell_asset_for_nhz", {
 				"assetName": String(asset.name).escapeHTML()
 			}));
-			$("#buy_asset_with_nxt").html($.t("buy_asset_with_nxt", {
+			$("#buy_asset_with_nhz").html($.t("buy_asset_with_nhz", {
 				"assetName": String(asset.name).escapeHTML()
 			}));
 			$("#sell_asset_price, #buy_asset_price").val("");
@@ -639,10 +639,10 @@ var NRS = (function(NRS, $, undefined) {
 		}
 
 		if (NRS.accountInfo.unconfirmedBalanceNQT == "0") {
-			$("#your_nxt_balance").html("0");
+			$("#your_nhz_balance").html("0");
 			$("#buy_automatic_price").addClass("zero").removeClass("nonzero");
 		} else {
-			$("#your_nxt_balance").html(NRS.formatAmount(NRS.accountInfo.unconfirmedBalanceNQT));
+			$("#your_nhz_balance").html(NRS.formatAmount(NRS.accountInfo.unconfirmedBalanceNQT));
 			$("#buy_automatic_price").addClass("nonzero").removeClass("zero");
 		}
 
@@ -802,7 +802,7 @@ var NRS = (function(NRS, $, undefined) {
 		} else {
 			NRS.assetSearch = [];
 
-			if (/NXT\-/i.test(input)) {
+			if (/NHZ\-/i.test(input)) {
 				$.each(NRS.assets, function(key, asset) {
 					if (asset.accountRS.toLowerCase() == input || asset.accountRS.toLowerCase().indexOf(input) !== -1) {
 						NRS.assetSearch.push(asset.asset);
@@ -862,7 +862,7 @@ var NRS = (function(NRS, $, undefined) {
 
 			$("#" + type + "_asset_price").val(NRS.calculateOrderPricePerWholeQNT(priceNQT, NRS.currentAsset.decimals));
 			$("#" + type + "_asset_quantity").val(NRS.convertToQNTf(quantityQNT, NRS.currentAsset.decimals));
-			$("#" + type + "_asset_total").val(NRS.convertToNXT(totalNQT));
+			$("#" + type + "_asset_total").val(NRS.convertToNHZ(totalNQT));
 		} catch (err) {
 			return;
 		}
@@ -911,7 +911,7 @@ var NRS = (function(NRS, $, undefined) {
 			if (price.cmp(new Big("0")) <= 0) {
 				//get minimum price if no offers exist, based on asset decimals..
 				price = new Big("" + Math.pow(10, NRS.currentAsset.decimals));
-				$("#" + type + "_asset_price").val(NRS.convertToNXT(price.toString()));
+				$("#" + type + "_asset_price").val(NRS.convertToNHZ(price.toString()));
 			}
 
 			var quantity = new Big(NRS.amountToPrecision((type == "sell" ? balanceNQT : balance).div(price).toString(), NRS.currentAsset.decimals));
@@ -933,7 +933,7 @@ var NRS = (function(NRS, $, undefined) {
 			}
 
 			$("#" + type + "_asset_quantity").val(quantity.toString());
-			$("#" + type + "_asset_total").val(NRS.convertToNXT(total.toString()));
+			$("#" + type + "_asset_total").val(NRS.convertToNHZ(total.toString()));
 
 			$("#" + type + "_asset_total").css({
 				"background": "",
@@ -1065,7 +1065,7 @@ var NRS = (function(NRS, $, undefined) {
 			var quantityQNT = new BigInteger(NRS.convertToQNT(quantity, NRS.currentAsset.decimals));
 			var priceNQT = new BigInteger(NRS.calculatePricePerWholeQNT(NRS.convertToNQT(String($("#" + orderType + "_asset_price").val())), NRS.currentAsset.decimals));
 			var feeNQT = new BigInteger(NRS.convertToNQT(String($("#" + orderType + "_asset_fee").val())));
-			var totalNXT = NRS.formatAmount(NRS.calculateOrderTotalNQT(quantityQNT, priceNQT, NRS.currentAsset.decimals), false, true);
+			var totalNHZ = NRS.formatAmount(NRS.calculateOrderTotalNQT(quantityQNT, priceNQT, NRS.currentAsset.decimals), false, true);
 		} catch (err) {
 			$.growl("Invalid input.", {
 				"type": "danger"
@@ -1090,27 +1090,27 @@ var NRS = (function(NRS, $, undefined) {
 			var description = $.t("buy_order_description", {
 				"quantity": NRS.formatQuantity(quantityQNT, NRS.currentAsset.decimals, true),
 				"asset_name": $("#asset_name").html().escapeHTML(),
-				"nxt": NRS.formatAmount(priceNQTPerWholeQNT)
+				"nhz": NRS.formatAmount(priceNQTPerWholeQNT)
 			});
 			var tooltipTitle = $.t("buy_order_description_help", {
-				"nxt": NRS.formatAmount(priceNQTPerWholeQNT, false, true),
-				"total_nxt": totalNXT
+				"nhz": NRS.formatAmount(priceNQTPerWholeQNT, false, true),
+				"total_nhz": totalNHZ
 			});
 		} else {
 			var description = $.t("sell_order_description", {
 				"quantity": NRS.formatQuantity(quantityQNT, NRS.currentAsset.decimals, true),
 				"asset_name": $("#asset_name").html().escapeHTML(),
-				"nxt": NRS.formatAmount(priceNQTPerWholeQNT)
+				"nhz": NRS.formatAmount(priceNQTPerWholeQNT)
 			});
 			var tooltipTitle = $.t("sell_order_description_help", {
-				"nxt": NRS.formatAmount(priceNQTPerWholeQNT, false, true),
-				"total_nxt": totalNXT
+				"nhz": NRS.formatAmount(priceNQTPerWholeQNT, false, true),
+				"total_nhz": totalNHZ
 			});
 		}
 
 		$("#asset_order_description").html(description);
-		$("#asset_order_total").html(totalNXT + " NXT");
-		$("#asset_order_fee_paid").html(NRS.formatAmount(feeNQT) + " NXT");
+		$("#asset_order_total").html(totalNHZ + " NHZ");
+		$("#asset_order_fee_paid").html(NRS.formatAmount(feeNQT) + " NHZ");
 
 		if (quantity != "1") {
 			$("#asset_order_total_tooltip").show();

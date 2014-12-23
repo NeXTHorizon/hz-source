@@ -2,14 +2,14 @@
 <html class="lockscreen">
     <head>
         <meta charset="UTF-8">
-        <title data-i18n="app.title">NXT Wallet</title>
+        <title data-i18n="app.title">NHZ Wallet</title>
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
         <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css" />
         <link href="css/ionicons.min.css" rel="stylesheet" type="text/css" />
         <link href="css/app.css" rel="stylesheet" type="text/css" />
-        <link href="css/nxt.css" rel="stylesheet" type="text/css" />
+        <link href="css/nhz.css" rel="stylesheet" type="text/css" />
         <style id="user_header_style" type="text/css"></style>
         <style id="user_sidebar_style" type="text/css"></style>
         <style id="user_background_style" type="text/css"></style>
@@ -65,7 +65,7 @@
                     </div>
                     
                     <div class="panel panel-default" id="welcome_panel" style="display:none;max-width:500px;">
-                        <div class="panel-heading"><span class="glyphicon glyphicon-lock"></span> <span data-i18n="welcome_to_nxt">Welcome to Nxt</span></div>
+                        <div class="panel-heading"><span class="glyphicon glyphicon-lock"></span> <span data-i18n="welcome_to_nhz">Welcome to Nhz</span></div>
                         <div class="panel-body">
                             <button class="btn btn-primary" id="registration_cancel" onclick="NRS.showLoginScreen();return false;" data-i18n="returning_user_q">Returning User?</button>
                             &nbsp;&nbsp;
@@ -133,7 +133,7 @@
                                         
                                         <textarea style="width:100%;height:50px;margin-bottom:10px;padding:3px;" rows="2" readonly></textarea>
                                     
-                                        <p data-i18n="memorize_passphrase_help">Please write down or memorize these 12 words (their order and capitalization matters - always lowercase). This passphrase is needed in order to access your Nxt account.</p>
+                                        <p data-i18n="memorize_passphrase_help">Please write down or memorize these 12 words (their order and capitalization matters - always lowercase). This passphrase is needed in order to access your Nhz account.</p>
                                                     
                                         <div class="callout callout-danger" data-i18n="[html]assphrase_disclosure_warning"><strong>Attention</strong>: Don't ever disclose your passphrase. If you lose it you lose access to your account!</div>
                                     
@@ -168,7 +168,7 @@
 
         <header class="header">
             <a href="#" class="logo" id="logo" data-page="dashboard">
-                <img src="img/nxt_logo_small.png" height="50" />
+                <img src="img/nhz_logo_small.png" height="50" />
             </a>
             <nav class="navbar navbar-static-top" role="navigation">
                 <a href="#" class="navbar-btn sidebar-toggle" id="offcanvas_toggle" role="button">
@@ -179,7 +179,7 @@
                 </a>
                 <div class="navbar-right">
                     <ul class="nav navbar-nav">
-                    	<li class="dropdown"><a href="#" data-toggle="modal" data-target="#send_money_modal" data-i18n="send_nxt">Send NXT</a></li>
+                    	<li class="dropdown"><a href="#" data-toggle="modal" data-target="#send_money_modal" data-i18n="send_nhz">Send NHZ</a></li>
                     	<li class="dropdown"><a href="#" data-toggle="modal" data-target="#send_message_modal" data-i18n="send_message">Send Message</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -196,11 +196,11 @@
                                 <i class="fa fa-question-circle"></i>
                             </a>
                             <ul class="dropdown-menu" role="menu">
-                            	<li><a role="menuitem" tabindex="-1" href="http://nxt.org/" target="_blank">Nxt.org</a></li>
-								<li><a role="menuitem" tabindex="-1" href="https://nxtforum.org/" target="_blank" data-i18n="link.nxt_forum">Nxt Forum</a></li>
-								<li><a role="menuitem" tabindex="-1" href="https://wiki.nxtcrypto.org/" target="_blank" data-i18n="link.nxt_wiki">Nxt Wiki</a></li>
-								<li><a role="menuitem" tabindex="-1" href="https://wiki.nxtcrypto.org/wiki/Nxt_client_interface" target="_blank" data-i18n="link.interface_tutorial">Interface Tutorial</a></li>
-								<li><a role="menuitem" tabindex="-1" href="https://wiki.nxtcrypto.org/wiki/Asset_Exchange" target="_blank" data-i18n="link.asset_exchange_tutorial">Asset Exchange Tutorial</a></li>
+                            	<li><a role="menuitem" tabindex="-1" href="http://nhz.org/" target="_blank">Nhz.org</a></li>
+								<li><a role="menuitem" tabindex="-1" href="https://nhzforum.org/" target="_blank" data-i18n="link.nhz_forum">Nhz Forum</a></li>
+								<li><a role="menuitem" tabindex="-1" href="https://wiki.nhzcrypto.org/" target="_blank" data-i18n="link.nhz_wiki">Nhz Wiki</a></li>
+								<li><a role="menuitem" tabindex="-1" href="https://wiki.nhzcrypto.org/wiki/Nhz_client_interface" target="_blank" data-i18n="link.interface_tutorial">Interface Tutorial</a></li>
+								<li><a role="menuitem" tabindex="-1" href="https://wiki.nhzcrypto.org/wiki/Asset_Exchange" target="_blank" data-i18n="link.asset_exchange_tutorial">Asset Exchange Tutorial</a></li>
 							</ul>
 						</li>
                         <li class="dropdown" id="logout_button_container">
@@ -228,7 +228,7 @@
 									<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
 										<li role="presentation" class="copy_link"><a role="menuitem" tabindex="-1" href="#" data-type="account_rs" data-i18n="copy_account_id">Copy Account ID</a></li>
 										<li role="presentation" class="remote_only copy_link"><a role="menuitem" tabindex="-1" href="#" data-type="message_link" data-i18n="copy_send_message_link">Copy "Send Message" Link</a></li>
-										<li role="presentation" class="remote_only copy_link"><a role="menuitem" tabindex="-1" href="#" data-type="send_link" data-i18n="copy_send_nxt_link">Copy "Send NXT" Link</a></li>
+										<li role="presentation" class="remote_only copy_link"><a role="menuitem" tabindex="-1" href="#" data-type="send_link" data-i18n="copy_send_nhz_link">Copy "Send NHZ" Link</a></li>
 									</ul>
 								</div>
 	                            <a href="#" id="forging_indicator" class="forging" style="display:none;font-size:13px;"><i class="fa fa-circle" style="font-size:12px;"></i> <span data-18n="forging">Forging</span></a>
@@ -720,7 +720,7 @@
 							        <th data-i18n="percentage">Percentage</th>
 							        <th data-i18n="lowest_ask">Lowest Ask</th>
 							        <th data-i18n="highest_bid">Highest Bid</th>
-							        <th data-i18n="value_in_nxt">Value in NXT</th>
+							        <th data-i18n="value_in_nhz">Value in NHZ</th>
 							        <th data-i18n="transfer">Transfer</th>
 							    </tr>
 							    </thead>
@@ -798,13 +798,13 @@
 							                	<div class="col-md-6">
 								                	<div class="box box-solid box-info collapsed-box" id="buy_asset_box">
 								                		<div class="box-header" style="background-color:#DFF0D9;color: #48AB6C;">
-								                	   	<h3 class="box-title" id="buy_asset_with_nxt"></h3>
+								                	   	<h3 class="box-title" id="buy_asset_with_nhz"></h3>
 								                	       <div class="box-tools pull-right">
 								                	       	<button class="btn btn-info btn-sm" style="background-color: #48AB6C"><i class="fa fa-plus"></i></button>
 								                	        </div>
 								                	    </div>
 								                	    <div class="box-body no-padding" style="display:none">
-								                	    	<div style="background-color:#DFF0D9;color: #666;padding-left:10px;padding-right: 10px;padding-top: 0px;padding-bottom:3px;" id="buy_automatic_price"><strong data-i18n="balance">Balance</strong>: <span id="your_nxt_balance"></span> NXT</div>
+								                	    	<div style="background-color:#DFF0D9;color: #666;padding-left:10px;padding-right: 10px;padding-top: 0px;padding-bottom:3px;" id="buy_automatic_price"><strong data-i18n="balance">Balance</strong>: <span id="your_nhz_balance"></span> NHZ</div>
 								                	    
 									                	    <form role="form" class="form-horizontal" style="padding: 10px;;max-width:350px;margin-left:auto;margin-right:auto;" autocomplete="off">
 									                	    	<div style="margin-left:-20px">
@@ -822,7 +822,7 @@
 										                	    		<div class="col-sm-9">
 										                	    			<div class="input-group">
 										                	    				<input id="buy_asset_price" type="text" value="0" name="buy_asset_price" class="form-control" data-type="buy" />
-										                	    				<span class="input-group-addon">NXT / <span class="asset_name"></span></span>
+										                	    				<span class="input-group-addon">NHZ / <span class="asset_name"></span></span>
 										                	    			</div>
 										                	    		</div>
 										                	    	</div>
@@ -831,7 +831,7 @@
 										                	    		<div class="col-sm-9">
 										                	    			<div class="input-group">
 										                	    				<input type="text" name="buy_asset_total" id="buy_asset_total" readonly value="0" class="form-control disabled" />
-										                	    				<span class="input-group-addon">NXT</span>
+										                	    				<span class="input-group-addon">NHZ</span>
 										                	    			</div>
 										                	    		</div>
 										                	    	</div>
@@ -840,14 +840,14 @@
 										                	    		<div class="col-sm-9">
 										                	    			<div class="input-group">
 										                	    				<input type="text" id="buy_asset_fee" name="buy_asset_fee" value="1" class="form-control" />
-										                	    				<span class="input-group-addon">NXT</span>
+										                	    				<span class="input-group-addon">NHZ</span>
 										                	    			</div>
 										                	    		</div>
 										                	    	</div>
 										                	    	<div class="form-group form-group-last">
 										                	    		<div class="col-sm-3"></div>
 										                	    		<div class="col-sm-9">
-										                	    			<button type="button" class="btn btn-primary btn-lg btn-block" id="buy_asset_button" data-toggle="modal" data-target="#asset_order_modal" data-asset="" data-type="Buy"><span data-i18n="buy">Buy</span> (NXT → <span class="asset_name"></span>)</button>
+										                	    			<button type="button" class="btn btn-primary btn-lg btn-block" id="buy_asset_button" data-toggle="modal" data-target="#asset_order_modal" data-asset="" data-type="Buy"><span data-i18n="buy">Buy</span> (NHZ → <span class="asset_name"></span>)</button>
 										                	    		</div>
 										                	    	</div>
 									                	    	</div>
@@ -882,7 +882,7 @@
 							                    <div class="col-md-6">
 								                    <div class="box box-solid box-info collapsed-box" id="sell_asset_box">
 								                        <div class="box-header" style="background:#F2DEDE;color:#ED4348;">
-								                            <h3 class="box-title" id="sell_asset_for_nxt"></h3>
+								                            <h3 class="box-title" id="sell_asset_for_nhz"></h3>
 								                            <div class="box-tools pull-right">
 								                                <button class="btn btn-info btn-sm" style="background-color: #ED4348"> <i class="fa fa-plus"></i></button>
 								                            </div>
@@ -906,7 +906,7 @@
 										                        		<div class="col-sm-9">
 										                        			<div class="input-group">
 										                        				<input id="sell_asset_price" type="text" value="0" name="sell_asset_price" class="form-control" data-type="sell" />
-										                        				<span class="input-group-addon">NXT / <span class="asset_name"></span></span>
+										                        				<span class="input-group-addon">NHZ / <span class="asset_name"></span></span>
 										                        			</div>
 										                        		</div>
 										                        	</div>
@@ -915,7 +915,7 @@
 										                        		<div class="col-sm-9">
 										                        			<div class="input-group">
 										                        				<input type="text" name="sell_asset_total" id="sell_asset_total" readonly value="0" class="form-control disabled" />
-										                        				<span class="input-group-addon">NXT</span>
+										                        				<span class="input-group-addon">NHZ</span>
 										                        			</div>
 										                        		</div>
 										                        	</div>
@@ -924,14 +924,14 @@
 										                        		<div class="col-sm-9">
 										                        			<div class="input-group">
 										                        				<input type="text" id="sell_asset_fee" name="sell_asset_fee" value="1" class="form-control" />
-										                        				<span class="input-group-addon">NXT</span>
+										                        				<span class="input-group-addon">NHZ</span>
 										                        			</div>
 										                        		</div>
 										                        	</div>
 										                        	<div class="form-group form-group-last">
 										                        		<div class="col-sm-3"></div>
 										                        		<div class="col-sm-9">
-										                        			<button type="button" class="btn btn-primary btn-lg btn-block" id="sell_asset_button" data-toggle="modal" data-target="#asset_order_modal" data-asset="" data-type="Sell"><span data-i18n="sell">Sell</span> (<span class="asset_name"></span> → NXT)</button>
+										                        			<button type="button" class="btn btn-primary btn-lg btn-block" id="sell_asset_button" data-toggle="modal" data-target="#asset_order_modal" data-asset="" data-type="Sell"><span data-i18n="sell">Sell</span> (<span class="asset_name"></span> → NHZ)</button>
 										                        		</div>
 										                        	</div>
 										                        </div>
@@ -1233,14 +1233,14 @@
 							            <label for="settings_amount_warning" data-i18n="max_amount_warning">Max Amount Warning</label>
 	                        			<div class="input-group" style="width:150px">
 							          		<input type="text" name="amount_warning" id="settings_amount_warning" class="form-control" />
-	                        				<span class="input-group-addon">NXT</span>
+	                        				<span class="input-group-addon">NHZ</span>
 	                        			</div>
 							        </div>
 							        <div class="form-group">
 							            <label for="settings_fee_warning" data-i18n="max_fee_warning">Max Fee Warning</label>
 	                        			<div class="input-group" style="width:150px">
 							          		<input type="text" name="fee_warning" id="settings_fee_warning" class="form-control" />
-	                        				<span class="input-group-addon">NXT</span>
+	                        				<span class="input-group-addon">NHZ</span>
 	                        			</div>
 							        </div>
 							        <div class="form-group">
@@ -1379,38 +1379,38 @@
 		                <div class="row" id="rss_news_container">
 		                    <div class="col-md-6">
 		                    	<div class="box box-primary">
-					                <div class="box-header"><h3 class="box-title">NxtForum.org</h3></div>
+					                <div class="box-header"><h3 class="box-title">NhzForum.org</h3></div>
 					                <div class="box-body">
-					            		<div id="nxtforum_news" class="rss_news data-loading"><img src="img/loading_indicator.gif" alt="Loading..." width="32" height="32" /></div>
+					            		<div id="nhzforum_news" class="rss_news data-loading"><img src="img/loading_indicator.gif" alt="Loading..." width="32" height="32" /></div>
 					                </div>
 					            </div>
 
 					            <div class="box box-primary">
-				                    <div class="box-header"><h3 class="box-title">NxtCommunity.org</h3></div>
+				                    <div class="box-header"><h3 class="box-title">NhzCommunity.org</h3></div>
 				                    <div class="box-body">
-				                		<div id="nxtcommunity_news" class="rss_news data-loading"><img src="img/loading_indicator.gif" alt="Loading..." width="32" height="32" /></div>
+				                		<div id="nhzcommunity_news" class="rss_news data-loading"><img src="img/loading_indicator.gif" alt="Loading..." width="32" height="32" /></div>
 				                    </div>
 				                </div>
 
                                 <div class="box box-primary">
-                                    <div class="box-header"><h3 class="box-title">NxtCoin.Blogspot.com</h3></div>
+                                    <div class="box-header"><h3 class="box-title">NhzCoin.Blogspot.com</h3></div>
                                     <div class="box-body">
-                                        <div id="nxtcoin_blogspot_news" class="rss_news data-loading"><img src="img/loading_indicator.gif" alt="Loading..." width="32" height="32" /></div>
+                                        <div id="nhzcoin_blogspot_news" class="rss_news data-loading"><img src="img/loading_indicator.gif" alt="Loading..." width="32" height="32" /></div>
                                     </div>
                                 </div>
 		                	</div>
 		            	    <div class="col-md-6">
 		            	        <div class="box box-primary">
-				                    <div class="box-header"><h3 class="box-title">Reddit.com/r/Nxt</h3></div>
+				                    <div class="box-header"><h3 class="box-title">Reddit.com/r/Nhz</h3></div>
 				                    <div class="box-body">
 				                		<div id="reddit_news" class="rss_news data-loading"><img src="img/loading_indicator.gif" alt="Loading..." width="32" height="32" /></div>
 				                    </div>
 				                </div>
 
 								<div class="box box-primary">
-				                    <div class="box-header"><h3 class="box-title">Nxter.org</h3></div>
+				                    <div class="box-header"><h3 class="box-title">Nhzer.org</h3></div>
 				                    <div class="box-body">
-				                		<div id="nxter_news" class="rss_news data-loading"><img src="img/loading_indicator.gif" alt="Loading..." width="32" height="32" /></div>
+				                		<div id="nhzer_news" class="rss_news data-loading"><img src="img/loading_indicator.gif" alt="Loading..." width="32" height="32" /></div>
 				                    </div>
 				                </div>
 				              
@@ -1558,8 +1558,8 @@
 								<div class="col-xs-4 col-sm-4 col-md-4 advanced">
 									<label for="lease_balance_fee" data-i18n="fee">FEE</label>
 									<div class="input-group">
-										<input type="number" name="feeNXT" id="lease_balance_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="4">
-										<span class="input-group-addon">NXT</span>
+										<input type="number" name="feeNHZ" id="lease_balance_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="4">
+										<span class="input-group-addon">NHZ</span>
 									</div>
 								</div>
 								<div class="col-xs-4 col-sm-4 col-md-4 advanced">
@@ -1607,7 +1607,7 @@
 						</form>
 					</div>
 		      		<div class="modal-footer" style="margin-top:0;">
-			       		<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NXT</span> - <a href="#" data-i18n="advanced">advanced</a></div>
+			       		<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NHZ</span> - <a href="#" data-i18n="advanced">advanced</a></div>
 				        <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="cancel">Cancel</button>
 				        <button type="button" class="btn btn-primary" data-loading-text="Submitting..." data-i18n="lease_balance;[data-loading-text]submitting">Lease Balance</button>
 		      		</div>
@@ -1688,8 +1688,8 @@
 									<div class="form-group">
 										<label for="cancel_order_fee" data-i18n="fee">FEE</label>
 										<div class="input-group">
-											<input type="number" name="feeNXT" id="cancel_order_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="2">
-											<span class="input-group-addon">NXT</span>
+											<input type="number" name="feeNHZ" id="cancel_order_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="2">
+											<span class="input-group-addon">NHZ</span>
 										</div>
 									</div>
 								</div>
@@ -1726,7 +1726,7 @@
 						</form>
 		      		</div>
 			      	<div class="modal-footer" style="margin-top:0;">
-			       		<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NXT</span> - <a href="#" data-i18n="advanced">advanced</a></div>
+			       		<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NHZ</span> - <a href="#" data-i18n="advanced">advanced</a></div>
 
 				        <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="no_do_not_cancel">No, Do Not Cancel</button>
 				        <button type="button" class="btn btn-primary" id="cancel_order_button" data-loading-text="Submitting..." data-i18n="cancel_my_order;[data-loading-text]submitting">Cancel My Order</button>
@@ -1830,8 +1830,8 @@
 									<div class="form-group">
 										<label for="transfer_asset_fee" data-i18n="fee">FEE</label>
 										<div class="input-group">
-											<input type="number" name="feeNXT" id="transfer_asset_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="5">
-											<span class="input-group-addon">NXT</span>
+											<input type="number" name="feeNHZ" id="transfer_asset_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="5">
+											<span class="input-group-addon">NHZ</span>
 										</div>
 									</div>
 								</div>
@@ -1870,7 +1870,7 @@
 						</form>
 					</div>
 					<div class="modal-footer" style="margin-top:0;">
-						<div class="advanced_info"><strong data-i18n="fee">Fee:</strong> <span class="advanced_fee">1 NXT</span> - <a href="#" data-i18n="advanced">advanced</a></div>
+						<div class="advanced_info"><strong data-i18n="fee">Fee:</strong> <span class="advanced_fee">1 NHZ</span> - <a href="#" data-i18n="advanced">advanced</a></div>
 
 				     	<button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="cancel">Cancel</button>
 				        <button type="button" class="btn btn-primary" data-loading-text="Submitting..." data-i18n="transfer_asset;[placeholder]submitting">Transfer Asset</button>
@@ -1921,7 +1921,7 @@
 							</div>
 							<div class="form-group">
 								<label for="add_contact_account_id" data-i18n="account_id">ACCOUNT ID</label>
-								<input type="text" class="form-control" name="account_id" id="add_contact_account_id" placeholder="NXT Account ID" data-i18n="nxt_account_id" tabindex="2" />
+								<input type="text" class="form-control" name="account_id" id="add_contact_account_id" placeholder="NHZ Account ID" data-i18n="nhz_account_id" tabindex="2" />
 							</div>
 							<div class="form-group">
 								<label for="add_contact_email" data-i18n="email_address">EMAIL ADDRESS</label>
@@ -1960,7 +1960,7 @@
 							</div>
 							<div class="form-group">
 								<label for="update_contact_account_id" data-i18n="account_id">ACCOUNT ID</label>
-								<input type="text" class="form-control" name="account_id" id="update_contact_account_id" placeholder="NXT Account ID" data-i18n="[placeholder]nxt_account_id" tabindex="2" />
+								<input type="text" class="form-control" name="account_id" id="update_contact_account_id" placeholder="NHZ Account ID" data-i18n="[placeholder]nhz_account_id" tabindex="2" />
 							</div>
 							<div class="form-group">
 								<label for="update_contact_email" data-i18n="email_address">EMAIL ADDRESS</label>
@@ -2045,10 +2045,10 @@
 							<div class="row">
 								<div class="col-xs-12 col-sm-12 col-md-12 advanced_extend" data-normal="12" data-advanced="6">
 									<div class="form-group">
-										<label for="issue_asset_fee"><span data-i18n="fee">FEE</span> <i class="fa fa-exclamation-circle show_popover" data-content="The minimum fee to issue an asset is 1,000 Nxt." data-i18n="[data-content]asset_minimum_fee_help" data-container="body" style="color:red"></i></label>
+										<label for="issue_asset_fee"><span data-i18n="fee">FEE</span> <i class="fa fa-exclamation-circle show_popover" data-content="The minimum fee to issue an asset is 1,000 Nhz." data-i18n="[data-content]asset_minimum_fee_help" data-container="body" style="color:red"></i></label>
 										<div class="input-group">									
-											<input type="number" name="feeNXT" id="issue_asset_fee" class="form-control" placeholder="Fee" step="any" min="1000" data-default="1000" value="1000" tabindex="6">
-											<span class="input-group-addon">NXT</span>
+											<input type="number" name="feeNHZ" id="issue_asset_fee" class="form-control" placeholder="Fee" step="any" min="1000" data-default="1000" value="1000" tabindex="6">
+											<span class="input-group-addon">NHZ</span>
 										</div>
 									</div>
 								</div>
@@ -2084,7 +2084,7 @@
 						</form>
 			    	</div>
 					<div class="modal-footer" style="margin-top:0;">
-						<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1'000 NXT</span> - <a href="#" data-i18n="advanced">advanced</a></div>
+						<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1'000 NHZ</span> - <a href="#" data-i18n="advanced">advanced</a></div>
 
 				    	<button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="cancel">Cancel</button>
 				        <button type="button" class="btn btn-primary" data-loading-text="Submitting..." data-i18n="issue_asset;[data-loading-text]submitting">Issue Asset</button>
@@ -2120,8 +2120,8 @@
 									<div class="form-group">
 										<label for="dgs_listing_price" data-i18n="price">PRICE</label>
 										<div class="input-group">
-						               		<input type="number" name="priceNXT" id="dgs_listing_price" class="form-control" min="0" placeholder="Price" data-i18n="[placeholder]price" step="any" data-default="" value="" tabindex="4">
-						                	<span class="input-group-addon">NXT</span>
+						               		<input type="number" name="priceNHZ" id="dgs_listing_price" class="form-control" min="0" placeholder="Price" data-i18n="[placeholder]price" step="any" data-default="" value="" tabindex="4">
+						                	<span class="input-group-addon">NHZ</span>
 										</div>
 									</div>
 								</div>
@@ -2137,8 +2137,8 @@
 									<div class="form-group">
 										<label for="dgs_listing_fee" data-i18n="fee">FEE</label>
 										<div class="input-group">
-											<input type="number" name="feeNXT" id="dgs_listing_fee" class="form-control" placeholder="Fee" data-i18n="[placeholder]fee" step="any" min="1" data-default="1" value="1" tabindex="6">
-											<span class="input-group-addon">NXT</span>
+											<input type="number" name="feeNHZ" id="dgs_listing_fee" class="form-control" placeholder="Fee" data-i18n="[placeholder]fee" step="any" min="1" data-default="1" value="1" tabindex="6">
+											<span class="input-group-addon">NHZ</span>
 										</div>
 									</div>
 								</div>
@@ -2174,7 +2174,7 @@
 						</form>
 			    	</div>
 					<div class="modal-footer" style="margin-top:0;">
-						<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NXT</span> - <a href="#" data-i18n="advanced">advanced</a></div>
+						<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NHZ</span> - <a href="#" data-i18n="advanced">advanced</a></div>
 
 				    	<button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="cancel">Cancel</button>
 				        <button type="button" class="btn btn-primary" data-loading-text="Submitting..." data-i18n="put_for_sale;[data-loading-text]submitting">Put For Sale</button>
@@ -2203,8 +2203,8 @@
 									<div class="form-group">
 										<label for="dgs_delisting_fee" data-i18n="fee">FEE</label>
 										<div class="input-group">
-											<input type="number" name="feeNXT" id="dgs_delisting_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="2">
-											<span class="input-group-addon">NXT</span>
+											<input type="number" name="feeNHZ" id="dgs_delisting_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="2">
+											<span class="input-group-addon">NHZ</span>
 										</div>
 									</div>
 								</div>
@@ -2240,7 +2240,7 @@
 						</form>
 		      		</div>
 			      	<div class="modal-footer" style="margin-top:0;">
-			      		<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NXT</span> - <a href="#" data-i18n="advanced">advanced</a></div>
+			      		<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NHZ</span> - <a href="#" data-i18n="advanced">advanced</a></div>
 
 				        <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="do_not_delete">No, Do Not Delete</button>
 				        <button type="button" class="btn btn-primary" data-loading-text="Submitting..." data-i18n="delete_my_item;[data-loading-text]submitting">Delete My Item</button>
@@ -2274,8 +2274,8 @@
 									<div class="form-group">
 										<label for="dgs_price_change_price" data-i18n="new_price">NEW PRICE</label>
 										<div class="input-group">
-											<input type="number" name="priceNXT" id="dgs_price_change_price" class="form-control" placeholder="New Price" data-i18n="new_price" min="1" data-default="1" value="1" tabindex="1" step="any">
-											<span class="input-group-addon">NXT</span>
+											<input type="number" name="priceNHZ" id="dgs_price_change_price" class="form-control" placeholder="New Price" data-i18n="new_price" min="1" data-default="1" value="1" tabindex="1" step="any">
+											<span class="input-group-addon">NHZ</span>
 										</div>
 									</div>
 								</div>
@@ -2285,8 +2285,8 @@
 									<div class="form-group">
 										<label for="dgs_price_change_fee" data-i18n="fee">FEE</label>
 										<div class="input-group">
-											<input type="number" name="feeNXT" id="dgs_price_change_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="fee" data-default="1" value="1" tabindex="2">
-											<span class="input-group-addon">NXT</span>
+											<input type="number" name="feeNHZ" id="dgs_price_change_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="fee" data-default="1" value="1" tabindex="2">
+											<span class="input-group-addon">NHZ</span>
 										</div>
 									</div>
 								</div>
@@ -2322,7 +2322,7 @@
 						</form>
 		      		</div>
 			      	<div class="modal-footer" style="margin-top:0;">
-			      		<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NXT</span> - <a href="#" data-i18n="advanced">advanced</a></div>
+			      		<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NHZ</span> - <a href="#" data-i18n="advanced">advanced</a></div>
 
 				        <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="cancel">Cancel</button>
 				        <button type="button" class="btn btn-primary" data-loading-text="Submitting..." data-i18n="change_price;[data-loading-text]submitting">Change Price</button>
@@ -2364,8 +2364,8 @@
 									<div class="form-group">
 										<label for="dgs_quantity_change_fee" data-i18n="fee">FEE</label>
 										<div class="input-group">
-											<input type="number" name="feeNXT" id="dgs_quantity_change_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="2">
-											<span class="input-group-addon">NXT</span>
+											<input type="number" name="feeNHZ" id="dgs_quantity_change_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="2">
+											<span class="input-group-addon">NHZ</span>
 										</div>
 									</div>
 								</div>
@@ -2401,7 +2401,7 @@
 						</form>
 		      		</div>
 			      	<div class="modal-footer" style="margin-top:0;">
-			      		<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NXT</span> - <a href="#" data-i18n="advanced">advanced</a></div>
+			      		<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NHZ</span> - <a href="#" data-i18n="advanced">advanced</a></div>
 
 				        <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="cancel">Cancel</button>
 				        <button type="button" class="btn btn-primary" data-loading-text="Submitting..." data-i18n="change_quantity;[data-loading-text]submitting">Change Quantity</button>
@@ -2483,8 +2483,8 @@
 									<div class="form-group">
 										<label for="dgs_purchase_fee" data-i18n="fee">FEE</label>
 										<div class="input-group">
-											<input type="number" name="feeNXT" id="dgs_purchase_fee" class="form-control" placeholder="Fee" data-i18n="[placeholder]fee" step="any" min="1" data-default="1" value="1" tabindex="5">
-											<span class="input-group-addon">NXT</span>
+											<input type="number" name="feeNHZ" id="dgs_purchase_fee" class="form-control" placeholder="Fee" data-i18n="[placeholder]fee" step="any" min="1" data-default="1" value="1" tabindex="5">
+											<span class="input-group-addon">NHZ</span>
 										</div>
 									</div>
 								</div>
@@ -2520,7 +2520,7 @@
 						</form>
 			    	</div>
 					<div class="modal-footer" style="margin-top:0;">
-						<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NXT</span> - <a href="#" data-i18n="advanced">advanced</a></div>
+						<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NHZ</span> - <a href="#" data-i18n="advanced">advanced</a></div>
 
 				    	<button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="cancel">Cancel</button>
 				        <button type="button" class="btn btn-primary" data-loading-text="Submitting..." data-i18n="purchase;[data-loading-text]submitting">Purchase</button>
@@ -2555,8 +2555,8 @@
 							<div class="form-group">
 								<label for="dgs_delivery_discount" data-i18n="discount">DISCOUNT</label>	
 								<div class="input-group">
-					                <input type="number" name="discountNXT" id="dgs_delivery_discount" class="form-control" min="0" placeholder="Discount" data-i18n="discount" step="any" data-default="0" value="0" tabindex="3">
-				                	<span class="input-group-addon">NXT</span>
+					                <input type="number" name="discountNHZ" id="dgs_delivery_discount" class="form-control" min="0" placeholder="Discount" data-i18n="discount" step="any" data-default="0" value="0" tabindex="3">
+				                	<span class="input-group-addon">NHZ</span>
 								</div>
 							</div>
 							<div class="row advanced">
@@ -2564,8 +2564,8 @@
 									<div class="form-group">
 										<label for="dgs_delivery_fee" data-i18n="fee">FEE</label>
 										<div class="input-group">
-											<input type="number" name="feeNXT" id="dgs_delivery_fee" class="form-control" placeholder="Fee" data-i18n="[placeholder]fee" step="any" min="1" data-default="1" value="1" tabindex="4">
-											<span class="input-group-addon">NXT</span>
+											<input type="number" name="feeNHZ" id="dgs_delivery_fee" class="form-control" placeholder="Fee" data-i18n="[placeholder]fee" step="any" min="1" data-default="1" value="1" tabindex="4">
+											<span class="input-group-addon">NHZ</span>
 										</div>
 									</div>
 								</div>
@@ -2601,7 +2601,7 @@
 						</form>
 			    	</div>
 					<div class="modal-footer" style="margin-top:0;">
-						<div class="advanced_info"><strong data-18n="fee">Fee</strong>: <span class="advanced_fee">1 NXT</span> - <a href="#" data-i18n="advanced">advanced</a></div>
+						<div class="advanced_info"><strong data-18n="fee">Fee</strong>: <span class="advanced_fee">1 NHZ</span> - <a href="#" data-i18n="advanced">advanced</a></div>
 
 				    	<button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="cancel">Cancel</button>
 				        <button type="button" class="btn btn-primary" data-loading-text="Submitting..." data-i18n="deliver_purchase;[data-loading-text]submitting">Deliver Purchase</button>
@@ -2698,8 +2698,8 @@
                             <div class="form-group">
                                 <label for="dgs_refund_refund" data-i18n="refund">REFUND</label>
                                 <div class="input-group">
-                                    <input type="number" name="refundNXT" id="dgs_refund_refund" class="form-control" min="0" placeholder="Refund Price" data-i18n="[placeholder]refund_price" step="any" data-default="0" value="0" tabindex="3">
-                                    <span class="input-group-addon">NXT</span>
+                                    <input type="number" name="refundNHZ" id="dgs_refund_refund" class="form-control" min="0" placeholder="Refund Price" data-i18n="[placeholder]refund_price" step="any" data-default="0" value="0" tabindex="3">
+                                    <span class="input-group-addon">NHZ</span>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -2717,8 +2717,8 @@
 									<div class="form-group">
 										<label for="dgs_refund_fee" data-i18n="fee">FEE</label>
 										<div class="input-group">
-											<input type="number" name="feeNXT" id="dgs_refund_fee" class="form-control" placeholder="Fee" data-i18n="fee" step="any" min="1" data-default="1" value="1" tabindex="4">
-											<span class="input-group-addon">NXT</span>
+											<input type="number" name="feeNHZ" id="dgs_refund_fee" class="form-control" placeholder="Fee" data-i18n="fee" step="any" min="1" data-default="1" value="1" tabindex="4">
+											<span class="input-group-addon">NHZ</span>
 										</div>
 									</div>
 								</div>
@@ -2754,7 +2754,7 @@
 						</form>
 			    	</div>
 					<div class="modal-footer" style="margin-top:0;">
-						<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NXT</span> - <a href="#" data-i18n="advanced">advanced</a></div>
+						<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NHZ</span> - <a href="#" data-i18n="advanced">advanced</a></div>
 
 				    	<button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="cancel">Cancel</button>
 				        <button type="button" class="btn btn-primary" data-loading-text="Submitting..." data-i18n="refund_purchase;[data-loading-text]submitting">Refund Purchase</button>
@@ -2794,8 +2794,8 @@
 									<div class="form-group">
 										<label for="dgs_feedback_fee" data-i18n="fee">FEE</label>
 										<div class="input-group">
-											<input type="number" name="feeNXT" id="dgs_feedback_fee" class="form-control" placeholder="Fee" data-i18n="fee" step="any" min="1" data-default="1" value="1" tabindex="6">
-											<span class="input-group-addon">NXT</span>
+											<input type="number" name="feeNHZ" id="dgs_feedback_fee" class="form-control" placeholder="Fee" data-i18n="fee" step="any" min="1" data-default="1" value="1" tabindex="6">
+											<span class="input-group-addon">NHZ</span>
 										</div>
 									</div>
 								</div>
@@ -2831,7 +2831,7 @@
 						</form>
 			    	</div>
 					<div class="modal-footer" style="margin-top:0;">
-						<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NXT</span> - <a href="#" data-i18n="advanced">advanced</a></div>
+						<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NHZ</span> - <a href="#" data-i18n="advanced">advanced</a></div>
 
 				    	<button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="cancel">Cancel</button>
 				        <button type="button" class="btn btn-primary" data-loading-text="Submitting..." data-i18n="submit_feedback;[data-loading-text]submitting">Submit Feedback</button>
@@ -2899,8 +2899,8 @@
 									<div class="form-group">
 										<label for="create_poll_fee" data-i18n="fee">FEE</label>
 										<div class="input-group">
-											<input type="number" name="feeNXT" id="create_poll_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="3">
-											<span class="input-group-addon">NXT</span>
+											<input type="number" name="feeNHZ" id="create_poll_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="3">
+											<span class="input-group-addon">NHZ</span>
 										</div>
 									</div>
 								</div>
@@ -2926,7 +2926,7 @@
 						</form>
 			    	</div>
 					<div class="modal-footer" style="margin-top:0;">
-						<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NXT</span> - <a href="#" data-i18n="advanced">advanced</a></div>
+						<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NHZ</span> - <a href="#" data-i18n="advanced">advanced</a></div>
 
 						<button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="cancel">Cancel</button>
 						&nbsp;&nbsp;
@@ -3003,7 +3003,7 @@
 		    	<div class="modal-content">
 		      		<div class="modal-header">
 		        		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		        		<h4 class="modal-title" data-i18n="send_nxt">Send NXT</h4>
+		        		<h4 class="modal-title" data-i18n="send_nhz">Send NHZ</h4>
 		      		</div>
 			      	<div class="modal-body">			
 						<form role="form" autocomplete="off">
@@ -3026,8 +3026,8 @@
 									<div class="form-group">
 										<label for="send_money_amount" data-i18n="amount">AMOUNT</label>
 										<div class="input-group">
-											<input type="text" name="amountNXT" id="send_money_amount" step="any" min="0" class="form-control" placeholder="Amount" data-i18n="[placeholder]amount" tabindex="3">
-											<span class="input-group-addon">NXT</span>
+											<input type="text" name="amountNHZ" id="send_money_amount" step="any" min="0" class="form-control" placeholder="Amount" data-i18n="[placeholder]amount" tabindex="3">
+											<span class="input-group-addon">NHZ</span>
 										</div>
 									</div>
 								</div>
@@ -3035,8 +3035,8 @@
 									<div class="form-group">
 										<label for="send_money_fee" data-i18n="fee">FEE</label>
 										<div class="input-group">
-											<input type="number" name="feeNXT" id="send_money_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="4">
-											<span class="input-group-addon">NXT</span>
+											<input type="number" name="feeNHZ" id="send_money_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="4">
+											<span class="input-group-addon">NHZ</span>
 										</div>
 									</div>
 								</div>
@@ -3085,10 +3085,10 @@
 						</form>
 					</div>
 		      		<div class="modal-footer" style="margin-top:0;">
-		      			<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NXT</span> - <a href="#" data-i18n="advanced">advanced</a></div>
+		      			<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NHZ</span> - <a href="#" data-i18n="advanced">advanced</a></div>
 
 				        <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="cancel">Cancel</button>
-				        <button type="button" class="btn btn-primary" data-loading-text="Submitting..." data-i18n="send_nxt;[data-loading-text]submitting">Send NXT</button>
+				        <button type="button" class="btn btn-primary" data-loading-text="Submitting..." data-i18n="send_nhz;[data-loading-text]submitting">Send NHZ</button>
 		      		</div>
 		    	</div>
 		  	</div>
@@ -3129,8 +3129,8 @@
 									<div class="form-group">
 										<label for="send_message_fee" data-i18n="fee">FEE</label>
 										<div class="input-group">
-											<input type="number" name="feeNXT" id="send_message_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="4">
-											<span class="input-group-addon">NXT</span>
+											<input type="number" name="feeNHZ" id="send_message_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="4">
+											<span class="input-group-addon">NHZ</span>
 										</div>
 									</div>
 								</div>
@@ -3168,7 +3168,7 @@
 						</form>
 					</div>
 			       	<div class="modal-footer" style="margin-top:0;">
-			       		<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NXT</span> - <a href="#" data-i18n="advanced">advanced</a></div>
+			       		<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NHZ</span> - <a href="#" data-i18n="advanced">advanced</a></div>
 						<button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="cancel">Cancel</button>
 			     	    <button type="button" class="btn btn-primary" data-loading-text="Submitting..." data-i18n="send_message_button;[data-loading-text]submitting">Send Message</button>
 			      	</div>
@@ -3199,8 +3199,8 @@
 									<div class="form-group">
 										<label for="account_info_fee" data-i18n="fee">FEE</label>
 										<div class="input-group">
-											<input type="number" name="feeNXT" id="account_info_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="3">
-											<span class="input-group-addon">NXT</span>
+											<input type="number" name="feeNHZ" id="account_info_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="3">
+											<span class="input-group-addon">NHZ</span>
 										</div>
 									</div>
 								</div>
@@ -3236,7 +3236,7 @@
 						</form>
 					</div>
 			       	<div class="modal-footer" style="margin-top:0;">
-			       		<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NXT</span> - <a href="#" data-i18n="advanced">advanced</a></div>
+			       		<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NHZ</span> - <a href="#" data-i18n="advanced">advanced</a></div>
 
 						<button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="cancel">Cancel</button>
 			     	    <button type="button" class="btn btn-primary" data-loading-text="Submitting..." data-i18n="update_account_info;[data-loading-text]submitting">Update Account Info</button>
@@ -3278,8 +3278,8 @@
 									<div class="form-group">
 										<label for="register_alias_fee" data-i18n="fee">FEE</label>
 										<div class="input-group">
-											<input type="number" name="feeNXT" id="register_alias_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="3">
-											<span class="input-group-addon">NXT</span>
+											<input type="number" name="feeNHZ" id="register_alias_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="3">
+											<span class="input-group-addon">NHZ</span>
 										</div>
 									</div>
 								</div>
@@ -3316,7 +3316,7 @@
 						</form>
 					</div>
 			      	<div class="modal-footer" style="margin-top:0;">
-			      		<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NXT</span> - <a href="#" data-i18n="advanced">advanced</a></div>
+			      		<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NHZ</span> - <a href="#" data-i18n="advanced">advanced</a></div>
 
 				        <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="cancel">Cancel</button>
 				        <button type="button" class="btn btn-primary" id="register_alias_button" data-loading-text="Submitting..." data-i18n="register;[data-loading-text]submitting">Register</button>
@@ -3343,8 +3343,8 @@
 							<div class="form-group">
 								<label data-i18n="price">PRICE</label>
 								<div class="input-group">
-						        	<input type="text" name="amountNXT" id="buy_alias_price" step="any" min="0" class="form-control" placeholder="Price" data-i18n="[placeholder]price" tabindex="1">
-						        	<span class="input-group-addon">NXT</span>
+						        	<input type="text" name="amountNHZ" id="buy_alias_price" step="any" min="0" class="form-control" placeholder="Price" data-i18n="[placeholder]price" tabindex="1">
+						        	<span class="input-group-addon">NHZ</span>
 								</div>
 							</div>
                             <div class="form-group dgs_block">
@@ -3362,8 +3362,8 @@
 									<div class="form-group">
 										<label for="buy_alias_fee" data-i18n="fee">FEE</label>
 										<div class="input-group">
-											<input type="number" name="feeNXT" id="buy_alias_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="2">
-											<span class="input-group-addon">NXT</span>
+											<input type="number" name="feeNHZ" id="buy_alias_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="2">
+											<span class="input-group-addon">NHZ</span>
 										</div>
 									</div>
 								</div>
@@ -3400,7 +3400,7 @@
 						</form>
 					</div>
 			      	<div class="modal-footer" style="margin-top:0;">
-			      		<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NXT</span> - <a href="#" data-i18n="advanced">advanced</a></div>
+			      		<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NHZ</span> - <a href="#" data-i18n="advanced">advanced</a></div>
 
 				        <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="cancel">Cancel</button>
 				        <button type="button" class="btn btn-primary" data-loading-text="Submitting..." data-i18n="buy_alias;[data-loading-text]submitting;">Buy Alias</button>
@@ -3454,8 +3454,8 @@
 									<div class="form-group">
 										<label for="transfer_alias_fee" data-i18n="fee">FEE</label>
 										<div class="input-group">
-											<input type="number" name="feeNXT" id="transfer_alias_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="4">
-											<span class="input-group-addon">NXT</span>
+											<input type="number" name="feeNHZ" id="transfer_alias_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="4">
+											<span class="input-group-addon">NHZ</span>
 										</div>
 									</div>
 								</div>
@@ -3494,7 +3494,7 @@
 						</form>
 					</div>
 			      	<div class="modal-footer" style="margin-top:0;">
-			      		<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NXT</span> - <a href="#" data-i18n="advanced">advanced</a></div>
+			      		<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NHZ</span> - <a href="#" data-i18n="advanced">advanced</a></div>
 
 				        <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="cancel">Cancel</button>
 				        <button type="button" class="btn btn-primary" data-loading-text="Submitting..." data-i18n="transfer_alias;[data-loading-text]submitting">Transfer Alias</button>
@@ -3541,8 +3541,8 @@
 									<div class="form-group">
 										<label for="sell_alias_price" data-i18n="price">PRICE</label>
 										<div class="input-group">
-						                	<input type="text" name="priceNXT" id="sell_alias_price" step="any" min="0" class="form-control" placeholder="Price" tabindex="3">
-						                	<span class="input-group-addon">NXT</span>
+						                	<input type="text" name="priceNHZ" id="sell_alias_price" step="any" min="0" class="form-control" placeholder="Price" tabindex="3">
+						                	<span class="input-group-addon">NHZ</span>
 										</div>
 									</div>
 								</div>
@@ -3550,8 +3550,8 @@
 									<div class="form-group">
 										<label for="sell_alias_fee" data-i18n="fee">FEE</label>
 										<div class="input-group">
-											<input type="number" name="feeNXT" id="sell_alias_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="4">
-											<span class="input-group-addon">NXT</span>
+											<input type="number" name="feeNHZ" id="sell_alias_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="4">
+											<span class="input-group-addon">NHZ</span>
 										</div>
 									</div>
 								</div>
@@ -3603,7 +3603,7 @@
 						</form>
 					</div>
 			      	<div class="modal-footer" style="margin-top:0;">
-			      		<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NXT</span> - <a href="#" data-i18n="advanced">advanced</a></div>
+			      		<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NHZ</span> - <a href="#" data-i18n="advanced">advanced</a></div>
 
 				        <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="cancel">Cancel</button>
 				        <button type="button" class="btn btn-primary" data-loading-text="Submitting..." data-i18n="sell_alias;[data-loading-text]submitting">Sell Alias</button>
@@ -3633,8 +3633,8 @@
 									<div class="form-group">
 										<label for="cancel_alias_sale_fee" data-i18n="fee">FEE</label>
 										<div class="input-group">
-											<input type="number" name="feeNXT" id="cancel_alias_sale_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="1">
-											<span class="input-group-addon">NXT</span>
+											<input type="number" name="feeNHZ" id="cancel_alias_sale_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="1">
+											<span class="input-group-addon">NHZ</span>
 										</div>
 									</div>
 								</div>
@@ -3680,7 +3680,7 @@
 						</form>
 					</div>
 			      	<div class="modal-footer" style="margin-top:0;">
-			      		<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NXT</span> - <a href="#" data-i18n="advanced">advanced</a></div>
+			      		<div class="advanced_info"><strong data-i18n="fee">Fee</strong>: <span class="advanced_fee">1 NHZ</span> - <a href="#" data-i18n="advanced">advanced</a></div>
 
 				        <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="cancel">Cancel</button>
 				        <button type="button" class="btn btn-primary" data-loading-text="Submitting..." data-i18n="cancel_sale;[data-loading-text]submitting">Cancel Sale</button>
@@ -3694,7 +3694,7 @@
 		    	<div class="modal-content">
 		      		<div class="modal-header">
 		        		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		        		<h4 class="modal-title" data-i18n="nxt_token_generation_validation">Nxt Token Generation / Validation</h4>
+		        		<h4 class="modal-title" data-i18n="nhz_token_generation_validation">Nhz Token Generation / Validation</h4>
 		      		</div>
 			      	<div class="modal-body">	
 						<ul class="nav nav-pills nav-justified" style="margin-bottom:10px">
@@ -3825,7 +3825,7 @@
                                 <div class="tab-pane" id="transaction_info_actions_tab">
                                     <div class="row">
                                         <div class="col-xs-8 col-md-8" style="margin-left:auto;margin-right:auto;float:none;">
-                                            <button type="button" class="btn btn-default btn-lg btn-block" data-toggle="modal" data-target="#send_money_modal" data-account="" data-i18n="send_nxt_to_sender">Send NXT to Sender</button>
+                                            <button type="button" class="btn btn-default btn-lg btn-block" data-toggle="modal" data-target="#send_money_modal" data-account="" data-i18n="send_nhz_to_sender">Send NHZ to Sender</button>
                                             <button type="button" class="btn btn-default btn-lg btn-block" data-toggle="modal" data-target="#send_message_modal" data-account="" data-i18n="send_message_to_sender">Send Message to Sender</button>
                                             <button type="button" id="transaction_info_modal_add_as_contact" class="btn btn-default btn-lg btn-block" data-toggle="modal" data-target="#add_contact_modal" data-account="" data-i18n="add_sender_as_contact">Add Sender as Contact</button>
                                         </div>
@@ -3970,7 +3970,7 @@
 						<div class="user_info_modal_content data-never-loading" id="user_info_modal_actions" style="display:none;">
 							<div class="row">
 								<div class="col-xs-6 col-md-6" style="margin-left:auto;margin-right:auto;float:none;">
-									<button type="button" class="btn btn-default btn-lg btn-block" data-toggle="modal" data-target="#send_money_modal" data-account="" data-i18n="send_nxt">Send NXT</button>
+									<button type="button" class="btn btn-default btn-lg btn-block" data-toggle="modal" data-target="#send_money_modal" data-account="" data-i18n="send_nhz">Send NHZ</button>
 									<button type="button" class="btn btn-default btn-lg btn-block" data-toggle="modal" data-target="#send_message_modal" data-account="" data-i18n="send_a_message">Send a Message</button>
 									<button type="button" id="user_info_modal_add_as_contact" class="btn btn-default btn-lg btn-block" data-toggle="modal" data-target="#add_contact_modal" data-account="" data-i18n="add_as_contact">Add as Contact</button>
 								</div>
@@ -4081,7 +4081,7 @@
 							    		<td style="font-weight: bold"><span data-i18n="nr_trades"># Trades</span>:</td><td><span id="nrs_node_state_numberOfTrades"></span></td>
 							    	</tr>
 							    	<tr>
-							    		<td style="font-weight: bold"><span data-i18n="total_balance">Total Balance</span>:</td><td><span id="nrs_node_state_totalEffectiveBalanceNXT"></span></td>
+							    		<td style="font-weight: bold"><span data-i18n="total_balance">Total Balance</span>:</td><td><span id="nrs_node_state_totalEffectiveBalanceNHZ"></span></td>
 							    		<td style="font-weight: bold"><span data-i18n="nr_polls"># Polls</span>:</td><td><span id="nrs_node_state_numberOfPolls"></span></td>
 							    	</tr>
 							    	<tr>
@@ -4406,7 +4406,7 @@
 		    <ul class="dropdown-menu" data-container="body" role="menu" style="display:block;position:static;margin-bottom:5px;">
 		    	<li><a tabindex="-1" href="#" data-option="account_info" data-i18n="account_info">Account Info</a></li>
 		        <li><a tabindex="-1" href="#" data-option="add_contact" data-i18n="add_contact">Add Contact</a></li>
-				<li><a tabindex="-1" href="#" data-option="send_nxt" data-i18n="send_nxt">Send NXT</a></li>
+				<li><a tabindex="-1" href="#" data-option="send_nhz" data-i18n="send_nhz">Send NHZ</a></li>
 		    </ul>
 		</div>
 		
@@ -4414,7 +4414,7 @@
 		    <ul class="dropdown-menu" data-container="body" role="menu" style="display:block;position:static;margin-bottom:5px;">
 		    	<li><a tabindex="-1" href="#" data-option="account_info" data-i18n="account_info">Account Info</a></li>
 		        <li><a tabindex="-1" href="#" data-option="update_contact" data-i18n="update_contact">Update Contact</a></li>
-				<li><a tabindex="-1" href="#" data-option="send_nxt" data-i18n="send_nxt">Send Nxt</a></li>
+				<li><a tabindex="-1" href="#" data-option="send_nhz" data-i18n="send_nhz">Send Nhz</a></li>
 		    </ul>
 		</div>
 		
@@ -4468,7 +4468,7 @@
 
         <script src="js/util/extensions.js" type="text/javascript"></script>
         <script src="js/util/converters.js" type="text/javascript"></script>
-        <script src="js/util/nxtaddress.js" type="text/javascript"></script>
+        <script src="js/util/nhzaddress.js" type="text/javascript"></script>
 
 		<script src="js/crypto/3rdparty/jssha256.js" type="text/javascript"></script>
         <script src="js/crypto/curve25519.js" type="text/javascript"></script>

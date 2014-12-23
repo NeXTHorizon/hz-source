@@ -81,7 +81,7 @@ var NRS = (function(NRS, $, undefined) {
 		var accountId = byteArrayToBigInteger(slice).toString();
 
 		if (RSFormat) {
-			var address = new NxtAddress();
+			var address = new NhzAddress();
 
 			if (address.set(accountId)) {
 				return address.toString();
@@ -122,9 +122,9 @@ var NRS = (function(NRS, $, undefined) {
 					try {
 						options.publicKey = converters.hexStringToByteArray(NRS.getPublicKey(options.account, true));
 					} catch (err) {
-						var nxtAddress = new NxtAddress();
+						var nhzAddress = new NhzAddress();
 
-						if (!nxtAddress.set(options.account)) {
+						if (!nhzAddress.set(options.account)) {
 							throw {
 								"message": $.t("error_invalid_account_id"),
 								"errorCode": 3

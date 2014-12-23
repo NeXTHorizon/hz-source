@@ -193,7 +193,7 @@ var NRS = (function(NRS, $, undefined) {
 		for (var key in NRS.settings) {
 			if (/_warning/i.test(key) && key != "asset_transfer_warning") {
 				if ($("#settings_" + key).length) {
-					$("#settings_" + key).val(NRS.convertToNXT(NRS.settings[key]));
+					$("#settings_" + key).val(NRS.convertToNHZ(NRS.settings[key]));
 				}
 			} else if (!/_color/i.test(key)) {
 				if ($("#settings_" + key).length) {

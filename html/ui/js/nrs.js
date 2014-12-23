@@ -19,7 +19,7 @@
  * @depends {crypto/3rdparty/seedrandom.js}
  * @depends {util/converters.js}
  * @depends {util/extensions.js}
- * @depends {util/nxtaddress.js}
+ * @depends {util/nhzaddress.js}
  */
 var NRS = (function(NRS, $, undefined) {
 	"use strict";
@@ -28,7 +28,7 @@ var NRS = (function(NRS, $, undefined) {
 	NRS.state = {};
 	NRS.blocks = [];
 	NRS.genesis = "15930057730606666280";
-	NRS.genesisRS = "NXT-F6KA-5DG6-TTUK-FHR6U";
+	NRS.genesisRS = "NHZ-F6KA-5DG6-TTUK-FHR6U";
 
 	NRS.account = "";
 	NRS.accountRS = ""
@@ -79,7 +79,7 @@ var NRS = (function(NRS, $, undefined) {
 		} else {
 			NRS.isTestNet = true;
 			NRS.genesis = "12351629106086518949";
-			NRS.genesisRS = "NXT-MA77-9DSU-SRDA-CFGUQ";
+			NRS.genesisRS = "NHZ-MA77-9DSU-SRDA-CFGUQ";
 			$(".testnet_only, #testnet_login, #testnet_warning").show();
 		}
 
@@ -180,7 +180,7 @@ var NRS = (function(NRS, $, undefined) {
 
 		$(".sidebar .treeview").tree();
 
-		$("#dgs_search_account_top, #dgs_search_account_center").mask("NXT-****-****-****-*****", {
+		$("#dgs_search_account_top, #dgs_search_account_center").mask("NHZ-****-****-****-*****", {
 			"unmask": false
 		});
 
@@ -724,7 +724,7 @@ var NRS = (function(NRS, $, undefined) {
 			$("#lease_balance_message").html($.t("balance_leasing_help"));
 		}
 
-		if (NRS.accountInfo.effectiveBalanceNXT == 0) {
+		if (NRS.accountInfo.effectiveBalanceNHZ == 0) {
 			$("#forging_indicator").removeClass("forging");
 			$("#forging_indicator span").html($.t("not_forging")).attr("data-i18n", "not_forging");
 			$("#forging_indicator").show();
@@ -939,7 +939,7 @@ var NRS = (function(NRS, $, undefined) {
 
 		var id = $.trim($("#id_search input[name=q]").val());
 
-		if (/NXT\-/i.test(id)) {
+		if (/NHZ\-/i.test(id)) {
 			NRS.sendRequest("getAccount", {
 				"account": id
 			}, function(response, input) {

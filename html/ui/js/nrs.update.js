@@ -74,9 +74,9 @@ var NRS = (function(NRS, $, undefined) {
 				if (new Date() > noticeDate) {
 					var isMac = navigator.platform.match(/Mac/i);
 
-					var downloadUrl = "https://bitbucket.org/wesleyh/nxt-wallet-" + (isMac ? "mac" : "win") + "/downloads";
+					var downloadUrl = "https://bitbucket.org/wesleyh/nhz-wallet-" + (isMac ? "mac" : "win") + "/downloads";
 
-					$("#secondary_dashboard_message").removeClass("alert-success").addClass("alert-danger").html($.t("old_nxt_wallet_update", {
+					$("#secondary_dashboard_message").removeClass("alert-success").addClass("alert-danger").html($.t("old_nhz_wallet_update", {
 						"link": downloadUrl
 					})).show();
 				}
@@ -277,7 +277,7 @@ var NRS = (function(NRS, $, undefined) {
 			$("#nrs_modal").modal("hide");
 		} else {
 			var filename = NRS.downloadedVersion.versionNr.toLowerCase();
-			$("#nrs_update_iframe").attr("src", "http://files.nxtcrypto.org/binaries/" + filename + ".zip");
+			$("#nrs_update_iframe").attr("src", "http://files.nhzcrypto.org/binaries/" + filename + ".zip");
 			$("#nrs_update_explanation").hide();
 			$("#nrs_update_drop_zone").show();
 

@@ -162,13 +162,13 @@ var NRS = (function(NRS, $, undefined) {
 		var errorMessage = "";
 
 		if (data.modal == "cancel_alias_sale") {
-			data.priceNXT = "0";
+			data.priceNHZ = "0";
 			data.recipient = NRS.accountRS;
 
 			successMessage = $.t("success_cancel_alias");
 			errorMessage = $.t("error_cancel_alias");
 		} else if (data.modal == "transfer_alias") {
-			data.priceNXT = "0";
+			data.priceNHZ = "0";
 
 			successMessage = $.t("success_transfer_alias");
 			errorMessage = $.t("error_transfer_alias");
@@ -185,7 +185,7 @@ var NRS = (function(NRS, $, undefined) {
 			errorMessage = $.t("error_sell_alias");
 
 			if (data.recipient == NRS.genesisRS) {
-				if (!data.priceNXT || data.priceNXT == "0") {
+				if (!data.priceNHZ || data.priceNHZ == "0") {
 					return {
 						"error": $.t("error_not_specified", {
 							"name": $.t("price").toLowerCase()
@@ -311,14 +311,14 @@ var NRS = (function(NRS, $, undefined) {
 					$modal.find("input[name=recipient]").val(String(response.accountRS).escapeHTML());
 					$modal.find("input[name=aliasName]").val(alias.escapeHTML());
 					$modal.find(".alias_name_display").html(alias.escapeHTML());
-					$modal.find("input[name=amountNXT]").val(NRS.convertToNXT(response.priceNQT)).prop("readonly", true);
+					$modal.find("input[name=amountNHZ]").val(NRS.convertToNHZ(response.priceNQT)).prop("readonly", true);
 				}
 			}
 		}, false);
 	});
 
 	NRS.forms.buyAliasError = function() {
-		$("#buy_alias_modal").find("input[name=priceNXT]").prop("readonly", false);
+		$("#buy_alias_modal").find("input[name=priceNHZ]").prop("readonly", false);
 	}
 
 	NRS.forms.buyAliasComplete = function(response, data) {
@@ -364,7 +364,7 @@ var NRS = (function(NRS, $, undefined) {
 
 					if (/http:\/\//i.test(response.aliasURI)) {
 						setAliasType("uri", response.aliasURI);
-					} else if ((aliasURI = /acct:(.*)@nxt/.exec(response.aliasURI)) || (aliasURI = /nacc:(.*)/.exec(response.aliasURI))) {
+					} else if ((aliasURI = /acct:(.*)@nhz/.exec(response.aliasURI)) || (aliasURI = /nacc:(.*)/.exec(response.aliasURI))) {
 						setAliasType("account", response.aliasURI);
 						response.aliasURI = String(aliasURI[1]).toUpperCase();
 					} else {
@@ -407,16 +407,16 @@ var NRS = (function(NRS, $, undefined) {
 		data.aliasURI = $.trim(data.aliasURI).toLowerCase();
 
 		if (data.type == "account") {
-			if (!(/acct:(.*)@nxt/.test(data.aliasURI)) && !(/nacc:(.*)/.test(data.aliasURI))) {
-				if (/^(NXT\-)/i.test(data.aliasURI)) {
-					var address = new NxtAddress();
+			if (!(/acct:(.*)@nhz/.test(data.aliasURI)) && !(/nacc:(.*)/.test(data.aliasURI))) {
+				if (/^(NHZ\-)/i.test(data.aliasURI)) {
+					var address = new NhzAddress();
 
 					if (!address.set(data.aliasURI)) {
 						return {
 							"error": $.t("error_invalid_account_id")
 						};
 					} else {
-						data.aliasURI = "acct:" + data.aliasURI + "@nxt";
+						data.aliasURI = "acct:" + data.aliasURI + "@nhz";
 					}
 				} else if (/^\d+$/.test(data.aliasURI)) {
 					return {
@@ -459,10 +459,10 @@ var NRS = (function(NRS, $, undefined) {
 		} else if (type == "account") {
 			$("#register_alias_uri_label").html($.t("account_id"));
 			$("#register_alias_uri").prop("placeholder", $.t("account_id"));
-			$("#register_alias_uri").val("").mask("NXT-****-****-****-*****");
+			$("#register_alias_uri").val("").mask("NHZ-****-****-****-*****");
 
 			if (uri) {
-				var match = uri.match(/acct:(.*)@nxt/i);
+				var match = uri.match(/acct:(.*)@nhz/i);
 				if (!match) {
 					match = uri.match(/nacc:(.*)/i);
 				}
@@ -472,14 +472,14 @@ var NRS = (function(NRS, $, undefined) {
 				}
 
 				if (/^\d+$/.test(uri)) {
-					var address = new NxtAddress();
+					var address = new NhzAddress();
 
 					if (address.set(uri)) {
 						uri = address.toString();
 					} else {
 						uri = "";
 					}
-				} else if (!/^NXT\-[A-Z0-9]{4}\-[A-Z0-9]{4}\-[A-Z0-9]{4}\-[A-Z0-9]{5}/i.test(uri)) {
+				} else if (!/^NHZ\-[A-Z0-9]{4}\-[A-Z0-9]{4}\-[A-Z0-9]{4}\-[A-Z0-9]{5}/i.test(uri)) {
 					uri = NRS.accountRS;
 				}
 
@@ -525,11 +525,11 @@ var NRS = (function(NRS, $, undefined) {
 					if ("priceNQT" in response) {
 						if (response.buyer == NRS.account) {
 							message = $.t("alias_sale_direct_offer", {
-								"nxt": NRS.formatAmount(response.priceNQT)
+								"nhz": NRS.formatAmount(response.priceNQT)
 							}) + " <a href='#' data-alias='" + String(response.aliasName).escapeHTML() + "' data-toggle='modal' data-target='#buy_alias_modal'>" + $.t("buy_it_q") + "</a>";
 						} else if (typeof response.buyer == "undefined") {
 							message = $.t("alias_sale_indirect_offer", {
-								"nxt": NRS.formatAmount(response.priceNQT)
+								"nhz": NRS.formatAmount(response.priceNQT)
 							}) + " <a href='#' data-alias='" + String(response.aliasName).escapeHTML() + "' data-toggle='modal' data-target='#buy_alias_modal'>" + $.t("buy_it_q") + "</a>";
 						} else {
 							message = $.t("error_alias_sale_different_account");
@@ -648,11 +648,11 @@ var NRS = (function(NRS, $, undefined) {
 				if ("priceNQT" in response) {
 					if (response.buyer == NRS.account) {
 						$("#alias_sale_callout").html($.t("alias_sale_direct_offer", {
-							"nxt": NRS.formatAmount(response.priceNQT)
+							"nhz": NRS.formatAmount(response.priceNQT)
 						}) + " <a href='#' data-alias='" + String(response.aliasName).escapeHTML() + "' data-toggle='modal' data-target='#buy_alias_modal'>" + $.t("buy_it_q") + "</a>").show();
 					} else if (typeof response.buyer == "undefined") {
 						$("#alias_sale_callout").html($.t("alias_sale_indirect_offer", {
-							"nxt": NRS.formatAmount(response.priceNQT)
+							"nhz": NRS.formatAmount(response.priceNQT)
 						}) + " <a href='#' data-alias='" + String(response.aliasName).escapeHTML() + "' data-toggle='modal' data-target='#buy_alias_modal'>" + $.t("buy_it_q") + "</a>").show();
 					} else {
 						$("#alias_sale_callout").html($.t("error_alias_sale_different_account")).show();

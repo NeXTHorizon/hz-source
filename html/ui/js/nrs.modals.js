@@ -66,11 +66,11 @@ var NRS = (function(NRS, $, undefined) {
 
 		$.each($inputFields, function() {
 			if ($(this).hasClass("noMask")) {
-				$(this).mask("NXT-****-****-****-*****", {
+				$(this).mask("NHZ-****-****-****-*****", {
 					"noMask": true
 				}).removeClass("noMask");
 			} else {
-				$(this).mask("NXT-****-****-****-*****");
+				$(this).mask("NHZ-****-****-****-*****");
 			}
 		});
 
@@ -149,7 +149,7 @@ var NRS = (function(NRS, $, undefined) {
 			$(obj).removeClass("col-xs-" + advancedSize + " col-sm-" + advancedSize + " col-md-" + advancedSize).addClass("col-xs-" + normalSize + " col-sm-" + normalSize + " col-md-" + normalSize);
 		});
 
-		var $feeInput = $(this).find("input[name=feeNXT]");
+		var $feeInput = $(this).find("input[name=feeNHZ]");
 
 		if ($feeInput.length) {
 			var defaultFee = $feeInput.data("default");
@@ -157,7 +157,7 @@ var NRS = (function(NRS, $, undefined) {
 				defaultFee = 1;
 			}
 
-			$(this).find(".advanced_fee").html(NRS.formatAmount(NRS.convertToNQT(defaultFee)) + " NXT");
+			$(this).find(".advanced_fee").html(NRS.formatAmount(NRS.convertToNQT(defaultFee)) + " NHZ");
 		}
 
 		NRS.showedFormWarning = false;
@@ -187,13 +187,13 @@ var NRS = (function(NRS, $, undefined) {
 		$modal.modal("hide");
 	}
 
-	$("input[name=feeNXT]").on("change", function() {
+	$("input[name=feeNHZ]").on("change", function() {
 		var $modal = $(this).closest(".modal");
 
 		var $feeInfo = $modal.find(".advanced_fee");
 
 		if ($feeInfo.length) {
-			$feeInfo.html(NRS.formatAmount(NRS.convertToNQT($(this).val())) + " NXT");
+			$feeInfo.html(NRS.formatAmount(NRS.convertToNQT($(this).val())) + " NHZ");
 		}
 	});
 

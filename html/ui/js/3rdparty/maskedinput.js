@@ -94,7 +94,7 @@
 
 							if (settings.unmask !== false) {
 								//backspace, remove
-								if ((pos.begin == 0 && pos.end == 24) || (currentInput == "NXT-____-____-____-_____" && pos.begin == 4)) {
+								if ((pos.begin == 0 && pos.end == 24) || (currentInput == "NHZ-____-____-____-_____" && pos.begin == 4)) {
 									input.val("");
 									$(this).trigger("unmask");
 									return;
@@ -128,7 +128,7 @@
 									android ? setTimeout($.proxy($.fn.caret, input, next), 0) : input.caret(next), settings.completed && next >= len && settings.completed.call(input))),
 							e.preventDefault());
 
-						if (/^NXT\-[A-Z0-9]{4}\-[A-Z0-9]{4}\-[A-Z0-9]{4}\-[A-Z0-9]{5}/i.test(input.val())) {
+						if (/^NHZ\-[A-Z0-9]{4}\-[A-Z0-9]{4}\-[A-Z0-9]{4}\-[A-Z0-9]{5}/i.test(input.val())) {
 							input.trigger("checkRecipient");
 						}
 					}
@@ -143,7 +143,7 @@
 					}
 
 					function checkVal(allow) {
-						input.val(input.val().replace(/^\s*NXT\-\s*NXT/i, "NXT-"));
+						input.val(input.val().replace(/^\s*NHZ\-\s*NHZ/i, "NHZ-"));
 
 						var i, c, pos, test = input.val(),
 							lastMatch = -1;
@@ -170,15 +170,15 @@
 
 					if (settings.noMask) {
 						input.bind("keyup.remask", function(e) {
-							if (input.val().toLowerCase() == "nxt-") {
-								input.val("").mask("NXT-****-****-****-*****").unbind(".remask").trigger("focus");
+							if (input.val().toLowerCase() == "nhz-") {
+								input.val("").mask("NHZ-****-****-****-*****").unbind(".remask").trigger("focus");
 							}
 						}).bind("paste.remask", function(e) {
 							setTimeout(function() {
 								var newInput = input.val();
 
-								if (/^NXT\-[A-Z0-9]{4}\-[A-Z0-9]{4}\-[A-Z0-9]{4}\-[A-Z0-9]{5}/i.test(newInput) || /^NXT[A-Z0-9]{17}/i.test(newInput)) {
-									input.mask("NXT-****-****-****-*****").trigger("checkRecipient").unbind(".remask");
+								if (/^NHZ\-[A-Z0-9]{4}\-[A-Z0-9]{4}\-[A-Z0-9]{4}\-[A-Z0-9]{5}/i.test(newInput) || /^NHZ[A-Z0-9]{17}/i.test(newInput)) {
+									input.mask("NHZ-****-****-****-*****").trigger("checkRecipient").unbind(".remask");
 								}
 							}, 0);
 						});
@@ -196,15 +196,15 @@
 
 						if (!removeCompletely) {
 							input.bind("keyup.remask", function(e) {
-								if (input.val().toLowerCase() == "nxt-") {
-									input.val("").mask("NXT-****-****-****-*****").unbind(".remask").trigger("focus");
+								if (input.val().toLowerCase() == "nhz-") {
+									input.val("").mask("NHZ-****-****-****-*****").unbind(".remask").trigger("focus");
 								}
 							}).bind("paste.remask", function(e) {
 								setTimeout(function() {
 									var newInput = input.val();
 
-									if (/^NXT\-[A-Z0-9]{4}\-[A-Z0-9]{4}\-[A-Z0-9]{4}\-[A-Z0-9]{5}/i.test(newInput) || /^NXT[A-Z0-9]{17}/i.test(newInput)) {
-										input.mask("NXT-****-****-****-*****").trigger("checkRecipient").unbind(".remask");
+									if (/^NHZ\-[A-Z0-9]{4}\-[A-Z0-9]{4}\-[A-Z0-9]{4}\-[A-Z0-9]{5}/i.test(newInput) || /^NHZ[A-Z0-9]{17}/i.test(newInput)) {
+										input.mask("NHZ-****-****-****-*****").trigger("checkRecipient").unbind(".remask");
 									}
 								}, 0);
 							});
@@ -225,16 +225,16 @@
 
 							var pasted = text_diff(oldInput, newInput);
 
-							if (/^NXT\-[0-9]{19,20}$/i.test(pasted)) {
+							if (/^NHZ\-[0-9]{19,20}$/i.test(pasted)) {
 								//old style accounts..
 								input.val("").trigger("oldRecipientPaste");
 							} else {
-								var match = /^NXT\-[A-Z0-9]{4}\-[A-Z0-9]{4}\-[A-Z0-9]{4}\-[A-Z0-9]{5}/i.exec(pasted);
+								var match = /^NHZ\-[A-Z0-9]{4}\-[A-Z0-9]{4}\-[A-Z0-9]{4}\-[A-Z0-9]{5}/i.exec(pasted);
 
 								if (match && match[0]) {
 									input.val(match[0]).trigger("checkRecipient");
 								} else {
-									match = /^NXT[A-Z0-9]{17}/i.exec(pasted);
+									match = /^NHZ[A-Z0-9]{17}/i.exec(pasted);
 									if (match && match[0]) {
 										input.val(pasted).trigger("checkRecipient");
 									} else {
@@ -268,8 +268,8 @@
 
 		var diff = second.substr(start, end - start);
 
-		if (/^NXT\-/i.test(second) && !/^NXT\-/i.test(diff)) {
-			diff = "NXT-" + diff;
+		if (/^NHZ\-/i.test(second) && !/^NHZ\-/i.test(diff)) {
+			diff = "NHZ-" + diff;
 		}
 
 		return diff;

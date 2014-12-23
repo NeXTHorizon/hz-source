@@ -13,7 +13,7 @@ var NRS = (function(NRS, $, undefined) {
 			var value = $(this).val();
 			var modal = $(this).closest(".modal");
 
-			if (value && value != "NXT-____-____-____-_____") {
+			if (value && value != "NHZ-____-____-____-_____") {
 				NRS.checkRecipient(value, modal);
 			} else {
 				modal.find(".account_info").hide();
@@ -41,7 +41,7 @@ var NRS = (function(NRS, $, undefined) {
 		if (account) {
 			var $inputField = $(this).find("input[name=recipient], input[name=account_id]").not("[type=hidden]");
 
-			if (!/NXT\-/i.test(account)) {
+			if (!/NHZ\-/i.test(account)) {
 				$inputField.addClass("noMask");
 			}
 
@@ -55,7 +55,7 @@ var NRS = (function(NRS, $, undefined) {
 
 		$("#send_money_fee").val(fee);
 
-		$(this).closest(".modal").find(".advanced_fee").html(NRS.formatAmount(NRS.convertToNQT(fee)) + " NXT");
+		$(this).closest(".modal").find(".advanced_fee").html(NRS.formatAmount(NRS.convertToNQT(fee)) + " NHZ");
 	});
 
 	//todo later: http://twitter.github.io/typeahead.js/
@@ -112,7 +112,7 @@ var NRS = (function(NRS, $, undefined) {
 				callback({
 					"type": "info",
 					"message": $.t("recipient_info", {
-						"nxt": NRS.formatAmount(response.unconfirmedBalanceNQT, false, true)
+						"nhz": NRS.formatAmount(response.unconfirmedBalanceNQT, false, true)
 					}),
 					"account": response
 				});
@@ -121,7 +121,7 @@ var NRS = (function(NRS, $, undefined) {
 					if (response.errorCode == 4) {
 						callback({
 							"type": "danger",
-							"message": $.t("recipient_malformed") + (!/^(NXT\-)/i.test(accountId) ? " " + $.t("recipient_alias_suggestion") : ""),
+							"message": $.t("recipient_malformed") + (!/^(NHZ\-)/i.test(accountId) ? " " + $.t("recipient_alias_suggestion") : ""),
 							"account": null
 						});
 					} else if (response.errorCode == 5) {
@@ -142,7 +142,7 @@ var NRS = (function(NRS, $, undefined) {
 					callback({
 						"type": "warning",
 						"message": $.t("recipient_no_public_key" + (NRS.PKAnnouncementBlockPassed ? "_pka" : ""), {
-							"nxt": NRS.formatAmount(response.unconfirmedBalanceNQT, false, true)
+							"nhz": NRS.formatAmount(response.unconfirmedBalanceNQT, false, true)
 						}),
 						"account": response,
 						"noPublicKey": true
@@ -170,8 +170,8 @@ var NRS = (function(NRS, $, undefined) {
 		account = $.trim(account);
 
 		//solomon reed. Btw, this regex can be shortened..
-		if (/^(NXT\-)?[A-Z0-9]+\-[A-Z0-9]+\-[A-Z0-9]+\-[A-Z0-9]+/i.test(account)) {
-			var address = new NxtAddress();
+		if (/^(NHZ\-)?[A-Z0-9]+\-[A-Z0-9]+\-[A-Z0-9]+\-[A-Z0-9]+/i.test(account)) {
+			var address = new NhzAddress();
 
 			if (address.set(account)) {
 				NRS.getAccountError(account, function(response) {
@@ -270,7 +270,7 @@ var NRS = (function(NRS, $, undefined) {
 					var alias = String(response.aliasURI);
 					var timestamp = response.timestamp;
 
-					var regex_1 = /acct:(.*)@nxt/;
+					var regex_1 = /acct:(.*)@nhz/;
 					var regex_2 = /nacc:(.*)/;
 
 					var match = alias.match(regex_1);
@@ -283,7 +283,7 @@ var NRS = (function(NRS, $, undefined) {
 						match[1] = String(match[1]).toUpperCase();
 
 						if (/^\d+$/.test(match[1])) {
-							var address = new NxtAddress();
+							var address = new NhzAddress();
 
 							if (address.set(match[1])) {
 								match[1] = address.toString();

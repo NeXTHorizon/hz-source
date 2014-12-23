@@ -213,7 +213,7 @@ img {
 .bg-light-blue {
   background-color: #3c8dbc !important;
 }
-.bg-nxt-green {
+.bg-nhz-green {
   background-color: #009540 !important;
 }
 .bg-green {
@@ -259,7 +259,7 @@ img {
 .text-light-blue {
   color: #3c8dbc !important;
 }
-.text-nxt-green {
+.text-nhz-green {
   color: #009540 !important;
 }
 .text-green {
@@ -2107,7 +2107,7 @@ body > .header .logo .icon {
 /* ADD THIS CLASS TO THE <HTML> TAG */
 .lockscreen {
   background-color: #9DC7A9; /*WESLEY */
-    background: url(../img/nxt-background.jpg) repeat center center fixed;
+    background: url(../img/nhz-background.jpg) repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;

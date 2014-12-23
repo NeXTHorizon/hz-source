@@ -209,7 +209,7 @@ var NRS = (function(NRS, $, undefined) {
 		$form.find(":input").each(function() {
 			if ($(this).is(":invalid")) {
 				var error = "";
-				var name = String($(this).attr("name")).replace("NXT", "").replace("NQT", "").capitalize();
+				var name = String($(this).attr("name")).replace("NHZ", "").replace("NQT", "").capitalize();
 				var value = $(this).val();
 
 				if ($(this).hasAttr("max")) {
@@ -313,9 +313,9 @@ var NRS = (function(NRS, $, undefined) {
 				}
 				NRS.unlockForm($modal, $btn);
 				return;
-			} else if (!/^NXT\-[A-Z0-9]+\-[A-Z0-9]+\-[A-Z0-9]+\-[A-Z0-9]+/i.test(data.recipient)) {
+			} else if (!/^NHZ\-[A-Z0-9]+\-[A-Z0-9]+\-[A-Z0-9]+\-[A-Z0-9]+/i.test(data.recipient)) {
 				var convertedAccountId = $modal.find("input[name=converted_account_id]").val();
-				if (!convertedAccountId || (!/^\d+$/.test(convertedAccountId) && !/^NXT\-[A-Z0-9]+\-[A-Z0-9]+\-[A-Z0-9]+\-[A-Z0-9]+/i.test(convertedAccountId))) {
+				if (!convertedAccountId || (!/^\d+$/.test(convertedAccountId) && !/^NHZ\-[A-Z0-9]+\-[A-Z0-9]+\-[A-Z0-9]+\-[A-Z0-9]+/i.test(convertedAccountId))) {
 					$form.find(".error_message").html($.t("error_account_id")).show();
 					if (formErrorFunction) {
 						formErrorFunction(false, data);
@@ -455,11 +455,11 @@ var NRS = (function(NRS, $, undefined) {
 		}
 
 		if (!NRS.showedFormWarning) {
-			if ("amountNXT" in data && NRS.settings["amount_warning"] && NRS.settings["amount_warning"] != "0") {
-				if (new BigInteger(NRS.convertToNQT(data.amountNXT)).compareTo(new BigInteger(NRS.settings["amount_warning"])) > 0) {
+			if ("amountNHZ" in data && NRS.settings["amount_warning"] && NRS.settings["amount_warning"] != "0") {
+				if (new BigInteger(NRS.convertToNQT(data.amountNHZ)).compareTo(new BigInteger(NRS.settings["amount_warning"])) > 0) {
 					NRS.showedFormWarning = true;
 					$form.find(".error_message").html($.t("error_max_amount_warning", {
-						"nxt": NRS.formatAmount(NRS.settings["amount_warning"])
+						"nhz": NRS.formatAmount(NRS.settings["amount_warning"])
 					})).show();
 					if (formErrorFunction) {
 						formErrorFunction(false, data);
@@ -469,11 +469,11 @@ var NRS = (function(NRS, $, undefined) {
 				}
 			}
 
-			if ("feeNXT" in data && NRS.settings["fee_warning"] && NRS.settings["fee_warning"] != "0") {
-				if (new BigInteger(NRS.convertToNQT(data.feeNXT)).compareTo(new BigInteger(NRS.settings["fee_warning"])) > 0) {
+			if ("feeNHZ" in data && NRS.settings["fee_warning"] && NRS.settings["fee_warning"] != "0") {
+				if (new BigInteger(NRS.convertToNQT(data.feeNHZ)).compareTo(new BigInteger(NRS.settings["fee_warning"])) > 0) {
 					NRS.showedFormWarning = true;
 					$form.find(".error_message").html($.t("error_max_fee_warning", {
-						"nxt": NRS.formatAmount(NRS.settings["fee_warning"])
+						"nhz": NRS.formatAmount(NRS.settings["fee_warning"])
 					})).show();
 					if (formErrorFunction) {
 						formErrorFunction(false, data);
