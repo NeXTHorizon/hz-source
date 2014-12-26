@@ -22,7 +22,7 @@ import java.net.InetAddress;
 
 public final class Nhz {
 
-    public static final String VERSION = "NHZ V3.2";
+    public static final String VERSION = "NHZ V3.8";
     public static final String APPLICATION = "NRS";
 
     private static final Properties defaultProperties = new Properties();
