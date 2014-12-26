@@ -65,9 +65,9 @@ public final class Constants {
     public static final int REFERENCED_TRANSACTION_FULL_HASH_BLOCK = (isTestnet ? 1 : 75000);
     public static final int REFERENCED_TRANSACTION_FULL_HASH_BLOCK_TIMESTAMP = Integer.MAX_VALUE;
     public static final int VOTING_SYSTEM_BLOCK = Integer.MAX_VALUE;
-    public static final int TRANSACTIONS_VERSION_1_BLOCK = Integer.MAX_VALUE; //TODO
+    public static final int TRANSACTIONS_VERSION_1_BLOCK =  (isTestnet ? 2650 : Integer.MAX_VALUE); //TODO
     public static final int DIGITAL_GOODS_STORE_BLOCK = Integer.MAX_VALUE; // dgs transactions are disabled
-    public static final int PUBLIC_KEY_ANNOUNCEMENT_BLOCK = Integer.MAX_VALUE; //TODO
+    public static final int PUBLIC_KEY_ANNOUNCEMENT_BLOCK = (isTestnet ? 2650 : Integer.MAX_VALUE); //TODO
 
     static final long UNCONFIRMED_POOL_DEPOSIT_NQT = (isTestnet ? 50 : 100) * ONE_NHZ;
 
