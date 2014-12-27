@@ -27,8 +27,8 @@ var NRS = (function(NRS, $, undefined) {
 	NRS.server = "";
 	NRS.state = {};
 	NRS.blocks = [];
-	NRS.genesis = "12351629106086518949"; //TODO testnet
-	NRS.genesisRS = "NHZ-MA77-9DSU-SRDA-CFGUQ"; //TODO testnet
+	//NRS.genesis = "12351629106086518949"; //TODO testnet
+	//NRS.genesisRS = "NHZ-MA77-9DSU-SRDA-CFGUQ"; //TODO testnet
 	
 	NRS.account = "";
 	NRS.accountRS = ""
@@ -75,9 +75,13 @@ var NRS = (function(NRS, $, undefined) {
 
 	NRS.init = function() {
 		if (window.location.port && window.location.port != "6976") {
-			$(".testnet_only").hide();
+			NRS.genesis = "13675701959091502344"; //nhz mainnet
+			NRS.genesisRS = "NHZ-8HAA-H88W-UVT5-DUGLV"; //nhz mainnet
+			$(".testnet_only").hide();			
 		} else {
 			NRS.isTestNet = true;
+			NRS.genesis = "12351629106086518949"; 
+			NRS.genesisRS = "NHZ-MA77-9DSU-SRDA-CFGUQ"; 
 			$(".testnet_only, #testnet_login, #testnet_warning").show();
 		}
 

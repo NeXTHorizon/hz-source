@@ -45,7 +45,7 @@ public final class Constants {
     public static final int MAX_HUB_ANNOUNCEMENT_URI_LENGTH = 1000;
     public static final long MIN_HUB_EFFECTIVE_BALANCE = 100000;
 
-    public static final boolean isTestnet = true;
+    public static final boolean isTestnet = Nhz.getBooleanProperty("nhz.isTestnet");
     public static final boolean isOffline = Nhz.getBooleanProperty("nhz.isOffline");
     public static final boolean dontForge = Nhz.getBooleanProperty("nhz.dontForge");
 
