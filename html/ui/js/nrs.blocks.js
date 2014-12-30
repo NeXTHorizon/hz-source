@@ -121,17 +121,17 @@ var NRS = (function(NRS, $, undefined) {
 			NRS.lastBlockHeight = blockHeight;
 		}
 
-		if (!NRS.dgsBlockPassed) { //TODO TRANSACTIONS_VERSION_1_BLOCK
-			if ((!NRS.isTestNet && (NRS.lastBlockHeight >= 2130000 || (NRS.downloadingBlockchain && NRS.state.lastBlockchainFeederHeight >= 2130000))) || (NRS.isTestNet && NRS.lastBlockHeight >= 2650)) {
+		if (!NRS.dgsBlockPassed) { //TODO set TRANSACTIONS_VERSION_1_BLOCK for mainnet
+			if ((!NRS.isTestNet && (NRS.lastBlockHeight >= 2130000 || (NRS.downloadingBlockchain && NRS.state.lastBlockchainFeederHeight >= 2130000))) || (NRS.isTestNet && NRS.lastBlockHeight >= 580)) {
 				NRS.dgsBlockPassed = true;
 				$(".dgs_block").not(".advanced, .optional_message, .optional_note").show();
 			}
 		}
-		if (!NRS.PKAnnouncementBlockPassed) {
-			if ((!NRS.isTestNet && (NRS.lastBlockHeight >= 2150000 || (NRS.downloadingBlockchain && NRS.state.lastBlockchainFeederHeight >= 2150000))) || (NRS.isTestNet && NRS.lastBlockHeight >= 2650)) {
-				NRS.PKAnnouncementBlockPassed = true;
-			}
-		}
+//		if (!NRS.PKAnnouncementBlockPassed) {
+//			if ((!NRS.isTestNet && (NRS.lastBlockHeight >= 2150000 || (NRS.downloadingBlockchain && NRS.state.lastBlockchainFeederHeight >= 2150000))) || (NRS.isTestNet && NRS.lastBlockHeight >= 580)) {
+//				NRS.PKAnnouncementBlockPassed = true;
+//			}
+//		}
 	}
 
 	//we always update the dashboard page..
