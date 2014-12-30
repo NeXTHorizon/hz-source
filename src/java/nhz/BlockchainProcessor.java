@@ -1,6 +1,7 @@
 package nhz;
 
 import nhz.peer.Peer;
+import nhz.util.Convert;
 import nhz.util.Observable;
 import org.json.simple.JSONObject;
 
@@ -38,7 +39,7 @@ public interface BlockchainProcessor extends Observable<Block,BlockchainProcesso
         private final TransactionImpl transaction;
 
         TransactionNotAcceptedException(String message, TransactionImpl transaction) {
-            super(message  + " transaction: " + transaction.getJSONObject().toJSONString());
+            super(message  + " transaction: " + transaction.getJSONObject().toJSONString() + "\ntx bytes: "+ Convert.toHexString(transaction.getBytes()));
             this.transaction = transaction;
         }
 

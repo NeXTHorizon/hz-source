@@ -557,7 +557,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 try {
 
                     for (TransactionImpl transaction : block.getTransactions()) {
-
+                    	 Logger.logDebugMessage("Transaction Id"+transaction.getStringId()+"\ntx json: "+  transaction.getJSONObject().toJSONString()  +"\ntx bytes: "+ Convert.toHexString(transaction.getBytes()));
                         // cfb: Block 303 contains a transaction which expired before the block timestamp
                         if (transaction.getTimestamp() > curTime + 15 || transaction.getTimestamp() > block.getTimestamp() + 15
                                 || (transaction.getExpiration() < block.getTimestamp() && previousLastBlock.getHeight() != 303)) {
