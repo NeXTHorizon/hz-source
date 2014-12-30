@@ -28,7 +28,7 @@ var NRS = (function(NRS, $, undefined) {
 			status = $.t("refunded");
 			modal = "#dgs_view_refund_modal";
 		} else if (!purchase.goodsData) {
-			var currentTime = (new Date() - Date.UTC(2014, 2, 22, 22, 22, 0, 0)) / 1000;
+			var currentTime = (new Date() - Date.UTC(2014, 2, 22, 22, 22, 22, 0)) / 1000;
 			if (purchase.deliveryDeadlineTimestamp < currentTime) {
 				status = $.t("not_delivered_in_time");
 			} else {
