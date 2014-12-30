@@ -4,6 +4,7 @@ import nhz.Account;
 import nhz.Appendix;
 import nhz.Attachment;
 import nhz.Constants;
+import nhz.Genesis;
 import nhz.Nhz;
 import nhz.NhzException;
 import nhz.Transaction;
@@ -46,7 +47,11 @@ abstract class CreateTransaction extends APIServlet.APIRequestHandler {
 
     final JSONStreamAware createTransaction(HttpServletRequest req, Account senderAccount, Attachment attachment)
         throws NhzException {
-        return createTransaction(req, senderAccount, null, 0, attachment);
+    	if (Nhz.getBlockchain().getHeight()>=Constants.TRANSACTIONS_VERSION_1_BLOCK) {
+    		return createTransaction(req, senderAccount, null, 0, attachment);
+    	} else { //We need the CREATOR_ID as recipient until hard fork
+    		return createTransaction(req, senderAccount, Genesis.CREATOR_ID, 0, attachment);
+    	}
     }
 
     final JSONStreamAware createTransaction(HttpServletRequest req, Account senderAccount, Long recipientId, long amountNQT)

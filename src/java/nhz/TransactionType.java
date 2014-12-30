@@ -416,7 +416,10 @@ public abstract class TransactionType {
 
             @Override
             public boolean hasRecipient() {
-                return false;
+            	if (Nhz.getBlockchain().getLastBlock().getHeight() < Constants.TRANSACTIONS_VERSION_1_BLOCK) {
+            		return true; //We need the CREATOR_ID as recipient until hard fork
+            	} 
+           		return false;
             }
 
         };
@@ -781,7 +784,10 @@ public abstract class TransactionType {
 
             @Override
             public boolean hasRecipient() {
-                return false;
+            	if (Nhz.getBlockchain().getLastBlock().getHeight() < Constants.TRANSACTIONS_VERSION_1_BLOCK) { 
+            		return true; //We need the CREATOR_ID as recipient until hard fork
+            	}
+            	return false;
             }
 
         };
@@ -863,6 +869,9 @@ public abstract class TransactionType {
 
             @Override
             public boolean hasRecipient() {
+            	if (Nhz.getBlockchain().getLastBlock().getHeight() < Constants.TRANSACTIONS_VERSION_1_BLOCK) { 
+            		return true; //We need the CREATOR_ID as recipient until hard fork
+            	}
                 return false;
             }
 
@@ -966,6 +975,9 @@ public abstract class TransactionType {
 
             @Override
             final public boolean hasRecipient() {
+            	if (Nhz.getBlockchain().getLastBlock().getHeight() < Constants.TRANSACTIONS_VERSION_1_BLOCK) { 
+            		return true; //We need the CREATOR_ID as recipient until hard fork
+            	}
                 return false;
             }
 
@@ -1111,6 +1123,9 @@ public abstract class TransactionType {
 
             @Override
             public boolean hasRecipient() {
+            	if (Nhz.getBlockchain().getLastBlock().getHeight() < Constants.TRANSACTIONS_VERSION_1_BLOCK) { 
+            		return true; //We need the CREATOR_ID as recipient until hard fork
+            	}
                 return false;
             }
 
