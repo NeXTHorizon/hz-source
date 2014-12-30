@@ -193,6 +193,7 @@ final class TransactionProcessorImpl implements TransactionProcessor {
 
     @Override
     public void broadcast(Transaction transaction) throws NhzException.ValidationException {
+    	Logger.logDebugMessage("Transaction "+transaction.getStringId()+" tx json: "+  transaction.getJSONObject().toJSONString()  +" tx bytes: "+ Convert.toHexString(transaction.getBytes()));
         if (! transaction.verifySignature()) {
             throw new NhzException.NotValidException("Transaction signature verification failed");
         }
