@@ -148,7 +148,7 @@ abstract class CreateTransaction extends APIServlet.APIRequestHandler {
         try {
             Transaction.Builder builder = Nhz.getTransactionProcessor().newTransactionBuilder(publicKey, amountNQT, feeNQT,
                     deadline, attachment).referencedTransactionFullHash(referencedTransactionFullHash);
-            if (attachment.getTransactionType().hasRecipient()) {
+            if (attachment.getTransactionType().hasRecipient() || (recipientId != null && recipientId.equals(Genesis.CREATOR_ID))) {
                 builder.recipientId(recipientId);
             }
             if (encryptedMessage != null) {

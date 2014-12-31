@@ -3,6 +3,8 @@ package nhz.peer;
 import nhz.Nhz;
 import nhz.NhzException;
 import nhz.util.JSON;
+import nhz.util.Logger;
+
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
@@ -19,7 +21,7 @@ final class ProcessTransactions extends PeerServlet.PeerRequestHandler {
         try {
             Nhz.getTransactionProcessor().processPeerTransactions(request);
         } catch (RuntimeException | NhzException.ValidationException e) {
-            //Logger.logDebugMessage("Failed to parse peer transactions: " + request.toJSONString());
+            Logger.logDebugMessage("Failed to parse peer transactions: " + request.toJSONString());
             peer.blacklist(e);
         }
 
