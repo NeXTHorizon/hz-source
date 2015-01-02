@@ -540,7 +540,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                     throw new BlockNotAcceptedException("Duplicate block or invalid id");
                 }
                 if (! block.verifyGenerationSignature()) {
-                    throw new BlockNotAcceptedException("Generation signature verification failed");
+                    throw new BlockNotAcceptedException("Generation signature verification failed. Peer: " + lastBlockchainFeeder.getPeerAddress() +" BlockID: "+ block.getId());
                 }
                 if (! block.verifyBlockSignature()) {
                     throw new BlockNotAcceptedException("Block signature verification failed");
