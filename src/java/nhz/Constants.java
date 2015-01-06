@@ -67,7 +67,7 @@ public final class Constants {
     public static final int VOTING_SYSTEM_BLOCK = Integer.MAX_VALUE;
     public static final int TRANSACTIONS_VERSION_1_BLOCK =  (isTestnet ? 580 : Integer.MAX_VALUE); //TODO
     public static final int DIGITAL_GOODS_STORE_BLOCK = Integer.MAX_VALUE; // dgs transactions are disabled
-    public static final int PUBLIC_KEY_ANNOUNCEMENT_BLOCK = Integer.MAX_VALUE; //TODO
+    public static final int PUBLIC_KEY_ANNOUNCEMENT_BLOCK = Integer.MAX_VALUE; // never force pk
 
     static final long UNCONFIRMED_POOL_DEPOSIT_NQT = (isTestnet ? 50 : 100) * ONE_NHZ;
 
