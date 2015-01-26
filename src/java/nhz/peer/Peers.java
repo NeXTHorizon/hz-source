@@ -75,6 +75,8 @@ public final class Peers {
     private static final String myHallmark;
     private static final boolean shareMyAddress;
     private static final int maxNumberOfConnectedPublicPeers;
+    private static final int maxNumberOfKnownPeers;
+    private static final int minNumberOfKnownPeers;
     private static final boolean enableHallmarkProtection;
     private static final int pushThreshold;
     private static final int pullThreshold;
@@ -171,6 +173,8 @@ public final class Peers {
         }
 
         maxNumberOfConnectedPublicPeers = Nhz.getIntProperty("nhz.maxNumberOfConnectedPublicPeers");
+        maxNumberOfKnownPeers = Nhz.getIntProperty("nxt.maxNumberOfKnownPeers");
+        minNumberOfKnownPeers = Nhz.getIntProperty("nxt.minNumberOfKnownPeers");
         connectTimeout = Nhz.getIntProperty("nhz.connectTimeout");
         readTimeout = Nhz.getIntProperty("nhz.readTimeout");
         enableHallmarkProtection = Nhz.getBooleanProperty("nhz.enableHallmarkProtection");
@@ -336,7 +340,18 @@ public final class Peers {
                             peer.connect();
                         }
                     }
-
+                    if (hasTooManyKnownPeers() && getNumberOfConnectedPublicPeers()>=(Peers.maxNumberOfConnectedPublicPeers)) {
+                    	Logger.logDebugMessage("Peer pool size is " + peers.size() + ", removing known peers last updated more than a week ago");
+                    	for (PeerImpl peer : peers.values()) {
+                    		if (now - peer.getLastUpdated() > 7 * 24 * 3600) {
+                    			peer.remove();
+                    		}
+                    		if (hasTooFewKnownPeers()) {
+                    			break;
+                    		}
+                    	}
+                    	Logger.logDebugMessage("Peer pool size is " + peers.size());
+                    }
                 } catch (Exception e) {
                     Logger.logDebugMessage("Error connecting to peer", e);
                 }
@@ -374,7 +389,9 @@ public final class Peers {
 
             try {
                 try {
-
+                	if (hasTooManyKnownPeers()) {
+                		return;
+                	}
                     Peer peer = getAnyPeer(Peer.State.CONNECTED, true);
                     if (peer == null) {
                         return;
@@ -581,11 +598,13 @@ public final class Peers {
             Logger.logDebugMessage("Peer " + peerAddress + " on testnet is not using port " + TESTNET_PEER_PORT + ", ignoring");
             return null;
         }
-        peers.put(peerAddress, peer);
-        if (announcedAddress != null) {
-            updateAddress(peer);
+        if (!hasTooManyKnownPeers()) {
+            peers.put(peerAddress, peer);
+            if (announcedAddress != null) {
+                updateAddress(peer);
+            }
+            listeners.notify(peer, Event.NEW_PEER);
         }
-        listeners.notify(peer, Event.NEW_PEER);
         return peer;
     }
 
@@ -606,6 +625,7 @@ public final class Peers {
                 Peers.notifyListeners(oldPeer, Peers.Event.REMOVE);
             }
         }
+        peers.put(peer.getPeerAddress(), peer);
     }
 
     public static void sendToSomePeers(Block block) {
@@ -742,6 +762,14 @@ public final class Peers {
         return numberOfConnectedPeers;
     }
 
+    static boolean hasTooFewKnownPeers() {
+    	return peers.size() < Peers.minNumberOfKnownPeers;
+    }
+    	
+    static boolean hasTooManyKnownPeers() {
+    	return peers.size() > Peers.maxNumberOfKnownPeers;
+    }
+    
     private Peers() {} // never
 
 }
