@@ -66,6 +66,8 @@ public final class Peers {
     static final int readTimeout;
     static final int blacklistingPeriod;
     static final boolean getMorePeers;
+    static final int MAX_REQUEST_SIZE = 1024 * 1024;
+    static final int MAX_RESPONSE_SIZE = 1024 * 1024;
 
     static final int DEFAULT_PEER_PORT = 7774;
     static final int TESTNET_PEER_PORT = 6974;
@@ -396,7 +398,7 @@ public final class Peers {
                     if (peer == null) {
                         return;
                     }
-                    JSONObject response = peer.send(getPeersRequest);
+                    JSONObject response = peer.send(getPeersRequest, 10 * 1024 * 1024);
                     if (response == null) {
                         return;
                     }
@@ -427,7 +429,7 @@ public final class Peers {
                         JSONObject request = new JSONObject();
                         request.put("requestType", "addPeers");
                         request.put("peers", myPeers);
-                        peer.send(JSON.prepareRequest(request));
+                        peer.send(JSON.prepareRequest(request), 0);
                     }
 
                 } catch (Exception e) {

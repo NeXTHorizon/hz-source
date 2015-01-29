@@ -11,6 +11,7 @@ import nhz.util.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 import org.json.simple.JSONValue;
+import org.json.simple.parser.ParseException;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -205,7 +206,7 @@ final class PeerImpl implements Peer {
             // prevents erroneous blacklisting during loading of blockchain from scratch
             return;
         }
-        if (! isBlacklisted() && ! (cause instanceof IOException)) {
+        if (! isBlacklisted() && ! (cause instanceof IOException || cause instanceof ParseException)) {
             Logger.logDebugMessage("Blacklisting " + peerAddress + " because of: " + cause.toString());
         }
         blacklist();
@@ -254,8 +255,13 @@ final class PeerImpl implements Peer {
 
     @Override
     public JSONObject send(final JSONStreamAware request) {
-
-        JSONObject response;
+    	return send(request, Peers.MAX_RESPONSE_SIZE);
+    }
+    
+    @Override
+    public JSONObject send(final JSONStreamAware request, int maxResponseSize) {
+    	
+        JSONObject response = null;
 
         String log = null;
         boolean showLog = false;
@@ -286,33 +292,35 @@ final class PeerImpl implements Peer {
             updateUploadedVolume(cos.getCount());
 
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                CountingInputStream cis = new CountingInputStream(connection.getInputStream());
-                InputStream responseStream = cis;
-                if ("gzip".equals(connection.getHeaderField("Content-Encoding"))) {
-                    responseStream = new GZIPInputStream(cis);
-                }
-                if ((Peers.communicationLoggingMask & Peers.LOGGING_MASK_200_RESPONSES) != 0) {
-                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    byte[] buffer = new byte[1024];
-                    int numberOfBytes;
-                    try (InputStream inputStream = responseStream) {
-                        while ((numberOfBytes = inputStream.read(buffer, 0, buffer.length)) > 0) {
-                            byteArrayOutputStream.write(buffer, 0, numberOfBytes);
-                        }
-                    }
-                    String responseValue = byteArrayOutputStream.toString("UTF-8");
-                    if (responseValue.length() > 0 && responseStream instanceof GZIPInputStream) {
-                        log += String.format("[length: %d, compression ratio: %.2f]", cis.getCount(), (double)cis.getCount() / (double)responseValue.length());
-                    }
-                    log += " >>> " + responseValue;
-                    showLog = true;
-                    response = (JSONObject) JSONValue.parse(responseValue);
-                } else {
-                    try (Reader reader = new BufferedReader(new InputStreamReader(responseStream, "UTF-8"))) {
-                        response = (JSONObject)JSONValue.parse(reader);
-                    }
-                }
-                updateDownloadedVolume(cis.getCount());
+            	if (maxResponseSize > 0) {
+		            CountingInputStream cis = new CountingInputStream(connection.getInputStream(), maxResponseSize);
+		            InputStream responseStream = cis;
+		            if ("gzip".equals(connection.getHeaderField("Content-Encoding"))) {
+		                responseStream = new GZIPInputStream(cis);
+		            }
+		            if ((Peers.communicationLoggingMask & Peers.LOGGING_MASK_200_RESPONSES) != 0) {
+		                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		                byte[] buffer = new byte[1024];
+		                int numberOfBytes;
+		                try (InputStream inputStream = responseStream) {
+		                    while ((numberOfBytes = inputStream.read(buffer, 0, buffer.length)) > 0) {
+		                        byteArrayOutputStream.write(buffer, 0, numberOfBytes);
+		                    }
+		                }
+		                String responseValue = byteArrayOutputStream.toString("UTF-8");
+		                if (responseValue.length() > 0 && responseStream instanceof GZIPInputStream) {
+		                    log += String.format("[length: %d, compression ratio: %.2f]", cis.getCount(), (double) cis.getCount() / (double) responseValue.length());
+		                }
+		                log += " >>> " + responseValue;
+		                showLog = true;
+		                response = (JSONObject) JSONValue.parse(responseValue);
+		            } else {
+		                try (Reader reader = new BufferedReader(new InputStreamReader(responseStream, "UTF-8"))) {
+		                    response = (JSONObject) JSONValue.parseWithException(reader);
+		                }
+		            }
+		            updateDownloadedVolume(cis.getCount());
+            	}
             } else {
 
                 if ((Peers.communicationLoggingMask & Peers.LOGGING_MASK_NON200_RESPONSES) != 0) {
@@ -328,7 +336,9 @@ final class PeerImpl implements Peer {
 
             }
 
-        } catch (RuntimeException|IOException e) {
+        } catch (RuntimeException|ParseException e) {
+            blacklist(e);
+        } catch (IOException e) {
             if (! (e instanceof UnknownHostException || e instanceof SocketTimeoutException || e instanceof SocketException)) {
                 Logger.logDebugMessage("Error sending JSON request", e);
             }
@@ -339,7 +349,6 @@ final class PeerImpl implements Peer {
             if (state == State.CONNECTED) {
                 setState(State.DISCONNECTED);
             }
-            response = null;
         }
 
         if (showLog) {
