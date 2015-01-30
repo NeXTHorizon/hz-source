@@ -121,8 +121,8 @@ var NRS = (function(NRS, $, undefined) {
 			NRS.lastBlockHeight = blockHeight;
 		}
 
-		if (!NRS.dgsBlockPassed) { //TODO set TRANSACTIONS_VERSION_1_BLOCK for mainnet
-			if ((!NRS.isTestNet && (NRS.lastBlockHeight >= 2130000 || (NRS.downloadingBlockchain && NRS.state.lastBlockchainFeederHeight >= 2130000))) || (NRS.isTestNet && NRS.lastBlockHeight >= 580)) {
+		if (!NRS.dgsBlockPassed) {
+			if ((!NRS.isTestNet && (NRS.lastBlockHeight >= 275000 || (NRS.downloadingBlockchain && NRS.state.lastBlockchainFeederHeight >= 275000))) || (NRS.isTestNet && NRS.lastBlockHeight >= 580)) {
 				NRS.dgsBlockPassed = true;
 				$(".dgs_block").not(".advanced, .optional_message, .optional_note").show();
 			}

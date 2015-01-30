@@ -22,7 +22,7 @@ var NRS = (function(NRS, $, undefined) {
 			$(".rss_news").empty().addClass("data-loading").html("<img src='img/loading_indicator.gif' width='32' height='32' />");
 
 			var settings = {
-				"limit": 5,
+				"limit": 10, 
 				"layoutTemplate": "<div class='list-group'>{entries}</div>",
 				"entryTemplate": "<a href='{url}' target='_blank' class='list-group-item'><h4 class='list-group-item-heading'>{title}</h4><p class='list-group-item-text'>{shortBodyPlain}</p></a>"
 			};
@@ -42,13 +42,13 @@ var NRS = (function(NRS, $, undefined) {
 				}
 			};
 
-			$("#nhzforum_news").rss("http://forum.nhzcrypto.org/index.php?type=rss;action=.xml;sa=news;", settings, NRS.newsLoaded);
+			$("#nhzforum_news").rss("https://horizonplatform.io/feed/", settings, NRS.newsLoaded);
 			// $("#nhzcrypto_news").rss("http://info.nhzcrypto.org/feed/", settings, NRS.newsLoaded);
 			$("#reddit_news").rss("http://www.reddit.com/r/NeXTHorizon/.rss", settingsReddit, NRS.newsLoaded);
 			// $("#nhzcoin_blogspot_news").rss("http://nhzcoin.blogspot.com/feeds/posts/default", settings, NRS.newsLoaded);
 			// $("#nextcoin_forums_news").rss("https://nextcoin.org/index.php?type=rss;action=.xml;sa=news;", settings, NRS.newsLoaded);
 			// $("#nhzer_news").rss("http://nhzer.org/feed/", settings, NRS.newsLoaded);
-			// $("#nhzcommunity_news").rss("http://www.nhzcommunity.org/rss.xml", settings, NRS.newsLoaded);
+			// $("#nhzcommunity_news").rss("http://www.nhzcommunity.org/rss.xml", settings, NRS.newsLoaded); 
 		}
 
 		NRS.pageLoaded();
