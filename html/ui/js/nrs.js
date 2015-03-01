@@ -74,7 +74,7 @@ var NRS = (function(NRS, $, undefined) {
 	var isScanning = false;
 
 	NRS.init = function() {
-		if (window.location.port && window.location.port != "6976") {
+		if (window.location.port != "6976") {
 			NRS.genesis = "13675701959091502344"; //nhz mainnet
 			NRS.genesisRS = "NHZ-8HAA-H88W-UVT5-DUGLV"; //nhz mainnet
 			$(".testnet_only").hide();			
