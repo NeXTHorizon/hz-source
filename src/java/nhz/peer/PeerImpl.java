@@ -391,7 +391,8 @@ final class PeerImpl implements Peer {
                 setAnnouncedAddress(peerAddress);
                 Logger.logDebugMessage("Connected to peer without announced address, setting to " + peerAddress);
             }
-            if (analyzeHallmark(announcedAddress, (String)response.get("hallmark")) && version!=null && version.startsWith("NHZ")) {
+            if (analyzeHallmark(announcedAddress, (String)response.get("hallmark")) && version!=null 
+            		&& version.startsWith("NHZ") && ! version.startsWith("NHZ V3.2")) {
                 setState(State.CONNECTED);
                 Peers.updateAddress(this);
             } else {
