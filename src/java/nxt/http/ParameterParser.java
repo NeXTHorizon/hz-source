@@ -1,20 +1,20 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Account;
-import nhz.Alias;
-import nhz.Asset;
-import nhz.Constants;
-import nhz.DigitalGoodsStore;
-import nhz.Nhz;
-import nhz.crypto.Crypto;
-import nhz.crypto.EncryptedData;
-import nhz.util.Convert;
+import nxt.Account;
+import nxt.Alias;
+import nxt.Asset;
+import nxt.Constants;
+import nxt.DigitalGoodsStore;
+import nxt.Nxt;
+import nxt.crypto.Crypto;
+import nxt.crypto.EncryptedData;
+import nxt.util.Convert;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
-import static nhz.http.JSONResponses.*;
+import static nxt.http.JSONResponses.*;
 
 final class ParameterParser {
 
@@ -397,7 +397,7 @@ final class ParameterParser {
         if (numberOfConfirmationsValue != null) {
             try {
                 int numberOfConfirmations = Integer.parseInt(numberOfConfirmationsValue);
-                if (numberOfConfirmations <= Nhz.getBlockchain().getHeight()) {
+                if (numberOfConfirmations <= Nxt.getBlockchain().getHeight()) {
                     return numberOfConfirmations;
                 }
                 throw new ParameterException(INCORRECT_NUMBER_OF_CONFIRMATIONS);

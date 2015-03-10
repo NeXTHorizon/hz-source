@@ -1,8 +1,8 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Account;
-import nhz.NhzException;
-import nhz.util.Convert;
+import nxt.Account;
+import nxt.NxtException;
+import nxt.util.Convert;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
@@ -20,7 +20,7 @@ public final class GetAccount extends APIServlet.APIRequestHandler {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
 
         Account account = ParameterParser.getAccount(req);
 

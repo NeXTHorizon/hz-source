@@ -1,4 +1,4 @@
-package nhz;
+package nxt;
 
 import java.math.BigInteger;
 

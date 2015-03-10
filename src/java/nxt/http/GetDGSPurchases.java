@@ -1,7 +1,7 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.DigitalGoodsStore;
-import nhz.NhzException;
+import nxt.DigitalGoodsStore;
+import nxt.NxtException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
@@ -18,7 +18,7 @@ public final class GetDGSPurchases extends APIServlet.APIRequestHandler {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
 
         Long sellerId = ParameterParser.getSellerId(req);
         Long buyerId = ParameterParser.getBuyerId(req);

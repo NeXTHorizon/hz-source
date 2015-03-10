@@ -1,6 +1,6 @@
-package nhz;
+package nxt;
 
-import nhz.util.Observable;
+import nxt.util.Observable;
 import org.json.simple.JSONObject;
 
 import java.util.Collection;
@@ -19,15 +19,15 @@ public interface TransactionProcessor extends Observable<List<Transaction>,Trans
 
     Transaction getUnconfirmedTransaction(Long transactionId);
 
-    void broadcast(Transaction transaction) throws NhzException.ValidationException;
+    void broadcast(Transaction transaction) throws NxtException.ValidationException;
 
-    void processPeerTransactions(JSONObject request) throws NhzException.ValidationException;
+    void processPeerTransactions(JSONObject request) throws NxtException.ValidationException;
 
-    Transaction parseTransaction(byte[] bytes) throws NhzException.ValidationException;
+    Transaction parseTransaction(byte[] bytes) throws NxtException.ValidationException;
 
-    Transaction parseTransaction(JSONObject json) throws NhzException.ValidationException;
+    Transaction parseTransaction(JSONObject json) throws NxtException.ValidationException;
 
     Transaction.Builder newTransactionBuilder(byte[] senderPublicKey, long amountNQT, long feeNQT, short deadline, Attachment attachment)
-            throws NhzException.ValidationException;
+            throws NxtException.ValidationException;
 
 }

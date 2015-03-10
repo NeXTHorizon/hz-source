@@ -1,9 +1,9 @@
-package nhz.peer;
+package nxt.peer;
 
-import nhz.Nhz;
-import nhz.NhzException;
-import nhz.util.Convert;
-import nhz.util.JSON;
+import nxt.Nxt;
+import nxt.NxtException;
+import nxt.util.Convert;
+import nxt.util.JSON;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
@@ -32,15 +32,15 @@ final class ProcessBlock extends PeerServlet.PeerRequestHandler {
 
         try {
 
-            if (! Nhz.getBlockchain().getLastBlock().getId().equals(Convert.parseUnsignedLong((String) request.get("previousBlock")))) {
+            if (! Nxt.getBlockchain().getLastBlock().getId().equals(Convert.parseUnsignedLong((String) request.get("previousBlock")))) {
                 // do this check first to avoid validation failures of future blocks and transactions
                 // when loading blockchain from scratch
                 return NOT_ACCEPTED;
             }
-            Nhz.getBlockchainProcessor().processPeerBlock(request);
+            Nxt.getBlockchainProcessor().processPeerBlock(request);
             return ACCEPTED;
 
-        } catch (NhzException|RuntimeException e) {
+        } catch (NxtException|RuntimeException e) {
             if (peer != null) {
                 peer.blacklist(e);
             }

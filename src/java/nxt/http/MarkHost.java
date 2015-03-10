@@ -1,19 +1,19 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Constants;
-import nhz.peer.Hallmark;
+import nxt.Constants;
+import nxt.peer.Hallmark;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.INCORRECT_DATE;
-import static nhz.http.JSONResponses.INCORRECT_HOST;
-import static nhz.http.JSONResponses.INCORRECT_WEIGHT;
-import static nhz.http.JSONResponses.MISSING_DATE;
-import static nhz.http.JSONResponses.MISSING_HOST;
-import static nhz.http.JSONResponses.MISSING_SECRET_PHRASE;
-import static nhz.http.JSONResponses.MISSING_WEIGHT;
+import static nxt.http.JSONResponses.INCORRECT_DATE;
+import static nxt.http.JSONResponses.INCORRECT_HOST;
+import static nxt.http.JSONResponses.INCORRECT_WEIGHT;
+import static nxt.http.JSONResponses.MISSING_DATE;
+import static nxt.http.JSONResponses.MISSING_HOST;
+import static nxt.http.JSONResponses.MISSING_SECRET_PHRASE;
+import static nxt.http.JSONResponses.MISSING_WEIGHT;
 
 
 public final class MarkHost extends APIServlet.APIRequestHandler {

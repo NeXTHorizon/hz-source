@@ -1,17 +1,17 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Account;
-import nhz.Attachment;
-import nhz.NhzException;
-import nhz.Poll;
-import nhz.util.Convert;
+import nxt.Account;
+import nxt.Attachment;
+import nxt.NxtException;
+import nxt.Poll;
+import nxt.util.Convert;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.INCORRECT_POLL;
-import static nhz.http.JSONResponses.INCORRECT_VOTE;
-import static nhz.http.JSONResponses.MISSING_POLL;
+import static nxt.http.JSONResponses.INCORRECT_POLL;
+import static nxt.http.JSONResponses.INCORRECT_VOTE;
+import static nxt.http.JSONResponses.MISSING_POLL;
 
 public final class CastVote extends CreateTransaction {
 
@@ -22,7 +22,7 @@ public final class CastVote extends CreateTransaction {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
 
         String pollValue = req.getParameter("poll");
 

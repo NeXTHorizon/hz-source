@@ -1,15 +1,15 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Asset;
-import nhz.util.Convert;
+import nxt.Asset;
+import nxt.util.Convert;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.INCORRECT_ASSET;
-import static nhz.http.JSONResponses.UNKNOWN_ASSET;
+import static nxt.http.JSONResponses.INCORRECT_ASSET;
+import static nxt.http.JSONResponses.UNKNOWN_ASSET;
 
 public final class GetAssets extends APIServlet.APIRequestHandler {
 

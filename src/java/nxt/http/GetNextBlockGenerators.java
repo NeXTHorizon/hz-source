@@ -1,10 +1,10 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Block;
-import nhz.Constants;
-import nhz.Hub;
-import nhz.Nhz;
-import nhz.util.Convert;
+import nxt.Block;
+import nxt.Constants;
+import nxt.Hub;
+import nxt.Nxt;
+import nxt.util.Convert;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
@@ -28,10 +28,10 @@ public final class GetNextBlockGenerators extends APIServlet.APIRequestHandler {
 
         String block = req.getParameter("block");
         if (block == null) {
-            curBlock = Nhz.getBlockchain().getLastBlock();
+            curBlock = Nxt.getBlockchain().getLastBlock();
         } else {
             try {
-                curBlock = Nhz.getBlockchain().getBlock(Convert.parseUnsignedLong(block));
+                curBlock = Nxt.getBlockchain().getBlock(Convert.parseUnsignedLong(block));
                 if (curBlock == null) {
                     return UNKNOWN_BLOCK;
                 }
@@ -41,7 +41,7 @@ public final class GetNextBlockGenerators extends APIServlet.APIRequestHandler {
         }
         */
 
-        Block curBlock = Nhz.getBlockchain().getLastBlock();
+        Block curBlock = Nxt.getBlockchain().getLastBlock();
         if (curBlock.getHeight() < Constants.TRANSPARENT_FORGING_BLOCK_7) {
             return JSONResponses.FEATURE_NOT_AVAILABLE;
         }

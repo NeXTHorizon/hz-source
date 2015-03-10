@@ -1,9 +1,9 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Constants;
-import nhz.Nhz;
-import nhz.util.Logger;
-import nhz.util.ThreadPool;
+import nxt.Constants;
+import nxt.Nxt;
+import nxt.util.Logger;
+import nxt.util.ThreadPool;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
@@ -36,21 +36,21 @@ public final class API {
     private static final Server apiServer;
 
     static {
-        List<String> allowedBotHostsList = Nhz.getStringListProperty("nhz.allowedBotHosts");
+        List<String> allowedBotHostsList = Nxt.getStringListProperty("nxt.allowedBotHosts");
         if (! allowedBotHostsList.contains("*")) {
             allowedBotHosts = Collections.unmodifiableSet(new HashSet<>(allowedBotHostsList));
         } else {
             allowedBotHosts = null;
         }
 
-        boolean enableAPIServer = Nhz.getBooleanProperty("nhz.enableAPIServer");
+        boolean enableAPIServer = Nxt.getBooleanProperty("nxt.enableAPIServer");
         if (enableAPIServer) {
-            final int port = Constants.isTestnet ? TESTNET_API_PORT : Nhz.getIntProperty("nhz.apiServerPort");
-            final String host = Nhz.getStringProperty("nhz.apiServerHost");
+            final int port = Constants.isTestnet ? TESTNET_API_PORT : Nxt.getIntProperty("nxt.apiServerPort");
+            final String host = Nxt.getStringProperty("nxt.apiServerHost");
             apiServer = new Server();
             ServerConnector connector;
 
-            boolean enableSSL = Nhz.getBooleanProperty("nhz.apiSSL");
+            boolean enableSSL = Nxt.getBooleanProperty("nxt.apiSSL");
             if (enableSSL) {
                 Logger.logMessage("Using SSL (https) for the API server");
                 HttpConfiguration https_config = new HttpConfiguration();
@@ -58,8 +58,8 @@ public final class API {
                 https_config.setSecurePort(port);
                 https_config.addCustomizer(new SecureRequestCustomizer());
                 SslContextFactory sslContextFactory = new SslContextFactory();
-                sslContextFactory.setKeyStorePath(Nhz.getStringProperty("nhz.keyStorePath"));
-                sslContextFactory.setKeyStorePassword(Nhz.getStringProperty("nhz.keyStorePassword"));
+                sslContextFactory.setKeyStorePath(Nxt.getStringProperty("nxt.keyStorePath"));
+                sslContextFactory.setKeyStorePassword(Nxt.getStringProperty("nxt.keyStorePassword"));
                 sslContextFactory.setExcludeCipherSuites("SSL_RSA_WITH_DES_CBC_SHA", "SSL_DHE_RSA_WITH_DES_CBC_SHA",
                         "SSL_DHE_DSS_WITH_DES_CBC_SHA", "SSL_RSA_EXPORT_WITH_RC4_40_MD5", "SSL_RSA_EXPORT_WITH_DES40_CBC_SHA",
                         "SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA", "SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA");
@@ -72,14 +72,14 @@ public final class API {
 
             connector.setPort(port);
             connector.setHost(host);
-            connector.setIdleTimeout(Nhz.getIntProperty("nhz.apiServerIdleTimeout"));
+            connector.setIdleTimeout(Nxt.getIntProperty("nxt.apiServerIdleTimeout"));
             connector.setReuseAddress(true);
             apiServer.addConnector(connector);
 
             HandlerList apiHandlers = new HandlerList();
 
             ServletContextHandler apiHandler = new ServletContextHandler();
-            String apiResourceBase = Nhz.getStringProperty("nhz.apiResourceBase");
+            String apiResourceBase = Nxt.getStringProperty("nxt.apiResourceBase");
             if (apiResourceBase != null) {
                 ServletHolder defaultServletHolder = new ServletHolder(new DefaultServlet());
                 defaultServletHolder.setInitParameter("dirAllowed", "false");
@@ -91,7 +91,7 @@ public final class API {
                 apiHandler.setWelcomeFiles(new String[]{"index.html"});
             }
 
-            String javadocResourceBase = Nhz.getStringProperty("nhz.javadocResourceBase");
+            String javadocResourceBase = Nxt.getStringProperty("nxt.javadocResourceBase");
             if (javadocResourceBase != null) {
                 ContextHandler contextHandler = new ContextHandler("/doc");
                 ResourceHandler docFileHandler = new ResourceHandler();
@@ -103,7 +103,7 @@ public final class API {
             }
 
             apiHandler.addServlet(APIServlet.class, "/nhz");
-            if (Nhz.getBooleanProperty("nhz.enableAPIServerGZIPFilter")) {
+            if (Nxt.getBooleanProperty("nxt.enableAPIServerGZIPFilter")) {
                 FilterHolder gzipFilterHolder = apiHandler.addFilter(GzipFilter.class, "/nhz", null);
                 gzipFilterHolder.setInitParameter("methods", "GET,POST");
                 gzipFilterHolder.setAsyncSupported(true);
@@ -111,7 +111,7 @@ public final class API {
 
             apiHandler.addServlet(APITestServlet.class, "/test");
 
-            if (Nhz.getBooleanProperty("nhz.apiServerCORS")) {
+            if (Nxt.getBooleanProperty("nxt.apiServerCORS")) {
                 FilterHolder filterHolder = apiHandler.addFilter(CrossOriginFilter.class, "/*", null);
                 filterHolder.setInitParameter("allowedHeaders", "*");
                 filterHolder.setAsyncSupported(true);

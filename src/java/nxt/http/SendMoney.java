@@ -1,7 +1,7 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Account;
-import nhz.NhzException;
+import nxt.Account;
+import nxt.NxtException;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +15,7 @@ public final class SendMoney extends CreateTransaction {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
         Long recipient = ParameterParser.getRecipientId(req);
         long amountNQT = ParameterParser.getAmountNQT(req);
         Account account = ParameterParser.getSenderAccount(req);

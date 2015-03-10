@@ -1,6 +1,6 @@
-package nhz;
+package nxt;
 
-import nhz.util.Logger;
+import nxt.util.Logger;
 import org.h2.jdbcx.JdbcConnectionPool;
 
 import java.sql.Connection;
@@ -13,19 +13,19 @@ public final class Db {
     private static volatile int maxActiveConnections;
 
     static void init() {
-        long maxCacheSize = Nhz.getIntProperty("nhz.dbCacheKB");
+        long maxCacheSize = Nxt.getIntProperty("nxt.dbCacheKB");
         if (maxCacheSize == 0) {
             maxCacheSize = Runtime.getRuntime().maxMemory() / (1024 * 2);
         }
-        String dbUrl = Constants.isTestnet ? Nhz.getStringProperty("nhz.testDbUrl") : Nhz.getStringProperty("nhz.dbUrl");
+        String dbUrl = Constants.isTestnet ? Nxt.getStringProperty("nxt.testDbUrl") : Nxt.getStringProperty("nxt.dbUrl");
         if (! dbUrl.contains("CACHE_SIZE=")) {
             dbUrl += ";CACHE_SIZE=" + maxCacheSize;
         }
         Logger.logDebugMessage("Database jdbc url set to: " + dbUrl);
         cp = JdbcConnectionPool.create(dbUrl, "sa", "sa");
-        cp.setMaxConnections(Nhz.getIntProperty("nhz.maxDbConnections"));
-        cp.setLoginTimeout(Nhz.getIntProperty("nhz.dbLoginTimeout"));
-        int defaultLockTimeout = Nhz.getIntProperty("nhz.dbDefaultLockTimeout") * 1000;
+        cp.setMaxConnections(Nxt.getIntProperty("nxt.maxDbConnections"));
+        cp.setLoginTimeout(Nxt.getIntProperty("nxt.dbLoginTimeout"));
+        int defaultLockTimeout = Nxt.getIntProperty("nxt.dbDefaultLockTimeout") * 1000;
         try (Connection con = cp.getConnection();
              Statement stmt = con.createStatement()) {
             stmt.executeUpdate("SET DEFAULT_LOCK_TIMEOUT " + defaultLockTimeout);

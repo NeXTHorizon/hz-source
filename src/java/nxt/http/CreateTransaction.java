@@ -1,30 +1,30 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Account;
-import nhz.Appendix;
-import nhz.Attachment;
-import nhz.Constants;
-import nhz.Genesis;
-import nhz.Nhz;
-import nhz.NhzException;
-import nhz.Transaction;
-import nhz.crypto.Crypto;
-import nhz.crypto.EncryptedData;
-import nhz.util.Convert;
+import nxt.Account;
+import nxt.Appendix;
+import nxt.Attachment;
+import nxt.Constants;
+import nxt.Genesis;
+import nxt.Nxt;
+import nxt.NxtException;
+import nxt.Transaction;
+import nxt.crypto.Crypto;
+import nxt.crypto.EncryptedData;
+import nxt.util.Convert;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 
-import static nhz.http.JSONResponses.FEATURE_NOT_AVAILABLE;
-import static nhz.http.JSONResponses.INCORRECT_ARBITRARY_MESSAGE;
-import static nhz.http.JSONResponses.INCORRECT_DEADLINE;
-import static nhz.http.JSONResponses.INCORRECT_FEE;
-import static nhz.http.JSONResponses.INCORRECT_REFERENCED_TRANSACTION;
-import static nhz.http.JSONResponses.MISSING_DEADLINE;
-import static nhz.http.JSONResponses.MISSING_SECRET_PHRASE;
-import static nhz.http.JSONResponses.NOT_ENOUGH_FUNDS;
+import static nxt.http.JSONResponses.FEATURE_NOT_AVAILABLE;
+import static nxt.http.JSONResponses.INCORRECT_ARBITRARY_MESSAGE;
+import static nxt.http.JSONResponses.INCORRECT_DEADLINE;
+import static nxt.http.JSONResponses.INCORRECT_FEE;
+import static nxt.http.JSONResponses.INCORRECT_REFERENCED_TRANSACTION;
+import static nxt.http.JSONResponses.MISSING_DEADLINE;
+import static nxt.http.JSONResponses.MISSING_SECRET_PHRASE;
+import static nxt.http.JSONResponses.NOT_ENOUGH_FUNDS;
 
 abstract class CreateTransaction extends APIServlet.APIRequestHandler {
 
@@ -46,8 +46,8 @@ abstract class CreateTransaction extends APIServlet.APIRequestHandler {
     }
 
     final JSONStreamAware createTransaction(HttpServletRequest req, Account senderAccount, Attachment attachment)
-        throws NhzException {
-    	if (Nhz.getBlockchain().getHeight()>=Constants.TRANSACTIONS_VERSION_1_BLOCK) {
+        throws NxtException {
+    	if (Nxt.getBlockchain().getHeight()>=Constants.TRANSACTIONS_VERSION_1_BLOCK) {
     		return createTransaction(req, senderAccount, null, 0, attachment);
     	} else { //We need the CREATOR_ID as recipient until hard fork
     		return createTransaction(req, senderAccount, Genesis.CREATOR_ID, 0, attachment);
@@ -55,14 +55,14 @@ abstract class CreateTransaction extends APIServlet.APIRequestHandler {
     }
 
     final JSONStreamAware createTransaction(HttpServletRequest req, Account senderAccount, Long recipientId, long amountNQT)
-            throws NhzException {
+            throws NxtException {
         return createTransaction(req, senderAccount, recipientId, amountNQT, Attachment.ORDINARY_PAYMENT);
     }
 
     final JSONStreamAware createTransaction(HttpServletRequest req, Account senderAccount, Long recipientId,
                                             long amountNQT, Attachment attachment)
-            throws NhzException {
-        int blockchainHeight = Nhz.getBlockchain().getHeight();
+            throws NxtException {
+        int blockchainHeight = Nxt.getBlockchain().getHeight();
         String deadlineValue = req.getParameter("deadline");
         String referencedTransactionFullHash = Convert.emptyToNull(req.getParameter("referencedTransactionFullHash"));
         String referencedTransactionId = Convert.emptyToNull(req.getParameter("referencedTransaction"));
@@ -146,7 +146,7 @@ abstract class CreateTransaction extends APIServlet.APIRequestHandler {
         byte[] publicKey = secretPhrase != null ? Crypto.getPublicKey(secretPhrase) : Convert.parseHexString(publicKeyValue);
 
         try {
-            Transaction.Builder builder = Nhz.getTransactionProcessor().newTransactionBuilder(publicKey, amountNQT, feeNQT,
+            Transaction.Builder builder = Nxt.getTransactionProcessor().newTransactionBuilder(publicKey, amountNQT, feeNQT,
                     deadline, attachment).referencedTransactionFullHash(referencedTransactionFullHash);
             if (attachment.getTransactionType().hasRecipient() || (recipientId != null && recipientId.equals(Genesis.CREATOR_ID))) {
                 builder.recipientId(recipientId);
@@ -173,7 +173,7 @@ abstract class CreateTransaction extends APIServlet.APIRequestHandler {
                 response.put("transactionBytes", Convert.toHexString(transaction.getBytes()));
                 response.put("signatureHash", Convert.toHexString(Crypto.sha256().digest(transaction.getSignature())));
                 if (broadcast) {
-                    Nhz.getTransactionProcessor().broadcast(transaction);
+                    Nxt.getTransactionProcessor().broadcast(transaction);
                     response.put("broadcasted", true);
                 } else {
                     response.put("broadcasted", false);
@@ -184,9 +184,9 @@ abstract class CreateTransaction extends APIServlet.APIRequestHandler {
             response.put("unsignedTransactionBytes", Convert.toHexString(transaction.getUnsignedBytes()));
             response.put("transactionJSON", JSONData.unconfirmedTransaction(transaction));
 
-        } catch (NhzException.NotYetEnabledException e) {
+        } catch (NxtException.NotYetEnabledException e) {
             return FEATURE_NOT_AVAILABLE;
-        } catch (NhzException.ValidationException e) {
+        } catch (NxtException.ValidationException e) {
             response.put("error", e.getMessage());
         }
         return response;

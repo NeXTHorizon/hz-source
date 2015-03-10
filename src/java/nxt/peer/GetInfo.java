@@ -1,6 +1,6 @@
-package nhz.peer;
+package nxt.peer;
 
-import nhz.util.Convert;
+import nxt.util.Convert;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 

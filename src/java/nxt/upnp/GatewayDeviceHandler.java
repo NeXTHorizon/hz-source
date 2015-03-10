@@ -22,7 +22,7 @@
  * 
  */
 
-package nhz.upnp;
+package nxt.upnp;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

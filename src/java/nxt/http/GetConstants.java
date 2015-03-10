@@ -1,10 +1,10 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Constants;
-import nhz.Genesis;
-import nhz.TransactionType;
-import nhz.util.Convert;
-import nhz.util.JSON;
+import nxt.Constants;
+import nxt.Genesis;
+import nxt.TransactionType;
+import nxt.util.Convert;
+import nxt.util.JSON;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;

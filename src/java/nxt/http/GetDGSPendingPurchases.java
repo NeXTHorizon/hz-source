@@ -1,7 +1,7 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.DigitalGoodsStore;
-import nhz.NhzException;
+import nxt.DigitalGoodsStore;
+import nxt.NxtException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
@@ -9,7 +9,7 @@ import org.json.simple.JSONStreamAware;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 
-import static nhz.http.JSONResponses.MISSING_SELLER;
+import static nxt.http.JSONResponses.MISSING_SELLER;
 
 public final class GetDGSPendingPurchases extends APIServlet.APIRequestHandler {
 
@@ -20,7 +20,7 @@ public final class GetDGSPendingPurchases extends APIServlet.APIRequestHandler {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
 
         Long sellerId = ParameterParser.getSellerId(req);
         if (sellerId == null) {

@@ -1,6 +1,6 @@
-package nhz.crypto;
+package nxt.crypto;
 
-import nhz.util.Convert;
+import nxt.util.Convert;
 import org.bouncycastle.util.Arrays;
 import org.junit.Test;
 

@@ -1,6 +1,6 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.util.Convert;
+import nxt.util.Convert;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 

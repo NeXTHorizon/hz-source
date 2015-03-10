@@ -1,6 +1,6 @@
-package nhz.crypto;
+package nxt.crypto;
 
-import nhz.NhzException;
+import nxt.NxtException;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -41,12 +41,12 @@ public final class EncryptedData {
     }
 
     public static EncryptedData readEncryptedData(ByteBuffer buffer, int length, int maxLength)
-            throws NhzException.NotValidException {
+            throws NxtException.NotValidException {
         if (length == 0) {
             return EMPTY_DATA;
         }
         if (length > maxLength) {
-            throw new NhzException.NotValidException("Max encrypted data length exceeded: " + length);
+            throw new NxtException.NotValidException("Max encrypted data length exceeded: " + length);
         }
         byte[] noteBytes = new byte[length];
         buffer.get(noteBytes);

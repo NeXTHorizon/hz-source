@@ -1,19 +1,19 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Nhz;
-import nhz.NhzException;
-import nhz.Transaction;
-import nhz.crypto.Crypto;
-import nhz.util.Convert;
+import nxt.Nxt;
+import nxt.NxtException;
+import nxt.Transaction;
+import nxt.crypto.Crypto;
+import nxt.util.Convert;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 import org.json.simple.JSONValue;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.INCORRECT_UNSIGNED_BYTES;
-import static nhz.http.JSONResponses.MISSING_SECRET_PHRASE;
-import static nhz.http.JSONResponses.MISSING_UNSIGNED_BYTES;
+import static nxt.http.JSONResponses.INCORRECT_UNSIGNED_BYTES;
+import static nxt.http.JSONResponses.MISSING_SECRET_PHRASE;
+import static nxt.http.JSONResponses.MISSING_UNSIGNED_BYTES;
 
 public final class SignTransaction extends APIServlet.APIRequestHandler {
 
@@ -24,7 +24,7 @@ public final class SignTransaction extends APIServlet.APIRequestHandler {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException.ValidationException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException.ValidationException {
 
         String transactionBytes = Convert.emptyToNull(req.getParameter("unsignedTransactionBytes"));
         String transactionJSON = Convert.emptyToNull(req.getParameter("unsignedTransactionJSON"));
@@ -40,10 +40,10 @@ public final class SignTransaction extends APIServlet.APIRequestHandler {
             Transaction transaction;
             if (transactionBytes != null) {
                 byte[] bytes = Convert.parseHexString(transactionBytes);
-                transaction = Nhz.getTransactionProcessor().parseTransaction(bytes);
+                transaction = Nxt.getTransactionProcessor().parseTransaction(bytes);
             } else {
                 JSONObject json = (JSONObject) JSONValue.parse(transactionJSON);
-                transaction = Nhz.getTransactionProcessor().parseTransaction(json);
+                transaction = Nxt.getTransactionProcessor().parseTransaction(json);
             }
             transaction.validate();
             if (transaction.getSignature() != null) {
@@ -60,7 +60,7 @@ public final class SignTransaction extends APIServlet.APIRequestHandler {
             response.put("signatureHash", Convert.toHexString(Crypto.sha256().digest(transaction.getSignature())));
             response.put("verify", transaction.verifySignature());
             return response;
-        } catch (NhzException.ValidationException|RuntimeException e) {
+        } catch (NxtException.ValidationException|RuntimeException e) {
             //Logger.logDebugMessage(e.getMessage(), e);
             return INCORRECT_UNSIGNED_BYTES;
         }

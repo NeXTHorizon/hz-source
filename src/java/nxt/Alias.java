@@ -1,4 +1,4 @@
-package nhz;
+package nxt;
 
 import java.util.ArrayList;
 import java.util.Collection;

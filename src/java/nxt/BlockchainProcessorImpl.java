@@ -1,15 +1,15 @@
-package nhz;
+package nxt;
 
-import nhz.crypto.Crypto;
-import nhz.peer.Peer;
-import nhz.peer.Peers;
-import nhz.util.Convert;
-import nhz.util.DbIterator;
-import nhz.util.JSON;
-import nhz.util.Listener;
-import nhz.util.Listeners;
-import nhz.util.Logger;
-import nhz.util.ThreadPool;
+import nxt.crypto.Crypto;
+import nxt.peer.Peer;
+import nxt.peer.Peers;
+import nxt.util.Convert;
+import nxt.util.DbIterator;
+import nxt.util.JSON;
+import nxt.util.Listener;
+import nxt.util.Listeners;
+import nxt.util.Logger;
+import nxt.util.ThreadPool;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
@@ -132,12 +132,12 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                                 BlockImpl block;
                                 try {
                                     block = parseBlock(blockData);
-                                } catch (NhzException.NotCurrentlyValidException e) {
+                                } catch (NxtException.NotCurrentlyValidException e) {
                                     Logger.logDebugMessage("Cannot validate block: " + e.toString()
                                             + ", will try again later", e);
                                     processedAll = false;
                                     break outer;
-                                } catch (RuntimeException|NhzException.ValidationException e) {
+                                } catch (RuntimeException|NxtException.ValidationException e) {
                                     Logger.logDebugMessage("Failed to parse block: " + e.toString(), e);
                                     peer.blacklist(e);
                                     return;
@@ -392,7 +392,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
     }
 
     @Override
-    public void processPeerBlock(JSONObject request) throws NhzException {
+    public void processPeerBlock(JSONObject request) throws NxtException {
         BlockImpl block = parseBlock(request);
         pushBlock(block);
     }
@@ -453,7 +453,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
 
             addBlock(genesisBlock);
 
-        } catch (NhzException.ValidationException e) {
+        } catch (NxtException.ValidationException e) {
             Logger.logMessage(e.getMessage());
             throw new RuntimeException(e.toString(), e);
         }
@@ -603,7 +603,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                         }
                         try {
                             transaction.validate();
-                        } catch (NhzException.ValidationException e) {
+                        } catch (NxtException.ValidationException e) {
                             throw new TransactionNotAcceptedException(e.getMessage(), transaction);
                         }
 
@@ -742,9 +742,9 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
 
                 try {
                     transaction.validate();
-                } catch (NhzException.NotCurrentlyValidException e) {
+                } catch (NxtException.NotCurrentlyValidException e) {
                     continue;
-                } catch (NhzException.ValidationException e) {
+                } catch (NxtException.ValidationException e) {
                     transactionProcessor.removeUnconfirmedTransactions(Collections.singletonList(transaction));
                     continue;
                 }
@@ -787,7 +787,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
             block = new BlockImpl(getBlockVersion(previousBlock.getHeight()), blockTimestamp, previousBlock.getId(), totalAmountNQT, totalFeeNQT, payloadLength,
                     payloadHash, publicKey, generationSignature, null, previousBlockHash, new ArrayList<>(newTransactions.values()));
 
-        } catch (NhzException.ValidationException e) {
+        } catch (NxtException.ValidationException e) {
             // shouldn't happen because all transactions are already validated
             Logger.logMessage("Error generating block", e);
             return true;
@@ -819,7 +819,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
         return true;
     }
 
-    private BlockImpl parseBlock(JSONObject blockData) throws NhzException.ValidationException {
+    private BlockImpl parseBlock(JSONObject blockData) throws NxtException.ValidationException {
         return BlockImpl.parseBlock(blockData);
     }
 
@@ -831,7 +831,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
         return transaction != null && hasAllReferencedTransactions(transaction, timestamp, count + 1);
     }
 
-    private volatile boolean validateAtScan = Nhz.getBooleanProperty("nhz.forceValidate");
+    private volatile boolean validateAtScan = Nxt.getBooleanProperty("nxt.forceValidate");
 
     void validateAtNextScan() {
         validateAtScan = true;
@@ -866,42 +866,42 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                     try {
                         currentBlock = BlockDb.loadBlock(con, rs);
                         if (! currentBlock.getId().equals(currentBlockId)) {
-                            throw new NhzException.NotValidException("Database blocks in the wrong order!");
+                            throw new NxtException.NotValidException("Database blocks in the wrong order!");
                         }
                         if (validateAtScan && ! currentBlockId.equals(Genesis.GENESIS_BLOCK_ID)) {
                             if (!currentBlock.verifyBlockSignature() || !currentBlock.verifyGenerationSignature()) {
-                                throw new NhzException.NotValidException("Invalid block signature");
+                                throw new NxtException.NotValidException("Invalid block signature");
                             }
                             if (currentBlock.getVersion() != getBlockVersion(blockchain.getHeight())) {
-                                throw new NhzException.NotValidException("Invalid block version");
+                                throw new NxtException.NotValidException("Invalid block version");
                             }
                             byte[] blockBytes = currentBlock.getBytes();
                             JSONObject blockJSON = (JSONObject) JSONValue.parse(currentBlock.getJSONObject().toJSONString());
                             if (! Arrays.equals(blockBytes, parseBlock(blockJSON).getBytes())) {
-                                throw new NhzException.NotValidException("Block JSON cannot be parsed back to the same block");
+                                throw new NxtException.NotValidException("Block JSON cannot be parsed back to the same block");
                             }
                             for (TransactionImpl transaction : currentBlock.getTransactions()) {
                                 if (!transaction.verifySignature()) {
-                                    throw new NhzException.NotValidException("Invalid transaction signature");
+                                    throw new NxtException.NotValidException("Invalid transaction signature");
                                 }
                                 if (transaction.getVersion() != transactionProcessor.getTransactionVersion(blockchain.getHeight())) {
-                                    throw new NhzException.NotValidException("Invalid transaction version");
+                                    throw new NxtException.NotValidException("Invalid transaction version");
                                 }
                                 if (! EconomicClustering.verifyFork(transaction)) {
                                     Logger.logDebugMessage("Found transaction that was generated on a fork: " + transaction.getStringId()
                                             + " in block " + currentBlock.getStringId() + " at height " + currentBlock.getHeight()
                                             + " ecBlockHeight " + transaction.getECBlockHeight() + " ecBlockId " + Convert.toUnsignedLong(transaction.getECBlockId()));
-                                    //throw new NhzException.NotValidException("Invalid transaction fork");
+                                    //throw new NxtException.NotValidException("Invalid transaction fork");
                                 }
                                 transaction.validate();
                                 byte[] transactionBytes = transaction.getBytes();
                                 if (currentBlock.getHeight() > Constants.NQT_BLOCK
                                         && ! Arrays.equals(transactionBytes, transactionProcessor.parseTransaction(transactionBytes).getBytes())) {
-                                    throw new NhzException.NotValidException("Transaction bytes cannot be parsed back to the same transaction");
+                                    throw new NxtException.NotValidException("Transaction bytes cannot be parsed back to the same transaction");
                                 }
                                 JSONObject transactionJSON = (JSONObject) JSONValue.parse(transaction.getJSONObject().toJSONString());
                                 if (! Arrays.equals(transactionBytes, transactionProcessor.parseTransaction(transactionJSON).getBytes())) {
-                                    throw new NhzException.NotValidException("Transaction JSON cannot be parsed back to the same transaction");
+                                    throw new NxtException.NotValidException("Transaction JSON cannot be parsed back to the same transaction");
                                 }
                             }
                         }
@@ -921,7 +921,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                         blockListeners.notify(currentBlock, Event.AFTER_BLOCK_APPLY);
                         blockListeners.notify(currentBlock, Event.BLOCK_SCANNED);
                         currentBlockId = currentBlock.getNextBlockId();
-                    } catch (NhzException|RuntimeException e) {
+                    } catch (NxtException|RuntimeException e) {
                         Logger.logDebugMessage(e.toString(), e);
                         Logger.logDebugMessage("Applying block " + Convert.toUnsignedLong(currentBlockId) + " at height "
                                 + (currentBlock == null ? 0 : currentBlock.getHeight()) + " failed, deleting from database");
@@ -932,7 +932,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                             try {
                                 currentBlock = BlockDb.loadBlock(con, rs);
                                 lostTransactions.addAll(currentBlock.getTransactions());
-                            } catch (NhzException.ValidationException ignore) {}
+                            } catch (NxtException.ValidationException ignore) {}
                         }
                         BlockDb.deleteBlocksFrom(currentBlockId);
                         scan();

@@ -1,6 +1,6 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.NhzException;
+import nxt.NxtException;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +14,7 @@ public final class GetDGSPurchase extends APIServlet.APIRequestHandler {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
         return JSONData.purchase(ParameterParser.getPurchase(req));
     }
 

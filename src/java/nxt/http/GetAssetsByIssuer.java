@@ -1,7 +1,7 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Account;
-import nhz.Asset;
+import nxt.Account;
+import nxt.Asset;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;

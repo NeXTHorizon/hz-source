@@ -1,11 +1,11 @@
-package nhz;
+package nxt;
 
-import nhz.crypto.Crypto;
-import nhz.util.Convert;
-import nhz.util.Listener;
-import nhz.util.Listeners;
-import nhz.util.Logger;
-import nhz.util.ThreadPool;
+import nxt.crypto.Crypto;
+import nxt.util.Convert;
+import nxt.util.Listener;
+import nxt.util.Listeners;
+import nxt.util.Logger;
+import nxt.util.ThreadPool;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -182,7 +182,7 @@ public final class Generator {
 
     private void forge(int timestamp) {
 
-        if (Nhz.getBlockchainProcessor().isScanning()) {
+        if (Nxt.getBlockchainProcessor().isScanning()) {
             return;
         }
 
@@ -195,7 +195,7 @@ public final class Generator {
             return;
         }
 
-        Block lastBlock = Nhz.getBlockchain().getLastBlock();
+        Block lastBlock = Nxt.getBlockchain().getLastBlock();
 
         if (lastBlock.getHeight() < Constants.ASSET_EXCHANGE_BLOCK) {
             return;

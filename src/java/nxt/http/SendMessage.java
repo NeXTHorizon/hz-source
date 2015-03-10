@@ -1,8 +1,8 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Account;
-import nhz.Attachment;
-import nhz.NhzException;
+import nxt.Account;
+import nxt.Attachment;
+import nxt.NxtException;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +16,7 @@ public final class SendMessage extends CreateTransaction {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
         Long recipient = ParameterParser.getRecipientId(req);
         Account account = ParameterParser.getSenderAccount(req);
         return createTransaction(req, account, recipient, 0, Attachment.ARBITRARY_MESSAGE);

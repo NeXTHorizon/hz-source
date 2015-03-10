@@ -1,19 +1,19 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Account;
-import nhz.Alias;
-import nhz.Attachment;
-import nhz.Constants;
-import nhz.NhzException;
-import nhz.util.Convert;
+import nxt.Account;
+import nxt.Alias;
+import nxt.Attachment;
+import nxt.Constants;
+import nxt.NxtException;
+import nxt.util.Convert;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.INCORRECT_ALIAS_OWNER;
-import static nhz.http.JSONResponses.INCORRECT_PRICE;
-import static nhz.http.JSONResponses.INCORRECT_RECIPIENT;
-import static nhz.http.JSONResponses.MISSING_PRICE;
+import static nxt.http.JSONResponses.INCORRECT_ALIAS_OWNER;
+import static nxt.http.JSONResponses.INCORRECT_PRICE;
+import static nxt.http.JSONResponses.INCORRECT_RECIPIENT;
+import static nxt.http.JSONResponses.MISSING_PRICE;
 
 
 public final class SellAlias extends CreateTransaction {
@@ -25,7 +25,7 @@ public final class SellAlias extends CreateTransaction {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
         Alias alias = ParameterParser.getAlias(req);
         Account owner = ParameterParser.getSenderAccount(req);
 

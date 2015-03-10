@@ -1,14 +1,14 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Account;
-import nhz.Asset;
-import nhz.Attachment;
-import nhz.NhzException;
+import nxt.Account;
+import nxt.Asset;
+import nxt.Attachment;
+import nxt.NxtException;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.NOT_ENOUGH_ASSETS;
+import static nxt.http.JSONResponses.NOT_ENOUGH_ASSETS;
 
 public final class PlaceAskOrder extends CreateTransaction {
 
@@ -19,7 +19,7 @@ public final class PlaceAskOrder extends CreateTransaction {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
 
         Asset asset = ParameterParser.getAsset(req);
         long priceNQT = ParameterParser.getPriceNQT(req);

@@ -1,11 +1,11 @@
-package nhz.user;
+package nxt.user;
 
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-import static nhz.user.JSONResponses.LOCK_ACCOUNT;
+import static nxt.user.JSONResponses.LOCK_ACCOUNT;
 
 public final class LockAccount extends UserServlet.UserRequestHandler {
 

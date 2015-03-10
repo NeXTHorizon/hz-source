@@ -1,15 +1,15 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Nhz;
-import nhz.Transaction;
-import nhz.util.Convert;
+import nxt.Nxt;
+import nxt.Transaction;
+import nxt.util.Convert;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.INCORRECT_ACCOUNT;
+import static nxt.http.JSONResponses.INCORRECT_ACCOUNT;
 
 public final class GetUnconfirmedTransactionIds extends APIServlet.APIRequestHandler {
 
@@ -34,7 +34,7 @@ public final class GetUnconfirmedTransactionIds extends APIServlet.APIRequestHan
         }
 
         JSONArray transactionIds = new JSONArray();
-        for (Transaction transaction : Nhz.getTransactionProcessor().getAllUnconfirmedTransactions()) {
+        for (Transaction transaction : Nxt.getTransactionProcessor().getAllUnconfirmedTransactions()) {
             if (accountId != null && ! (accountId.equals(transaction.getSenderId()) || accountId.equals(transaction.getRecipientId()))) {
                 continue;
             }

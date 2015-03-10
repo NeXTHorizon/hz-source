@@ -1,10 +1,10 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Account;
-import nhz.Block;
-import nhz.Nhz;
-import nhz.NhzException;
-import nhz.util.DbIterator;
+import nxt.Account;
+import nxt.Block;
+import nxt.Nxt;
+import nxt.NxtException;
+import nxt.util.DbIterator;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
@@ -20,13 +20,13 @@ public final class GetAccountBlockIds extends APIServlet.APIRequestHandler {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
 
         Account account = ParameterParser.getAccount(req);
         int timestamp = ParameterParser.getTimestamp(req);
 
         JSONArray blockIds = new JSONArray();
-        try (DbIterator<? extends Block> iterator = Nhz.getBlockchain().getBlocks(account, timestamp)) {
+        try (DbIterator<? extends Block> iterator = Nxt.getBlockchain().getBlocks(account, timestamp)) {
             while (iterator.hasNext()) {
                 Block block = iterator.next();
                 blockIds.add(block.getStringId());

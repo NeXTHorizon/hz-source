@@ -1,8 +1,8 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.NhzException;
-import nhz.Order;
-import nhz.util.Convert;
+import nxt.NxtException;
+import nxt.Order;
+import nxt.util.Convert;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
@@ -18,7 +18,7 @@ public final class GetAccountCurrentAskOrderIds extends APIServlet.APIRequestHan
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
 
         Long accountId = ParameterParser.getAccount(req).getId();
         Long assetId = null;

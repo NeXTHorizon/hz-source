@@ -1,6 +1,6 @@
-package nhz.crypto;
+package nxt.crypto;
 
-import nhz.crypto.ReedSolomon.DecodeException;
+import nxt.crypto.ReedSolomon.DecodeException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

@@ -1,4 +1,4 @@
-package nhz;
+package nxt;
 
 import org.json.simple.JSONObject;
 
@@ -20,7 +20,7 @@ public interface Transaction extends Comparable<Transaction> {
 
         Builder publicKeyAnnouncement(Appendix.PublicKeyAnnouncement publicKeyAnnouncement);
 
-        Transaction build() throws NhzException.NotValidException;
+        Transaction build() throws NxtException.NotValidException;
 
     }
 
@@ -66,7 +66,7 @@ public interface Transaction extends Comparable<Transaction> {
 
     boolean verifySignature();
 
-    void validate() throws NhzException.ValidationException;
+    void validate() throws NxtException.ValidationException;
 
     byte[] getBytes();
 

@@ -1,6 +1,6 @@
-package nhz;
+package nxt;
 
-import nhz.util.DbIterator;
+import nxt.util.DbIterator;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

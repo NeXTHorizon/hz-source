@@ -1,18 +1,18 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Account;
-import nhz.Attachment;
-import nhz.Constants;
-import nhz.NhzException;
-import nhz.util.Convert;
+import nxt.Account;
+import nxt.Attachment;
+import nxt.Constants;
+import nxt.NxtException;
+import nxt.util.Convert;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.INCORRECT_DGS_LISTING_DESCRIPTION;
-import static nhz.http.JSONResponses.INCORRECT_DGS_LISTING_NAME;
-import static nhz.http.JSONResponses.INCORRECT_DGS_LISTING_TAGS;
-import static nhz.http.JSONResponses.MISSING_NAME;
+import static nxt.http.JSONResponses.INCORRECT_DGS_LISTING_DESCRIPTION;
+import static nxt.http.JSONResponses.INCORRECT_DGS_LISTING_NAME;
+import static nxt.http.JSONResponses.INCORRECT_DGS_LISTING_TAGS;
+import static nxt.http.JSONResponses.MISSING_NAME;
 
 public final class DGSListing extends CreateTransaction {
 
@@ -24,7 +24,7 @@ public final class DGSListing extends CreateTransaction {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
 
         String name = Convert.emptyToNull(req.getParameter("name"));
         String description = Convert.nullToEmpty(req.getParameter("description"));

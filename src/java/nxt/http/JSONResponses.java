@@ -1,7 +1,7 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Constants;
-import nhz.util.JSON;
+import nxt.Constants;
+import nxt.util.JSON;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 

@@ -1,4 +1,4 @@
-package nhz.util;
+package nxt.util;
 
 public interface Observable<T,E extends Enum<E>> {
 

@@ -1,6 +1,6 @@
-package nhz;
+package nxt;
 
-import nhz.util.Logger;
+import nxt.util.Logger;
 
 import java.math.BigInteger;
 import java.sql.Connection;
@@ -26,7 +26,7 @@ final class BlockDb {
             }
         } catch (SQLException e) {
             throw new RuntimeException(e.toString(), e);
-        } catch (NhzException.ValidationException e) {
+        } catch (NxtException.ValidationException e) {
             throw new RuntimeException("Block already in database, id = " + blockId + ", does not pass validation!");
         }
     }
@@ -73,12 +73,12 @@ final class BlockDb {
             }
         } catch (SQLException e) {
             throw new RuntimeException(e.toString(), e);
-        } catch (NhzException.ValidationException e) {
+        } catch (NxtException.ValidationException e) {
             throw new RuntimeException("Block already in database at height " + height + ", does not pass validation!");
         }
     }
 
-    static BlockImpl loadBlock(Connection con, ResultSet rs) throws NhzException.ValidationException {
+    static BlockImpl loadBlock(Connection con, ResultSet rs) throws NxtException.ValidationException {
         try {
             int version = rs.getInt("version");
             int timestamp = rs.getInt("timestamp");

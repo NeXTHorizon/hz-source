@@ -1,14 +1,14 @@
-package nhz;
+package nxt;
 
-import nhz.http.API;
-import nhz.peer.Peers;
-import nhz.user.Users;
-import nhz.util.Logger;
-import nhz.util.ThreadPool;
+import nxt.http.API;
+import nxt.peer.Peers;
+import nxt.user.Users;
+import nxt.util.Logger;
+import nxt.util.ThreadPool;
 
-import nhz.upnp.GatewayDevice;
-import nhz.upnp.GatewayDiscover;
-import nhz.upnp.PortMappingEntry;
+import nxt.upnp.GatewayDevice;
+import nxt.upnp.GatewayDiscover;
+import nxt.upnp.PortMappingEntry;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -20,7 +20,7 @@ import java.util.Properties;
 
 import java.net.InetAddress;
 
-public final class Nhz {
+public final class Nxt {
 
 	//be careful PeerImpl.java will only connect to versions starting with 'NHZ'
     public static final String VERSION = "NHZ V3.9";
@@ -28,34 +28,34 @@ public final class Nhz {
 
     private static final Properties defaultProperties = new Properties();
     static {
-        System.out.println("Initializing Nhz server version " + Nhz.VERSION);
-        try (InputStream is = ClassLoader.getSystemResourceAsStream("nhz-default.properties")) {
+        System.out.println("Initializing Nhz server version " + Nxt.VERSION);
+        try (InputStream is = ClassLoader.getSystemResourceAsStream("nxt-default.properties")) {
             if (is != null) {
-                Nhz.defaultProperties.load(is);
+                Nxt.defaultProperties.load(is);
             } else {
-                String configFile = System.getProperty("nhz-default.properties");
+                String configFile = System.getProperty("nxt-default.properties");
                 if (configFile != null) {
                     try (InputStream fis = new FileInputStream(configFile)) {
-                        Nhz.defaultProperties.load(fis);
+                        Nxt.defaultProperties.load(fis);
                     } catch (IOException e) {
-                        throw new RuntimeException("Error loading nhz-default.properties from " + configFile);
+                        throw new RuntimeException("Error loading nxt-default.properties from " + configFile);
                     }
                 } else {
-                    throw new RuntimeException("nhz-default.properties not in classpath and system property nhz-default.properties not defined either");
+                    throw new RuntimeException("nxt-default.properties not in classpath and system property nxt-default.properties not defined either");
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException("Error loading nhz-default.properties", e);
+            throw new RuntimeException("Error loading nxt-default.properties", e);
         }
     }
     private static final Properties properties = new Properties(defaultProperties);
     static {
-        try (InputStream is = ClassLoader.getSystemResourceAsStream("nhz.properties")) {
+        try (InputStream is = ClassLoader.getSystemResourceAsStream("nxt.properties")) {
             if (is != null) {
-                Nhz.properties.load(is);
+                Nxt.properties.load(is);
             } // ignore if missing
         } catch (IOException e) {
-            throw new RuntimeException("Error loading nhz.properties", e);
+            throw new RuntimeException("Error loading nxt.properties", e);
         }
     }
 
@@ -129,7 +129,7 @@ public final class Nhz {
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
             public void run() {
-                Nhz.shutdown();
+                Nxt.shutdown();
             }
         }));
         init();
@@ -189,7 +189,7 @@ public final class Nhz {
             try {
                 long startTime = System.currentTimeMillis();
                 Logger.init();
-    			if (Nhz.getBooleanProperty("nhz.enableUPNP")) {
+    			if (Nxt.getBooleanProperty("nxt.enableUPNP")) {
     				try{
     					upnp();
     				} catch (Exception e) {
@@ -224,6 +224,6 @@ public final class Nhz {
 
     }
 
-    private Nhz() {} // never
+    private Nxt() {} // never
 
 }

@@ -1,13 +1,13 @@
-package nhz.user;
+package nxt.user;
 
-import nhz.peer.Peer;
+import nxt.peer.Peer;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.InetAddress;
 
-import static nhz.user.JSONResponses.LOCAL_USERS_ONLY;
+import static nxt.user.JSONResponses.LOCAL_USERS_ONLY;
 
 public final class RemoveBlacklistedPeer extends UserServlet.UserRequestHandler {
 

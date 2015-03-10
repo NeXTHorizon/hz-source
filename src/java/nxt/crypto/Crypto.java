@@ -1,7 +1,7 @@
-package nhz.crypto;
+package nxt.crypto;
 
-import nhz.util.Convert;
-import nhz.util.Logger;
+import nxt.util.Convert;
+import nxt.util.Logger;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.engines.AESEngine;

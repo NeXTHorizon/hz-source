@@ -1,4 +1,4 @@
-package nhz.util;
+package nxt.util;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;

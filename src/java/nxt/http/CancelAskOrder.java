@@ -1,14 +1,14 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Account;
-import nhz.Attachment;
-import nhz.NhzException;
-import nhz.Order;
+import nxt.Account;
+import nxt.Attachment;
+import nxt.NxtException;
+import nxt.Order;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.UNKNOWN_ORDER;
+import static nxt.http.JSONResponses.UNKNOWN_ORDER;
 
 public final class CancelAskOrder extends CreateTransaction {
 
@@ -19,7 +19,7 @@ public final class CancelAskOrder extends CreateTransaction {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
         Long orderId = ParameterParser.getOrderId(req);
         Account account = ParameterParser.getSenderAccount(req);
         Order.Ask orderData = Order.Ask.getAskOrder(orderId);

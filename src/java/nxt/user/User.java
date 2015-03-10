@@ -1,10 +1,10 @@
-package nhz.user;
+package nxt.user;
 
-import nhz.Account;
-import nhz.Generator;
-import nhz.crypto.Crypto;
-import nhz.util.JSON;
-import nhz.util.Logger;
+import nxt.Account;
+import nxt.Generator;
+import nxt.crypto.Crypto;
+import nxt.util.JSON;
+import nxt.util.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;

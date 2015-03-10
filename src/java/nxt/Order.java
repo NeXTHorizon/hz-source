@@ -1,6 +1,6 @@
-package nhz;
+package nxt;
 
-import nhz.util.Convert;
+import nxt.util.Convert;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -44,7 +44,7 @@ public abstract class Order {
                     && askOrder.getId() < bidOrder.getId())
                     ? askOrder.getPriceNQT() : bidOrder.getPriceNQT();
 
-            Block lastBlock=Nhz.getBlockchain().getLastBlock();
+            Block lastBlock=Nxt.getBlockchain().getLastBlock();
             int timestamp=lastBlock.getTimestamp();
             
             Trade.addTrade(assetId, timestamp, lastBlock.getId(), askOrder.getId(), bidOrder.getId(), quantityQNT, priceNQT);
@@ -80,7 +80,7 @@ public abstract class Order {
         this.assetId = assetId;
         this.quantityQNT = quantityQNT;
         this.priceNQT = priceNQT;
-        this.height = Nhz.getBlockchain().getLastBlock().getHeight();
+        this.height = Nxt.getBlockchain().getLastBlock().getHeight();
     }
 
     public Long getId() {

@@ -1,11 +1,11 @@
-package nhz;
+package nxt;
 
-import nhz.crypto.Crypto;
-import nhz.crypto.EncryptedData;
-import nhz.util.Convert;
-import nhz.util.Listener;
-import nhz.util.Listeners;
-import nhz.util.Logger;
+import nxt.crypto.Crypto;
+import nxt.crypto.EncryptedData;
+import nxt.util.Convert;
+import nxt.util.Listener;
+import nxt.util.Listeners;
+import nxt.util.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,7 +67,7 @@ public final class Account {
 
     static {
 
-        Nhz.getBlockchainProcessor().addListener(new Listener<Block>() {
+        Nxt.getBlockchainProcessor().addListener(new Listener<Block>() {
             @Override
             public void notify(Block block) {
                 int height = block.getHeight();
@@ -109,7 +109,7 @@ public final class Account {
             }
         }, BlockchainProcessor.Event.AFTER_BLOCK_APPLY);
 
-        Nhz.getBlockchainProcessor().addListener(new Listener<Block>() {
+        Nxt.getBlockchainProcessor().addListener(new Listener<Block>() {
             @Override
             public void notify(Block block) {
                 int height = block.getHeight();
@@ -228,7 +228,7 @@ public final class Account {
             Logger.logMessage("CRITICAL ERROR: Reed-Solomon encoding fails for " + id);
         }
         this.id = id;
-        this.height = Nhz.getBlockchain().getLastBlock().getHeight();
+        this.height = Nxt.getBlockchain().getLastBlock().getHeight();
         currentLeasingHeightFrom = Integer.MAX_VALUE;
     }
 
@@ -292,7 +292,7 @@ public final class Account {
         	return getBalanceNQT() / Constants.ONE_NHZ;
         }
 
-        Block lastBlock = Nhz.getBlockchain().getLastBlock();
+        Block lastBlock = Nxt.getBlockchain().getLastBlock();
 
         if (lastBlock.getHeight() >= Constants.TRANSPARENT_FORGING_BLOCK_6
                 && (getPublicKey() == null || lastBlock.getHeight() - keyHeight <= 40)) {
@@ -334,7 +334,7 @@ public final class Account {
     }
 
     public synchronized long getGuaranteedBalanceNQT(final int numberOfConfirmations) {
-        if (numberOfConfirmations >= Nhz.getBlockchain().getLastBlock().getHeight()) {
+        if (numberOfConfirmations >= Nxt.getBlockchain().getLastBlock().getHeight()) {
             return 0;
         }
         if (numberOfConfirmations > maxTrackedBalanceConfirmations || numberOfConfirmations < 0) {
@@ -343,7 +343,7 @@ public final class Account {
         if (guaranteedBalances.isEmpty()) {
             return 0;
         }
-        int i = Collections.binarySearch(guaranteedBalances, new GuaranteedBalance(Nhz.getBlockchain().getLastBlock().getHeight() - numberOfConfirmations, 0));
+        int i = Collections.binarySearch(guaranteedBalances, new GuaranteedBalance(Nxt.getBlockchain().getLastBlock().getHeight() - numberOfConfirmations, 0));
         if (i == -1) {
             return 0;
         }
@@ -404,7 +404,7 @@ public final class Account {
     void leaseEffectiveBalance(Long lesseeId, short period) {
         Account lessee = Account.getAccount(lesseeId);
         if (lessee != null && lessee.getPublicKey() != null) {
-            Block lastBlock = Nhz.getBlockchain().getLastBlock();
+            Block lastBlock = Nxt.getBlockchain().getLastBlock();
             leasingAccounts.put(this.getId(), this);
             if (currentLeasingHeightFrom == Integer.MAX_VALUE) {
 
@@ -612,7 +612,7 @@ public final class Account {
     }
 
     private synchronized void addToGuaranteedBalanceNQT(long amountNQT) {
-        int blockchainHeight = Nhz.getBlockchain().getLastBlock().getHeight();
+        int blockchainHeight = Nxt.getBlockchain().getLastBlock().getHeight();
         GuaranteedBalance last = null;
         if (guaranteedBalances.size() > 0 && (last = guaranteedBalances.get(guaranteedBalances.size() - 1)).height > blockchainHeight) {
             // this only happens while last block is being popped off

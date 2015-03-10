@@ -1,6 +1,6 @@
-package nhz;
+package nxt;
 
-import nhz.util.Convert;
+import nxt.util.Convert;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -26,7 +26,7 @@ final class TransactionDb {
             }
         } catch (SQLException e) {
             throw new RuntimeException(e.toString(), e);
-        } catch (NhzException.ValidationException e) {
+        } catch (NxtException.ValidationException e) {
             throw new RuntimeException("Transaction already in database, id = " + transactionId + ", does not pass validation!");
         }
     }
@@ -43,7 +43,7 @@ final class TransactionDb {
             }
         } catch (SQLException e) {
             throw new RuntimeException(e.toString(), e);
-        } catch (NhzException.ValidationException e) {
+        } catch (NxtException.ValidationException e) {
             throw new RuntimeException("Transaction already in database, full_hash = " + fullHash + ", does not pass validation!");
         }
     }
@@ -72,7 +72,7 @@ final class TransactionDb {
         }
     }
 
-    static TransactionImpl loadTransaction(Connection con, ResultSet rs) throws NhzException.ValidationException {
+    static TransactionImpl loadTransaction(Connection con, ResultSet rs) throws NxtException.ValidationException {
         try {
 
             byte type = rs.getByte("type");
@@ -155,7 +155,7 @@ final class TransactionDb {
             return list;
         } catch (SQLException e) {
             throw new RuntimeException(e.toString(), e);
-        } catch (NhzException.ValidationException e) {
+        } catch (NxtException.ValidationException e) {
             throw new RuntimeException("Transaction already in database for block_id = " + Convert.toUnsignedLong(blockId)
                     + " does not pass validation!", e);
         }

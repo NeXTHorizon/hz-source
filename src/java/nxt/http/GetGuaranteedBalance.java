@@ -1,7 +1,7 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Account;
-import nhz.NhzException;
+import nxt.Account;
+import nxt.NxtException;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
@@ -16,7 +16,7 @@ public final class GetGuaranteedBalance extends APIServlet.APIRequestHandler {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
 
         Account account = ParameterParser.getAccount(req);
         int numberOfConfirmations = ParameterParser.getNumberOfConfirmations(req);

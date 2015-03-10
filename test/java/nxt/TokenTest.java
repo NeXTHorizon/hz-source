@@ -1,6 +1,6 @@
-package nhz;
+package nxt;
 
-import nhz.util.Convert;
+import nxt.util.Convert;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -9,7 +9,7 @@ public class TokenTest {
     @Test
     public void testParseValidToken() throws Exception {
         String token = "6s7hchl9q0e5jgrrtgscoip2lcb2o3oi7ndso1bnjr475suv001ug93uu8aq2f00o7q6pvs2ivrpra1svouvb4k5nreco0tt94qest9mq5jg2qihcvj5n5ljqht5fl6n39nslr7kidqh8kh8u8v6e4rn92f47l3i";
-        Token actual = Token.parseToken(token, "http://nhz.org");
+        Token actual = Token.parseToken(token, "http://nxt.org");
 
         assertEquals(1000, actual.getTimestamp());
         assertTrue(actual.isValid());
@@ -27,9 +27,9 @@ public class TokenTest {
     @Test
     public void testGenerateToken() throws Exception {
         int start = Convert.getEpochTime();
-        String tokenString = Token.generateToken("secret", "http://nhz.org");
+        String tokenString = Token.generateToken("secret", "http://nxt.org");
         int end = Convert.getEpochTime();
-        Token token = Token.parseToken(tokenString, "http://nhz.org");
+        Token token = Token.parseToken(tokenString, "http://nxt.org");
 
         assertTrue(token.isValid());
         assertTrue(token.getTimestamp() >= start);
@@ -38,8 +38,8 @@ public class TokenTest {
 
     @Test
     public void emptySecret() throws Exception {
-        String tokenString = Token.generateToken("", "http://nhz.org");
-        Token token = Token.parseToken(tokenString, "http://nhz.org");
+        String tokenString = Token.generateToken("", "http://nxt.org");
+        Token token = Token.parseToken(tokenString, "http://nxt.org");
         assertTrue(token.isValid());
     }
 

@@ -1,4 +1,4 @@
-package nhz;
+package nxt;
 
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -45,9 +45,9 @@ public final class Constants {
     public static final int MAX_HUB_ANNOUNCEMENT_URI_LENGTH = 1000;
     public static final long MIN_HUB_EFFECTIVE_BALANCE = 100000;
 
-    public static final boolean isTestnet = Nhz.getBooleanProperty("nhz.isTestnet");
-    public static final boolean isOffline = Nhz.getBooleanProperty("nhz.isOffline");
-    public static final boolean dontForge = Nhz.getBooleanProperty("nhz.dontForge");
+    public static final boolean isTestnet = Nxt.getBooleanProperty("nxt.isTestnet");
+    public static final boolean isOffline = Nxt.getBooleanProperty("nxt.isOffline");
+    public static final boolean dontForge = Nxt.getBooleanProperty("nxt.dontForge");
 
     public static final int ALIAS_SYSTEM_BLOCK = (isTestnet ? 0 : 22 );
     public static final int TRANSPARENT_FORGING_BLOCK = (isTestnet ? 0 : 30);

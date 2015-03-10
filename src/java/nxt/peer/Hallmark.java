@@ -1,9 +1,9 @@
-package nhz.peer;
+package nxt.peer;
 
-import nhz.Account;
-import nhz.Constants;
-import nhz.crypto.Crypto;
-import nhz.util.Convert;
+import nxt.Account;
+import nxt.Constants;
+import nxt.crypto.Crypto;
+import nxt.util.Convert;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

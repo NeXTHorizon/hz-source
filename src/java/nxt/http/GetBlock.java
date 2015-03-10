@@ -1,16 +1,16 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Block;
-import nhz.Nhz;
-import nhz.util.Convert;
+import nxt.Block;
+import nxt.Nxt;
+import nxt.util.Convert;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.INCORRECT_BLOCK;
-import static nhz.http.JSONResponses.INCORRECT_HEIGHT;
-import static nhz.http.JSONResponses.MISSING_BLOCK;
-import static nhz.http.JSONResponses.UNKNOWN_BLOCK;
+import static nxt.http.JSONResponses.INCORRECT_BLOCK;
+import static nxt.http.JSONResponses.INCORRECT_HEIGHT;
+import static nxt.http.JSONResponses.MISSING_BLOCK;
+import static nxt.http.JSONResponses.UNKNOWN_BLOCK;
 
 public final class GetBlock extends APIServlet.APIRequestHandler {
 
@@ -30,7 +30,7 @@ public final class GetBlock extends APIServlet.APIRequestHandler {
             try {
                 if (heightValue != null) {
                     height = Integer.parseInt(heightValue);
-                    if (height < 0 || height > Nhz.getBlockchain().getHeight()) {
+                    if (height < 0 || height > Nxt.getBlockchain().getHeight()) {
                         return INCORRECT_HEIGHT;
                     }
                 } else {
@@ -46,9 +46,9 @@ public final class GetBlock extends APIServlet.APIRequestHandler {
         Block blockData;
         try {
             if (block != null) {
-                blockData = Nhz.getBlockchain().getBlock(Convert.parseUnsignedLong(block));
+                blockData = Nxt.getBlockchain().getBlock(Convert.parseUnsignedLong(block));
             } else {
-                blockData = Nhz.getBlockchain().getBlockAtHeight(height);
+                blockData = Nxt.getBlockchain().getBlockAtHeight(height);
             }
             if (blockData == null) {
                 return UNKNOWN_BLOCK;

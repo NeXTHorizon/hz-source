@@ -1,13 +1,13 @@
-package nhz;
+package nxt;
 
-import nhz.peer.Peer;
-import nhz.peer.Peers;
-import nhz.util.Convert;
-import nhz.util.JSON;
-import nhz.util.Listener;
-import nhz.util.Listeners;
-import nhz.util.Logger;
-import nhz.util.ThreadPool;
+import nxt.peer.Peer;
+import nxt.peer.Peers;
+import nxt.util.Convert;
+import nxt.util.JSON;
+import nxt.util.Listener;
+import nxt.util.Listeners;
+import nxt.util.Logger;
+import nxt.util.ThreadPool;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
@@ -136,7 +136,7 @@ final class TransactionProcessorImpl implements TransactionProcessor {
                     }
                     try {
                         processPeerTransactions(transactionsData, false);
-                    } catch (NhzException.ValidationException|RuntimeException e) {
+                    } catch (NxtException.ValidationException|RuntimeException e) {
                         peer.blacklist(e);
                     }
                 } catch (Exception e) {
@@ -178,8 +178,8 @@ final class TransactionProcessorImpl implements TransactionProcessor {
     }
 
     public Transaction.Builder newTransactionBuilder(byte[] senderPublicKey, long amountNQT, long feeNQT, short deadline,
-                                                     Attachment attachment) throws NhzException.ValidationException {
-        byte version = (byte) getTransactionVersion(Nhz.getBlockchain().getHeight());
+                                                     Attachment attachment) throws NxtException.ValidationException {
+        byte version = (byte) getTransactionVersion(Nxt.getBlockchain().getHeight());
         int timestamp = Convert.getEpochTime();
         TransactionImpl.BuilderImpl builder = new TransactionImpl.BuilderImpl(version, senderPublicKey, amountNQT, feeNQT, timestamp,
                 deadline, (Attachment.AbstractAttachment)attachment);
@@ -192,10 +192,10 @@ final class TransactionProcessorImpl implements TransactionProcessor {
     }
 
     @Override
-    public void broadcast(Transaction transaction) throws NhzException.ValidationException {
+    public void broadcast(Transaction transaction) throws NxtException.ValidationException {
     	Logger.logDebugMessage("Transaction "+transaction.getStringId()+" tx json: "+  transaction.getJSONObject().toJSONString()  +" tx bytes: "+ Convert.toHexString(transaction.getBytes()));
         if (! transaction.verifySignature()) {
-            throw new NhzException.NotValidException("Transaction signature verification failed");
+            throw new NxtException.NotValidException("Transaction signature verification failed");
         }
         List<Transaction> validTransactions = processTransactions(Collections.singleton((TransactionImpl) transaction), true);
         if (validTransactions.contains(transaction)) {
@@ -203,23 +203,23 @@ final class TransactionProcessorImpl implements TransactionProcessor {
             Logger.logDebugMessage("Accepted new transaction " + transaction.getStringId());
         } else {
             Logger.logDebugMessage("Rejecting double spending transaction " + transaction.getStringId());
-            throw new NhzException.NotValidException("Double spending transaction");
+            throw new NxtException.NotValidException("Double spending transaction");
         }
     }
 
     @Override
-    public void processPeerTransactions(JSONObject request) throws NhzException.ValidationException {
+    public void processPeerTransactions(JSONObject request) throws NxtException.ValidationException {
         JSONArray transactionsData = (JSONArray)request.get("transactions");
         processPeerTransactions(transactionsData, true);
     }
 
     @Override
-    public Transaction parseTransaction(byte[] bytes) throws NhzException.ValidationException {
+    public Transaction parseTransaction(byte[] bytes) throws NxtException.ValidationException {
         return TransactionImpl.parseTransaction(bytes);
     }
 
     @Override
-    public TransactionImpl parseTransaction(JSONObject transactionData) throws NhzException.NotValidException {
+    public TransactionImpl parseTransaction(JSONObject transactionData) throws NxtException.NotValidException {
         return TransactionImpl.parseTransaction(transactionData);
     }
 
@@ -314,16 +314,16 @@ final class TransactionProcessorImpl implements TransactionProcessor {
         return previousBlockHeight < Constants.TRANSACTIONS_VERSION_1_BLOCK ? 0 : 1;
     }
 
-    private void processPeerTransactions(JSONArray transactionsData, final boolean sendToPeers) throws NhzException.ValidationException {
+    private void processPeerTransactions(JSONArray transactionsData, final boolean sendToPeers) throws NxtException.ValidationException {
         List<TransactionImpl> transactions = new ArrayList<>();
         for (Object transactionData : transactionsData) {
             try {
                 TransactionImpl transaction = parseTransaction((JSONObject)transactionData);
                 try {
                     transaction.validate();
-                } catch (NhzException.NotCurrentlyValidException ignore) {}
+                } catch (NxtException.NotCurrentlyValidException ignore) {}
                 transactions.add(transaction);
-            } catch (NhzException.NotValidException e) {
+            } catch (NxtException.NotValidException e) {
                 Logger.logDebugMessage("Invalid transaction from peer: " + ((JSONObject) transactionData).toJSONString());
                 throw e;
             }
@@ -351,7 +351,7 @@ final class TransactionProcessorImpl implements TransactionProcessor {
 
                 synchronized (BlockchainImpl.getInstance()) {
 
-                    if (Nhz.getBlockchain().getHeight() < Constants.NQT_BLOCK) {
+                    if (Nxt.getBlockchain().getHeight() < Constants.NQT_BLOCK) {
                         break; // not ready to process transactions
                     }
 

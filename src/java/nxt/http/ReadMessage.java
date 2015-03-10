@@ -1,21 +1,21 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Account;
-import nhz.Appendix;
-import nhz.Nhz;
-import nhz.Transaction;
-import nhz.crypto.Crypto;
-import nhz.util.Convert;
-import nhz.util.Logger;
+import nxt.Account;
+import nxt.Appendix;
+import nxt.Nxt;
+import nxt.Transaction;
+import nxt.crypto.Crypto;
+import nxt.util.Convert;
+import nxt.util.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.INCORRECT_TRANSACTION;
-import static nhz.http.JSONResponses.MISSING_TRANSACTION;
-import static nhz.http.JSONResponses.NO_MESSAGE;
-import static nhz.http.JSONResponses.UNKNOWN_TRANSACTION;
+import static nxt.http.JSONResponses.INCORRECT_TRANSACTION;
+import static nxt.http.JSONResponses.MISSING_TRANSACTION;
+import static nxt.http.JSONResponses.NO_MESSAGE;
+import static nxt.http.JSONResponses.UNKNOWN_TRANSACTION;
 
 public final class ReadMessage extends APIServlet.APIRequestHandler {
 
@@ -35,7 +35,7 @@ public final class ReadMessage extends APIServlet.APIRequestHandler {
 
         Transaction transaction;
         try {
-            transaction = Nhz.getBlockchain().getTransaction(Convert.parseUnsignedLong(transactionIdString));
+            transaction = Nxt.getBlockchain().getTransaction(Convert.parseUnsignedLong(transactionIdString));
             if (transaction == null) {
                 return UNKNOWN_TRANSACTION;
             }

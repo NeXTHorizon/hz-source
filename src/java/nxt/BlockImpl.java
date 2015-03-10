@@ -1,8 +1,8 @@
-package nhz;
+package nxt;
 
-import nhz.crypto.Crypto;
-import nhz.util.Convert;
-import nhz.util.Logger;
+import nxt.crypto.Crypto;
+import nxt.util.Convert;
+import nxt.util.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -44,14 +44,14 @@ final class BlockImpl implements Block {
 
     BlockImpl(int version, int timestamp, Long previousBlockId, long totalAmountNQT, long totalFeeNQT, int payloadLength, byte[] payloadHash,
               byte[] generatorPublicKey, byte[] generationSignature, byte[] blockSignature, byte[] previousBlockHash, List<TransactionImpl> transactions)
-            throws NhzException.ValidationException {
+            throws NxtException.ValidationException {
 
         if (transactions.size() > Constants.MAX_NUMBER_OF_TRANSACTIONS) {
-            throw new NhzException.NotValidException("attempted to create a block with " + transactions.size() + " transactions");
+            throw new NxtException.NotValidException("attempted to create a block with " + transactions.size() + " transactions");
         }
 
         if (payloadLength > Constants.MAX_PAYLOAD_LENGTH || payloadLength < 0) {
-            throw new NhzException.NotValidException("attempted to create a block with payloadLength " + payloadLength);
+            throw new NxtException.NotValidException("attempted to create a block with payloadLength " + payloadLength);
         }
 
         this.version = version;
@@ -71,7 +71,7 @@ final class BlockImpl implements Block {
         Long previousId = Long.MIN_VALUE;
         for (Transaction transaction : this.blockTransactions) {
             if (transaction.getId() < previousId) {
-                throw new NhzException.NotValidException("Block transactions are not sorted!");
+                throw new NxtException.NotValidException("Block transactions are not sorted!");
             }
             transactionIds.add(transaction.getId());
             previousId = transaction.getId();
@@ -84,7 +84,7 @@ final class BlockImpl implements Block {
               byte[] payloadHash, byte[] generatorPublicKey, byte[] generationSignature, byte[] blockSignature,
               byte[] previousBlockHash, List<TransactionImpl> transactions, BigInteger cumulativeDifficulty,
               long baseTarget, Long nextBlockId, int height, Long id)
-            throws NhzException.ValidationException {
+            throws NxtException.ValidationException {
         this(version, timestamp, previousBlockId, totalAmountNQT, totalFeeNQT, payloadLength, payloadHash,
                 generatorPublicKey, generationSignature, blockSignature, previousBlockHash, transactions);
         this.cumulativeDifficulty = cumulativeDifficulty;
@@ -249,7 +249,7 @@ final class BlockImpl implements Block {
         return json;
     }
 
-    static BlockImpl parseBlock(JSONObject blockData) throws NhzException.ValidationException {
+    static BlockImpl parseBlock(JSONObject blockData) throws NxtException.ValidationException {
         int version = ((Long)blockData.get("version")).intValue();
         int timestamp = ((Long)blockData.get("timestamp")).intValue();
         Long previousBlock = Convert.parseUnsignedLong((String) blockData.get("previousBlock"));
@@ -266,7 +266,7 @@ final class BlockImpl implements Block {
         for (Object transactionData : transactionsData) {
             TransactionImpl transaction = TransactionImpl.parseTransaction((JSONObject) transactionData);
             if (blockTransactions.put(transaction.getId(), transaction) != null) {
-                throw new NhzException.NotValidException("Block contains duplicate transactions: " + transaction.getStringId());
+                throw new NxtException.NotValidException("Block contains duplicate transactions: " + transaction.getStringId());
             }
         }
         return new BlockImpl(version, timestamp, previousBlock, totalAmountNQT, totalFeeNQT, payloadLength, payloadHash, generatorPublicKey,
@@ -328,7 +328,7 @@ final class BlockImpl implements Block {
 
         try {
 
-            BlockImpl previousBlock = (BlockImpl)Nhz.getBlockchain().getBlock(this.previousBlockId);
+            BlockImpl previousBlock = (BlockImpl)Nxt.getBlockchain().getBlock(this.previousBlockId);
             if (previousBlock == null) {
                 throw new BlockchainProcessor.BlockOutOfOrderException("Can't verify signature because previous block is missing");
             }

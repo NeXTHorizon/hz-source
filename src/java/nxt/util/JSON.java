@@ -1,4 +1,4 @@
-package nhz.util;
+package nxt.util;
 
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;

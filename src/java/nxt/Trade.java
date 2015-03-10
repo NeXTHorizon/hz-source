@@ -1,7 +1,7 @@
-package nhz;
+package nxt;
 
-import nhz.util.Listener;
-import nhz.util.Listeners;
+import nxt.util.Listener;
+import nxt.util.Listeners;
 
 import java.util.Collection;
 import java.util.Collections;

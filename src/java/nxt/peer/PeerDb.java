@@ -1,6 +1,6 @@
-package nhz.peer;
+package nxt.peer;
 
-import nhz.Db;
+import nxt.Db;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

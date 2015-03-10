@@ -1,17 +1,17 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Account;
-import nhz.Asset;
-import nhz.Attachment;
-import nhz.Constants;
-import nhz.NhzException;
-import nhz.util.Convert;
+import nxt.Account;
+import nxt.Asset;
+import nxt.Attachment;
+import nxt.Constants;
+import nxt.NxtException;
+import nxt.util.Convert;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.INCORRECT_ASSET_TRANSFER_COMMENT;
-import static nhz.http.JSONResponses.NOT_ENOUGH_ASSETS;
+import static nxt.http.JSONResponses.INCORRECT_ASSET_TRANSFER_COMMENT;
+import static nxt.http.JSONResponses.NOT_ENOUGH_ASSETS;
 
 public final class TransferAsset extends CreateTransaction {
 
@@ -22,7 +22,7 @@ public final class TransferAsset extends CreateTransaction {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
 
         Long recipient = ParameterParser.getRecipientId(req);
 

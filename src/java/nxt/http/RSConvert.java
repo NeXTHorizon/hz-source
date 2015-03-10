@@ -1,13 +1,13 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.util.Convert;
+import nxt.util.Convert;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.INCORRECT_ACCOUNT;
-import static nhz.http.JSONResponses.MISSING_ACCOUNT;
+import static nxt.http.JSONResponses.INCORRECT_ACCOUNT;
+import static nxt.http.JSONResponses.MISSING_ACCOUNT;
 
 public final class RSConvert extends APIServlet.APIRequestHandler {
 

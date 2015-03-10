@@ -1,8 +1,8 @@
-package nhz;
+package nxt;
 
-import nhz.peer.Peer;
-import nhz.util.Convert;
-import nhz.util.Observable;
+import nxt.peer.Peer;
+import nxt.util.Convert;
+import nxt.util.Observable;
 import org.json.simple.JSONObject;
 
 public interface BlockchainProcessor extends Observable<Block,BlockchainProcessor.Event> {
@@ -21,12 +21,12 @@ public interface BlockchainProcessor extends Observable<Block,BlockchainProcesso
 
     boolean isScanning();
 
-    void processPeerBlock(JSONObject request) throws NhzException;
+    void processPeerBlock(JSONObject request) throws NxtException;
 
     void fullReset();
 
 
-    public static class BlockNotAcceptedException extends NhzException {
+    public static class BlockNotAcceptedException extends NxtException {
 
         BlockNotAcceptedException(String message) {
             super(message);

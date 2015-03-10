@@ -1,7 +1,7 @@
-package nhz;
+package nxt;
 
-import nhz.crypto.EncryptedData;
-import nhz.util.Convert;
+import nxt.crypto.EncryptedData;
+import nxt.util.Convert;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -29,7 +29,7 @@ public interface Attachment extends Appendix {
         private AbstractAttachment() {}
 
         @Override
-        final void validate(Transaction transaction) throws NhzException.ValidationException {
+        final void validate(Transaction transaction) throws NxtException.ValidationException {
             getTransactionType().validateAttachment(transaction);
         }
 
@@ -106,7 +106,7 @@ public interface Attachment extends Appendix {
         private final String aliasName;
         private final String aliasURI;
 
-        MessagingAliasAssignment(ByteBuffer buffer, byte transactionVersion) throws NhzException.NotValidException {
+        MessagingAliasAssignment(ByteBuffer buffer, byte transactionVersion) throws NxtException.NotValidException {
             super(buffer, transactionVersion);
             aliasName = Convert.readString(buffer, buffer.get(), Constants.MAX_ALIAS_LENGTH).trim().intern();
             aliasURI = Convert.readString(buffer, buffer.getShort(), Constants.MAX_ALIAS_URI_LENGTH).trim().intern();
@@ -168,7 +168,7 @@ public interface Attachment extends Appendix {
         private final String aliasName;
         private final long priceNQT;
 
-        MessagingAliasSell(ByteBuffer buffer, byte transactionVersion) throws NhzException.NotValidException {
+        MessagingAliasSell(ByteBuffer buffer, byte transactionVersion) throws NxtException.NotValidException {
             super(buffer, transactionVersion);
             this.aliasName = Convert.readString(buffer, buffer.get(), Constants.MAX_ALIAS_LENGTH);
             this.priceNQT = buffer.getLong();
@@ -227,7 +227,7 @@ public interface Attachment extends Appendix {
 
         private final String aliasName;
 
-        MessagingAliasBuy(ByteBuffer buffer, byte transactionVersion) throws NhzException.NotValidException {
+        MessagingAliasBuy(ByteBuffer buffer, byte transactionVersion) throws NxtException.NotValidException {
             super(buffer, transactionVersion);
             this.aliasName = Convert.readString(buffer, buffer.get(), Constants.MAX_ALIAS_LENGTH);
         }
@@ -281,13 +281,13 @@ public interface Attachment extends Appendix {
         private final byte minNumberOfOptions, maxNumberOfOptions;
         private final boolean optionsAreBinary;
 
-        MessagingPollCreation(ByteBuffer buffer, byte transactionVersion) throws NhzException.NotValidException {
+        MessagingPollCreation(ByteBuffer buffer, byte transactionVersion) throws NxtException.NotValidException {
             super(buffer, transactionVersion);
             this.pollName = Convert.readString(buffer, buffer.getShort(), Constants.MAX_POLL_NAME_LENGTH);
             this.pollDescription = Convert.readString(buffer, buffer.getShort(), Constants.MAX_POLL_DESCRIPTION_LENGTH);
             int numberOfOptions = buffer.get();
             if (numberOfOptions > Constants.MAX_POLL_OPTION_COUNT) {
-                throw new NhzException.NotValidException("Invalid number of poll options: " + numberOfOptions);
+                throw new NxtException.NotValidException("Invalid number of poll options: " + numberOfOptions);
             }
             this.pollOptions = new String[numberOfOptions];
             for (int i = 0; i < numberOfOptions; i++) {
@@ -397,12 +397,12 @@ public interface Attachment extends Appendix {
         private final Long pollId;
         private final byte[] pollVote;
 
-        MessagingVoteCasting(ByteBuffer buffer, byte transactionVersion) throws NhzException.NotValidException {
+        MessagingVoteCasting(ByteBuffer buffer, byte transactionVersion) throws NxtException.NotValidException {
             super(buffer, transactionVersion);
             this.pollId = buffer.getLong();
             int numberOfOptions = buffer.get();
             if (numberOfOptions > Constants.MAX_POLL_OPTION_COUNT) {
-                throw new NhzException.NotValidException("Error parsing vote casting parameters");
+                throw new NxtException.NotValidException("Error parsing vote casting parameters");
             }
             this.pollVote = new byte[numberOfOptions];
             buffer.get(pollVote);
@@ -468,12 +468,12 @@ public interface Attachment extends Appendix {
         private final long minFeePerByteNQT;
         private final String[] uris;
 
-        MessagingHubAnnouncement(ByteBuffer buffer, byte transactionVersion) throws NhzException.NotValidException {
+        MessagingHubAnnouncement(ByteBuffer buffer, byte transactionVersion) throws NxtException.NotValidException {
             super(buffer, transactionVersion);
             this.minFeePerByteNQT = buffer.getLong();
             int numberOfUris = buffer.get();
             if (numberOfUris > Constants.MAX_HUB_ANNOUNCEMENT_URIS) {
-                throw new NhzException.NotValidException("Invalid number of URIs: " + numberOfUris);
+                throw new NxtException.NotValidException("Invalid number of URIs: " + numberOfUris);
             }
             this.uris = new String[numberOfUris];
             for (int i = 0; i < uris.length; i++) {
@@ -481,7 +481,7 @@ public interface Attachment extends Appendix {
             }
         }
 
-        MessagingHubAnnouncement(JSONObject attachmentData) throws NhzException.NotValidException {
+        MessagingHubAnnouncement(JSONObject attachmentData) throws NxtException.NotValidException {
             super(attachmentData);
             this.minFeePerByteNQT = (Long) attachmentData.get("minFeePerByte");
             try {
@@ -491,7 +491,7 @@ public interface Attachment extends Appendix {
                     uris[i] = (String) urisData.get(i);
                 }
             } catch (RuntimeException e) {
-                throw new NhzException.NotValidException("Error parsing hub terminal announcement parameters", e);
+                throw new NxtException.NotValidException("Error parsing hub terminal announcement parameters", e);
             }
         }
 
@@ -553,7 +553,7 @@ public interface Attachment extends Appendix {
         private final String name;
         private final String description;
 
-        MessagingAccountInfo(ByteBuffer buffer, byte transactionVersion) throws NhzException.NotValidException {
+        MessagingAccountInfo(ByteBuffer buffer, byte transactionVersion) throws NxtException.NotValidException {
             super(buffer, transactionVersion);
             this.name = Convert.readString(buffer, buffer.get(), Constants.MAX_ACCOUNT_NAME_LENGTH);
             this.description = Convert.readString(buffer, buffer.getShort(), Constants.MAX_ACCOUNT_DESCRIPTION_LENGTH);
@@ -618,7 +618,7 @@ public interface Attachment extends Appendix {
         private final long quantityQNT;
         private final byte decimals;
 
-        ColoredCoinsAssetIssuance(ByteBuffer buffer, byte transactionVersion) throws NhzException.NotValidException {
+        ColoredCoinsAssetIssuance(ByteBuffer buffer, byte transactionVersion) throws NxtException.NotValidException {
             super(buffer, transactionVersion);
             this.name = Convert.readString(buffer, buffer.get(), Constants.MAX_ASSET_NAME_LENGTH);
             this.description = Convert.readString(buffer, buffer.getShort(), Constants.MAX_ASSET_DESCRIPTION_LENGTH);
@@ -699,7 +699,7 @@ public interface Attachment extends Appendix {
         private final long quantityQNT;
         private final String comment;
 
-        ColoredCoinsAssetTransfer(ByteBuffer buffer, byte transactionVersion) throws NhzException.NotValidException {
+        ColoredCoinsAssetTransfer(ByteBuffer buffer, byte transactionVersion) throws NxtException.NotValidException {
             super(buffer, transactionVersion);
             this.assetId = Convert.zeroToNull(buffer.getLong());
             this.quantityQNT = buffer.getLong();
@@ -976,7 +976,7 @@ public interface Attachment extends Appendix {
         private final int quantity;
         private final long priceNQT;
 
-        DigitalGoodsListing(ByteBuffer buffer, byte transactionVersion) throws NhzException.NotValidException {
+        DigitalGoodsListing(ByteBuffer buffer, byte transactionVersion) throws NxtException.NotValidException {
             super(buffer, transactionVersion);
             this.name = Convert.readString(buffer, buffer.getShort(), Constants.MAX_DGS_LISTING_NAME_LENGTH);
             this.description = Convert.readString(buffer, buffer.getShort(), Constants.MAX_DGS_LISTING_DESCRIPTION_LENGTH);
@@ -1289,7 +1289,7 @@ public interface Attachment extends Appendix {
         private final long discountNQT;
         private final boolean goodsIsText;
 
-        DigitalGoodsDelivery(ByteBuffer buffer, byte transactionVersion) throws NhzException.NotValidException {
+        DigitalGoodsDelivery(ByteBuffer buffer, byte transactionVersion) throws NxtException.NotValidException {
             super(buffer, transactionVersion);
             this.purchaseId = buffer.getLong();
             int length = buffer.getInt();

@@ -1,7 +1,7 @@
-package nhz;
+package nxt;
 
-import nhz.util.DbIterator;
-import nhz.util.DbUtils;
+import nxt.util.DbIterator;
+import nxt.util.DbUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -87,7 +87,7 @@ final class BlockchainImpl implements Blockchain {
     public DbIterator<BlockImpl> getBlocks(Connection con, PreparedStatement pstmt) {
         return new DbIterator<>(con, pstmt, new DbIterator.ResultSetReader<BlockImpl>() {
             @Override
-            public BlockImpl get(Connection con, ResultSet rs) throws NhzException.ValidationException {
+            public BlockImpl get(Connection con, ResultSet rs) throws NxtException.ValidationException {
                 return BlockDb.loadBlock(con, rs);
             }
         });
@@ -138,7 +138,7 @@ final class BlockchainImpl implements Blockchain {
             }
             rs.close();
             return result;
-        } catch (NhzException.ValidationException|SQLException e) {
+        } catch (NxtException.ValidationException|SQLException e) {
             throw new RuntimeException(e.toString(), e);
         }
     }
@@ -181,7 +181,7 @@ final class BlockchainImpl implements Blockchain {
                 result.add(BlockDb.loadBlock(con, rs));
             }
             return result;
-        } catch (SQLException|NhzException.ValidationException e) {
+        } catch (SQLException|NxtException.ValidationException e) {
             throw new RuntimeException(e.toString(), e);
         }
     }
@@ -321,7 +321,7 @@ final class BlockchainImpl implements Blockchain {
     public DbIterator<TransactionImpl> getTransactions(Connection con, PreparedStatement pstmt) {
         return new DbIterator<>(con, pstmt, new DbIterator.ResultSetReader<TransactionImpl>() {
             @Override
-            public TransactionImpl get(Connection con, ResultSet rs) throws NhzException.ValidationException {
+            public TransactionImpl get(Connection con, ResultSet rs) throws NxtException.ValidationException {
                 return TransactionDb.loadTransaction(con, rs);
             }
         });

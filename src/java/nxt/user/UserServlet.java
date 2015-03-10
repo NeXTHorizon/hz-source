@@ -1,8 +1,8 @@
-package nhz.user;
+package nxt.user;
 
-import nhz.Nhz;
-import nhz.NhzException;
-import nhz.util.Logger;
+import nxt.Nxt;
+import nxt.NxtException;
+import nxt.util.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
@@ -15,20 +15,20 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nhz.user.JSONResponses.DENY_ACCESS;
-import static nhz.user.JSONResponses.INCORRECT_REQUEST;
-import static nhz.user.JSONResponses.POST_REQUIRED;
+import static nxt.user.JSONResponses.DENY_ACCESS;
+import static nxt.user.JSONResponses.INCORRECT_REQUEST;
+import static nxt.user.JSONResponses.POST_REQUIRED;
 
 public final class UserServlet extends HttpServlet  {
 
     abstract static class UserRequestHandler {
-        abstract JSONStreamAware processRequest(HttpServletRequest request, User user) throws NhzException, IOException;
+        abstract JSONStreamAware processRequest(HttpServletRequest request, User user) throws NxtException, IOException;
         boolean requirePost() {
             return false;
         }
     }
 
-    private static final boolean enforcePost = Nhz.getBooleanProperty("nhz.uiServerEnforcePOST");
+    private static final boolean enforcePost = Nxt.getBooleanProperty("nxt.uiServerEnforcePOST");
 
     private static final Map<String,UserRequestHandler> userRequestHandlers;
 
@@ -99,7 +99,7 @@ public final class UserServlet extends HttpServlet  {
                 user.enqueue(response);
             }
 
-        } catch (RuntimeException|NhzException e) {
+        } catch (RuntimeException|NxtException e) {
 
             Logger.logMessage("Error processing GET request", e);
             if (user != null) {

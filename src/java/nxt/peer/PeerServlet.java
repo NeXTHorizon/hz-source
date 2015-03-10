@@ -1,9 +1,9 @@
-package nhz.peer;
+package nxt.peer;
 
-import nhz.util.CountingInputStream;
-import nhz.util.CountingOutputStream;
-import nhz.util.JSON;
-import nhz.util.Logger;
+import nxt.util.CountingInputStream;
+import nxt.util.CountingOutputStream;
+import nxt.util.JSON;
+import nxt.util.Logger;
 import org.eclipse.jetty.server.Response;
 import org.eclipse.jetty.servlets.gzip.CompressedResponseWrapper;
 import org.json.simple.JSONObject;

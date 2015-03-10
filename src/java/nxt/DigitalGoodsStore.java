@@ -1,9 +1,9 @@
-package nhz;
+package nxt;
 
-import nhz.crypto.EncryptedData;
-import nhz.util.Convert;
-import nhz.util.Listener;
-import nhz.util.Listeners;
+import nxt.crypto.EncryptedData;
+import nxt.util.Convert;
+import nxt.util.Listener;
+import nxt.util.Listeners;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -25,7 +25,7 @@ public final class DigitalGoodsStore {
     }
 
     static {
-        Nhz.getBlockchainProcessor().addListener(new Listener<Block>() {
+        Nxt.getBlockchainProcessor().addListener(new Listener<Block>() {
             @Override
             public void notify(Block block) {
                 for (Map.Entry<Long, Purchase> pendingPurchaseEntry : pendingPurchasesMap.entrySet()) {
@@ -41,10 +41,10 @@ public final class DigitalGoodsStore {
         }, BlockchainProcessor.Event.AFTER_BLOCK_APPLY);
 
         // reverse any pending purchase expiration that was caused by the block that got popped off
-        Nhz.getBlockchainProcessor().addListener(new Listener<Block>() {
+        Nxt.getBlockchainProcessor().addListener(new Listener<Block>() {
             @Override
             public void notify(Block block) {
-                Block previousBlock = Nhz.getBlockchain().getLastBlock();
+                Block previousBlock = Nxt.getBlockchain().getLastBlock();
                 for (Map.Entry<Long, Purchase> purchaseEntry : purchasesMap.entrySet()) {
                     Purchase purchase = purchaseEntry.getValue();
                     if (block.getTimestamp() > purchase.getDeliveryDeadlineTimestamp()
@@ -482,7 +482,7 @@ public final class DigitalGoodsStore {
                                 int deliveryDeadlineTimestamp, Appendix.EncryptedMessage encryptedMessage, int timestamp) {
         Goods goods = getGoods(goodsId);
         if (! goods.isDelisted() && quantity <= goods.getQuantity() && priceNQT == goods.getPriceNQT()
-                && deliveryDeadlineTimestamp > Nhz.getBlockchain().getLastBlock().getTimestamp()) {
+                && deliveryDeadlineTimestamp > Nxt.getBlockchain().getLastBlock().getTimestamp()) {
             goods.changeQuantity(-quantity);
             addPurchase(purchaseId, buyerId, goodsId, goods.getSellerId(), quantity, priceNQT,
                     deliveryDeadlineTimestamp, encryptedMessage, timestamp);

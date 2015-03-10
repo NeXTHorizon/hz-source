@@ -1,4 +1,4 @@
-package nhz.util;
+package nxt.util;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

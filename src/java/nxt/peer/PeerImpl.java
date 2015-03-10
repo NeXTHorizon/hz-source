@@ -1,13 +1,13 @@
-package nhz.peer;
+package nxt.peer;
 
-import nhz.Account;
-import nhz.BlockchainProcessor;
-import nhz.Constants;
-import nhz.NhzException;
-import nhz.util.Convert;
-import nhz.util.CountingInputStream;
-import nhz.util.CountingOutputStream;
-import nhz.util.Logger;
+import nxt.Account;
+import nxt.BlockchainProcessor;
+import nxt.Constants;
+import nxt.NxtException;
+import nxt.util.Convert;
+import nxt.util.CountingInputStream;
+import nxt.util.CountingOutputStream;
+import nxt.util.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 import org.json.simple.JSONValue;
@@ -201,7 +201,7 @@ final class PeerImpl implements Peer {
 
     @Override
     public void blacklist(Exception cause) {
-        if (cause instanceof NhzException.NotCurrentlyValidException || cause instanceof BlockchainProcessor.BlockOutOfOrderException) {
+        if (cause instanceof NxtException.NotCurrentlyValidException || cause instanceof BlockchainProcessor.BlockOutOfOrderException) {
             // don't blacklist peers just because a feature is not yet enabled
             // prevents erroneous blacklisting during loading of blockchain from scratch
             return;

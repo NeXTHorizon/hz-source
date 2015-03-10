@@ -1,4 +1,4 @@
-package nhz.user;
+package nxt.user;
 
 import org.json.simple.JSONStreamAware;
 

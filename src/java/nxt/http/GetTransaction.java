@@ -1,15 +1,15 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Nhz;
-import nhz.Transaction;
-import nhz.util.Convert;
+import nxt.Nxt;
+import nxt.Transaction;
+import nxt.util.Convert;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.INCORRECT_TRANSACTION;
-import static nhz.http.JSONResponses.MISSING_TRANSACTION;
-import static nhz.http.JSONResponses.UNKNOWN_TRANSACTION;
+import static nxt.http.JSONResponses.INCORRECT_TRANSACTION;
+import static nxt.http.JSONResponses.MISSING_TRANSACTION;
+import static nxt.http.JSONResponses.UNKNOWN_TRANSACTION;
 
 public final class GetTransaction extends APIServlet.APIRequestHandler {
 
@@ -33,9 +33,9 @@ public final class GetTransaction extends APIServlet.APIRequestHandler {
         try {
             if (transactionIdString != null) {
                 transactionId = Convert.parseUnsignedLong(transactionIdString);
-                transaction = Nhz.getBlockchain().getTransaction(transactionId);
+                transaction = Nxt.getBlockchain().getTransaction(transactionId);
             } else {
-                transaction = Nhz.getBlockchain().getTransactionByFullHash(transactionFullHash);
+                transaction = Nxt.getBlockchain().getTransactionByFullHash(transactionFullHash);
                 if (transaction == null) {
                     return UNKNOWN_TRANSACTION;
                 }
@@ -45,7 +45,7 @@ public final class GetTransaction extends APIServlet.APIRequestHandler {
         }
 
         if (transaction == null) {
-            transaction = Nhz.getTransactionProcessor().getUnconfirmedTransaction(transactionId);
+            transaction = Nxt.getTransactionProcessor().getUnconfirmedTransaction(transactionId);
             if (transaction == null) {
                 return UNKNOWN_TRANSACTION;
             }

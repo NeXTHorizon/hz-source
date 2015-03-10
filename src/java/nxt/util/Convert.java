@@ -1,8 +1,8 @@
-package nhz.util;
+package nxt.util;
 
-import nhz.Constants;
-import nhz.NhzException;
-import nhz.crypto.Crypto;
+import nxt.Constants;
+import nxt.NxtException;
+import nxt.crypto.Crypto;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -171,9 +171,9 @@ public final class Convert {
         }
     }
 
-    public static String readString(ByteBuffer buffer, int numBytes, int maxLength) throws NhzException.NotValidException {
+    public static String readString(ByteBuffer buffer, int numBytes, int maxLength) throws NxtException.NotValidException {
         if (numBytes > 3 * maxLength) {
-            throw new NhzException.NotValidException("Max parameter length exceeded");
+            throw new NxtException.NotValidException("Max parameter length exceeded");
         }
         byte[] bytes = new byte[numBytes];
         buffer.get(bytes);
@@ -184,8 +184,8 @@ public final class Convert {
         return s == null ? replaceNull : s.length() > limit ? (s.substring(0, dots ? limit - 3 : limit) + (dots ? "..." : "")) : s;
     }
 
-    public static long parseNHZ(String nhz) {
-        return parseStringFraction(nhz, 8, Constants.MAX_BALANCE_NHZ);
+    public static long parseNHZ(String nxt) {
+        return parseStringFraction(nxt, 8, Constants.MAX_BALANCE_NHZ);
     }
 
     private static long parseStringFraction(String value, int decimals, long maxValue) {

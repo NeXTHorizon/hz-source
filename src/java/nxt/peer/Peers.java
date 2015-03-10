@@ -1,16 +1,16 @@
-package nhz.peer;
+package nxt.peer;
 
-import nhz.Account;
-import nhz.Block;
-import nhz.Constants;
-import nhz.Nhz;
-import nhz.Transaction;
-import nhz.util.Convert;
-import nhz.util.JSON;
-import nhz.util.Listener;
-import nhz.util.Listeners;
-import nhz.util.Logger;
-import nhz.util.ThreadPool;
+import nxt.Account;
+import nxt.Block;
+import nxt.Constants;
+import nxt.Nxt;
+import nxt.Transaction;
+import nxt.util.Convert;
+import nxt.util.JSON;
+import nxt.util.Listener;
+import nxt.util.Listeners;
+import nxt.util.Logger;
+import nxt.util.ThreadPool;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.FilterHolder;
@@ -100,17 +100,17 @@ public final class Peers {
 
     static {
 
-        myPlatform = Nhz.getStringProperty("nhz.myPlatform");
-        myAddress = Nhz.getStringProperty("nhz.myAddress");
+        myPlatform = Nxt.getStringProperty("nxt.myPlatform");
+        myAddress = Nxt.getStringProperty("nxt.myAddress");
         if (myAddress != null && myAddress.endsWith(":" + TESTNET_PEER_PORT) && !Constants.isTestnet) {
             throw new RuntimeException("Port " + TESTNET_PEER_PORT + " should only be used for testnet!!!");
         }
-        myPeerServerPort = Nhz.getIntProperty("nhz.peerServerPort");
+        myPeerServerPort = Nxt.getIntProperty("nxt.peerServerPort");
         if (myPeerServerPort == TESTNET_PEER_PORT && !Constants.isTestnet) {
             throw new RuntimeException("Port " + TESTNET_PEER_PORT + " should only be used for testnet!!!");
         }
-        shareMyAddress = Nhz.getBooleanProperty("nhz.shareMyAddress") && ! Constants.isOffline;
-        myHallmark = Nhz.getStringProperty("nhz.myHallmark");
+        shareMyAddress = Nxt.getBooleanProperty("nxt.shareMyAddress") && ! Constants.isOffline;
+        myHallmark = Nxt.getStringProperty("nxt.myHallmark");
         if (Peers.myHallmark != null && Peers.myHallmark.length() > 0) {
             try {
                 Hallmark hallmark = Hallmark.parseHallmark(Peers.myHallmark);
@@ -150,8 +150,8 @@ public final class Peers {
         if (Peers.myHallmark != null && Peers.myHallmark.length() > 0) {
             json.put("hallmark", Peers.myHallmark);
         }
-        json.put("application", Nhz.APPLICATION);
-        json.put("version", Nhz.VERSION);
+        json.put("application", Nxt.APPLICATION);
+        json.put("version", Nxt.VERSION);
         json.put("platform", Peers.myPlatform);
         json.put("shareAddress", Peers.shareMyAddress);
         Logger.logDebugMessage("My peer info:\n" + json.toJSONString());
@@ -159,36 +159,36 @@ public final class Peers {
         json.put("requestType", "getInfo");
         myPeerInfoRequest = JSON.prepareRequest(json);
 
-        List<String> wellKnownPeersList = Constants.isTestnet ? Nhz.getStringListProperty("nhz.testnetPeers")
-                : Nhz.getStringListProperty("nhz.wellKnownPeers");
+        List<String> wellKnownPeersList = Constants.isTestnet ? Nxt.getStringListProperty("nxt.testnetPeers")
+                : Nxt.getStringListProperty("nxt.wellKnownPeers");
         if (wellKnownPeersList.isEmpty() || Constants.isOffline) {
             wellKnownPeers = Collections.emptySet();
         } else {
             wellKnownPeers = Collections.unmodifiableSet(new HashSet<>(wellKnownPeersList));
         }
 
-        List<String> knownBlacklistedPeersList = Nhz.getStringListProperty("nhz.knownBlacklistedPeers");
+        List<String> knownBlacklistedPeersList = Nxt.getStringListProperty("nxt.knownBlacklistedPeers");
         if (knownBlacklistedPeersList.isEmpty()) {
             knownBlacklistedPeers = Collections.emptySet();
         } else {
             knownBlacklistedPeers = Collections.unmodifiableSet(new HashSet<>(knownBlacklistedPeersList));
         }
 
-        maxNumberOfConnectedPublicPeers = Nhz.getIntProperty("nhz.maxNumberOfConnectedPublicPeers");
-        maxNumberOfKnownPeers = Nhz.getIntProperty("nxt.maxNumberOfKnownPeers");
-        minNumberOfKnownPeers = Nhz.getIntProperty("nxt.minNumberOfKnownPeers");
-        connectTimeout = Nhz.getIntProperty("nhz.connectTimeout");
-        readTimeout = Nhz.getIntProperty("nhz.readTimeout");
-        enableHallmarkProtection = Nhz.getBooleanProperty("nhz.enableHallmarkProtection");
-        pushThreshold = Nhz.getIntProperty("nhz.pushThreshold");
-        pullThreshold = Nhz.getIntProperty("nhz.pullThreshold");
+        maxNumberOfConnectedPublicPeers = Nxt.getIntProperty("nxt.maxNumberOfConnectedPublicPeers");
+        maxNumberOfKnownPeers = Nxt.getIntProperty("nxt.maxNumberOfKnownPeers");
+        minNumberOfKnownPeers = Nxt.getIntProperty("nxt.minNumberOfKnownPeers");
+        connectTimeout = Nxt.getIntProperty("nxt.connectTimeout");
+        readTimeout = Nxt.getIntProperty("nxt.readTimeout");
+        enableHallmarkProtection = Nxt.getBooleanProperty("nxt.enableHallmarkProtection");
+        pushThreshold = Nxt.getIntProperty("nxt.pushThreshold");
+        pullThreshold = Nxt.getIntProperty("nxt.pullThreshold");
 
-        blacklistingPeriod = Nhz.getIntProperty("nhz.blacklistingPeriod");
-        communicationLoggingMask = Nhz.getIntProperty("nhz.communicationLoggingMask");
-        sendToPeersLimit = Nhz.getIntProperty("nhz.sendToPeersLimit");
-        usePeersDb = Nhz.getBooleanProperty("nhz.usePeersDb") && ! Constants.isOffline;
-        savePeers = usePeersDb && Nhz.getBooleanProperty("nhz.savePeers");
-        getMorePeers = Nhz.getBooleanProperty("nhz.getMorePeers");
+        blacklistingPeriod = Nxt.getIntProperty("nxt.blacklistingPeriod");
+        communicationLoggingMask = Nxt.getIntProperty("nxt.communicationLoggingMask");
+        sendToPeersLimit = Nxt.getIntProperty("nxt.sendToPeersLimit");
+        usePeersDb = Nxt.getBooleanProperty("nxt.usePeersDb") && ! Constants.isOffline;
+        savePeers = usePeersDb && Nxt.getBooleanProperty("nxt.savePeers");
+        getMorePeers = Nxt.getBooleanProperty("nxt.getMorePeers");
 
         ThreadPool.runBeforeStart(new Runnable() {
 
@@ -244,22 +244,22 @@ public final class Peers {
                 ServerConnector connector = new ServerConnector(peerServer);
                 final int port = Constants.isTestnet ? TESTNET_PEER_PORT : Peers.myPeerServerPort;
                 connector.setPort(port);
-                final String host = Nhz.getStringProperty("nhz.peerServerHost");
+                final String host = Nxt.getStringProperty("nxt.peerServerHost");
                 connector.setHost(host);
-                connector.setIdleTimeout(Nhz.getIntProperty("nhz.peerServerIdleTimeout"));
+                connector.setIdleTimeout(Nxt.getIntProperty("nxt.peerServerIdleTimeout"));
                 connector.setReuseAddress(true);
                 peerServer.addConnector(connector);
 
                 ServletHolder peerServletHolder = new ServletHolder(new PeerServlet());
-                boolean isGzipEnabled = Nhz.getBooleanProperty("nhz.enablePeerServerGZIPFilter");
+                boolean isGzipEnabled = Nxt.getBooleanProperty("nxt.enablePeerServerGZIPFilter");
                 peerServletHolder.setInitParameter("isGzipEnabled", Boolean.toString(isGzipEnabled));
                 ServletHandler peerHandler = new ServletHandler();
                 peerHandler.addServletWithMapping(peerServletHolder, "/*");
-                if (Nhz.getBooleanProperty("nhz.enablePeerServerDoSFilter")) {
+                if (Nxt.getBooleanProperty("nxt.enablePeerServerDoSFilter")) {
                     FilterHolder dosFilterHolder = peerHandler.addFilterWithMapping(DoSFilter.class, "/*", FilterMapping.DEFAULT);
-                    dosFilterHolder.setInitParameter("maxRequestsPerSec", Nhz.getStringProperty("nhz.peerServerDoSFilter.maxRequestsPerSec"));
-                    dosFilterHolder.setInitParameter("delayMs", Nhz.getStringProperty("nhz.peerServerDoSFilter.delayMs"));
-                    dosFilterHolder.setInitParameter("maxRequestMs", Nhz.getStringProperty("nhz.peerServerDoSFilter.maxRequestMs"));
+                    dosFilterHolder.setInitParameter("maxRequestsPerSec", Nxt.getStringProperty("nxt.peerServerDoSFilter.maxRequestsPerSec"));
+                    dosFilterHolder.setInitParameter("delayMs", Nxt.getStringProperty("nxt.peerServerDoSFilter.delayMs"));
+                    dosFilterHolder.setInitParameter("maxRequestMs", Nxt.getStringProperty("nxt.peerServerDoSFilter.maxRequestMs"));
                     dosFilterHolder.setInitParameter("trackSessions", "false");
                     dosFilterHolder.setAsyncSupported(true);
                 }
@@ -497,7 +497,7 @@ public final class Peers {
                 Logger.logDebugMessage("Failed to stop peer server", e);
             }
         }
-        String dumpPeersVersion = Nhz.getStringProperty("nhz.dumpPeersVersion");
+        String dumpPeersVersion = Nxt.getStringProperty("nxt.dumpPeersVersion");
         if (dumpPeersVersion != null) {
             StringBuilder buf = new StringBuilder();
             for (Map.Entry<String,String> entry : announcedAddresses.entrySet()) {

@@ -1,4 +1,4 @@
-package nhz.util;
+package nxt.util;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;

@@ -1,6 +1,6 @@
-package nhz.util;
+package nxt.util;
 
-import nhz.Nhz;
+import nxt.Nxt;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -10,7 +10,7 @@ import java.util.Properties;
 import java.util.logging.LogManager;
 
 /**
- * Handle logging for the Nhz node server
+ * Handle logging for the Nxt node server
  */
 public final class Logger {
 
@@ -49,14 +49,14 @@ public final class Logger {
      *
      * The existing Java logging configuration will be used if the Java logger has already
      * been initialized.  Otherwise, we will configure our own log manager and log handlers.
-     * The nhz/conf/logging-default.properties and nhz/conf/logging.properties configuration
+     * The nxt/conf/logging-default.properties and nxt/conf/logging.properties configuration
      * files will be used.  Entries in logging.properties will override entries in
      * logging-default.properties.
      */
     static {
         String oldManager = System.getProperty("java.util.logging.manager");
-        System.setProperty("java.util.logging.manager", "nhz.util.NhzLogManager");
-        if (!(LogManager.getLogManager() instanceof NhzLogManager)) {
+        System.setProperty("java.util.logging.manager", "nxt.util.NxtLogManager");
+        if (!(LogManager.getLogManager() instanceof NxtLogManager)) {
             System.setProperty("java.util.logging.manager",
                                (oldManager!=null ? oldManager : "java.util.logging.LogManager"));
         } else {
@@ -88,9 +88,9 @@ public final class Logger {
                 throw new RuntimeException("Error loading logging properties", e);
             }
         }
-        log = org.slf4j.LoggerFactory.getLogger(nhz.Nhz.class);
-        enableStackTraces = Nhz.getBooleanProperty("nhz.enableStackTraces");
-        enableLogTraceback = Nhz.getBooleanProperty("nhz.enableLogTraceback");
+        log = org.slf4j.LoggerFactory.getLogger(nxt.Nxt.class);
+        enableStackTraces = Nxt.getBooleanProperty("nxt.enableStackTraces");
+        enableLogTraceback = Nxt.getBooleanProperty("nxt.enableLogTraceback");
         logInfoMessage("logging enabled");
     }
 
@@ -100,8 +100,8 @@ public final class Logger {
      * Logger shutdown
      */
     public static void shutdown() {
-        if (LogManager.getLogManager() instanceof NhzLogManager) {
-            ((NhzLogManager) LogManager.getLogManager()).nhzShutdown();
+        if (LogManager.getLogManager() instanceof NxtLogManager) {
+            ((NxtLogManager) LogManager.getLogManager()).nxtShutdown();
         }
     }
 

@@ -1,4 +1,4 @@
-package nhz.util;
+package nxt.util;
 
 public interface Listener<T> {
 

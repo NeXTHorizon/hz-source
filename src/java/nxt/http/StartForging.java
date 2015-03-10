@@ -1,13 +1,13 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Generator;
+import nxt.Generator;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.MISSING_SECRET_PHRASE;
-import static nhz.http.JSONResponses.UNKNOWN_ACCOUNT;
+import static nxt.http.JSONResponses.MISSING_SECRET_PHRASE;
+import static nxt.http.JSONResponses.UNKNOWN_ACCOUNT;
 
 
 public final class StartForging extends APIServlet.APIRequestHandler {

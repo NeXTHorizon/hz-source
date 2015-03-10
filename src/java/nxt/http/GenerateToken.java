@@ -1,14 +1,14 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Token;
+import nxt.Token;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.INCORRECT_WEBSITE;
-import static nhz.http.JSONResponses.MISSING_SECRET_PHRASE;
-import static nhz.http.JSONResponses.MISSING_WEBSITE;
+import static nxt.http.JSONResponses.INCORRECT_WEBSITE;
+import static nxt.http.JSONResponses.MISSING_SECRET_PHRASE;
+import static nxt.http.JSONResponses.MISSING_WEBSITE;
 
 
 public final class GenerateToken extends APIServlet.APIRequestHandler {

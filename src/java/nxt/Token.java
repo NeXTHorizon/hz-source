@@ -1,7 +1,7 @@
-package nhz;
+package nxt;
 
-import nhz.crypto.Crypto;
-import nhz.util.Convert;
+import nxt.crypto.Crypto;
+import nxt.util.Convert;
 
 public final class Token {
 

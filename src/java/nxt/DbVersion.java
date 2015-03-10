@@ -1,6 +1,6 @@
-package nhz;
+package nxt;
 
-import nhz.util.Logger;
+import nxt.util.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

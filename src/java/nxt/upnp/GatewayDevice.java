@@ -21,7 +21,7 @@
  * Daniele Castagna - daniele dot castagna at gmail dot com
  * 
  */
-package nhz.upnp;
+package nxt.upnp;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;

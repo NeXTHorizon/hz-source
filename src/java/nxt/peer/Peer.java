@@ -1,4 +1,4 @@
-package nhz.peer;
+package nxt.peer;
 
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;

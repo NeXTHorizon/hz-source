@@ -1,18 +1,18 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Nhz;
-import nhz.NhzException;
-import nhz.Transaction;
-import nhz.util.Convert;
-import nhz.util.Logger;
+import nxt.Nxt;
+import nxt.NxtException;
+import nxt.Transaction;
+import nxt.util.Convert;
+import nxt.util.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 import org.json.simple.JSONValue;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.INCORRECT_TRANSACTION_BYTES;
-import static nhz.http.JSONResponses.MISSING_TRANSACTION_BYTES_OR_JSON;
+import static nxt.http.JSONResponses.INCORRECT_TRANSACTION_BYTES;
+import static nxt.http.JSONResponses.MISSING_TRANSACTION_BYTES_OR_JSON;
 
 public final class ParseTransaction extends APIServlet.APIRequestHandler {
 
@@ -23,7 +23,7 @@ public final class ParseTransaction extends APIServlet.APIRequestHandler {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException.ValidationException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException.ValidationException {
 
         String transactionBytes = Convert.emptyToNull(req.getParameter("transactionBytes"));
         String transactionJSON = Convert.emptyToNull(req.getParameter("transactionJSON"));
@@ -35,15 +35,15 @@ public final class ParseTransaction extends APIServlet.APIRequestHandler {
             Transaction transaction;
             if (transactionBytes != null) {
                 byte[] bytes = Convert.parseHexString(transactionBytes);
-                transaction = Nhz.getTransactionProcessor().parseTransaction(bytes);
+                transaction = Nxt.getTransactionProcessor().parseTransaction(bytes);
             } else {
                 JSONObject json = (JSONObject) JSONValue.parse(transactionJSON);
-                transaction = Nhz.getTransactionProcessor().parseTransaction(json);
+                transaction = Nxt.getTransactionProcessor().parseTransaction(json);
             }
             transaction.validate();
             response = JSONData.unconfirmedTransaction(transaction);
             response.put("verify", transaction.verifySignature());
-        } catch (NhzException.ValidationException|RuntimeException e) {
+        } catch (NxtException.ValidationException|RuntimeException e) {
             Logger.logDebugMessage(e.getMessage(), e);
             return INCORRECT_TRANSACTION_BYTES;
         }

@@ -1,7 +1,7 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.NhzException;
-import nhz.Trade;
+import nxt.NxtException;
+import nxt.Trade;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
@@ -18,7 +18,7 @@ public final class GetTrades extends APIServlet.APIRequestHandler {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
 
         Long assetId = ParameterParser.getAsset(req).getId();
         int firstIndex = ParameterParser.getFirstIndex(req);

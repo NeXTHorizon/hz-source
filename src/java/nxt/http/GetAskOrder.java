@@ -1,12 +1,12 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.NhzException;
-import nhz.Order;
+import nxt.NxtException;
+import nxt.Order;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.UNKNOWN_ORDER;
+import static nxt.http.JSONResponses.UNKNOWN_ORDER;
 
 public final class GetAskOrder extends APIServlet.APIRequestHandler {
 
@@ -17,7 +17,7 @@ public final class GetAskOrder extends APIServlet.APIRequestHandler {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
         Long orderId = ParameterParser.getOrderId(req);
         Order.Ask askOrder = Order.Ask.getAskOrder(orderId);
         if (askOrder == null) {

@@ -1,8 +1,8 @@
-package nhz;
+package nxt;
 
-import nhz.crypto.Crypto;
-import nhz.util.Convert;
-import nhz.util.Logger;
+import nxt.crypto.Crypto;
+import nxt.util.Convert;
+import nxt.util.Logger;
 import org.json.simple.JSONObject;
 
 import java.math.BigInteger;
@@ -58,7 +58,7 @@ final class TransactionImpl implements Transaction {
         }
 
         @Override
-        public TransactionImpl build() throws NhzException.NotValidException {
+        public TransactionImpl build() throws NxtException.NotValidException {
             return new TransactionImpl(this);
         }
 
@@ -189,7 +189,7 @@ final class TransactionImpl implements Transaction {
     private volatile Long senderId;
     private volatile String fullHash;
 
-    private TransactionImpl(BuilderImpl builder) throws NhzException.NotValidException {
+    private TransactionImpl(BuilderImpl builder) throws NxtException.NotValidException {
 
         this.timestamp = builder.timestamp;
         this.deadline = builder.deadline;
@@ -240,23 +240,23 @@ final class TransactionImpl implements Transaction {
                 || amountNQT < 0
                 || amountNQT > Constants.MAX_BALANCE_NQT
                 || type == null) {
-            throw new NhzException.NotValidException("Invalid transaction parameters:\n type: " + type + ", timestamp: " + timestamp
+            throw new NxtException.NotValidException("Invalid transaction parameters:\n type: " + type + ", timestamp: " + timestamp
                     + ", deadline: " + deadline + ", fee: " + feeNQT + ", amount: " + amountNQT);
         }
 
         if (attachment == null || type != attachment.getTransactionType()) {
-            throw new NhzException.NotValidException("Invalid attachment " + attachment + " for transaction of type " + type);
+            throw new NxtException.NotValidException("Invalid attachment " + attachment + " for transaction of type " + type);
         }
 
         if (! type.hasRecipient()) {
             if (recipientId != null && !recipientId.equals(Genesis.CREATOR_ID) || getAmountNQT() != 0) {
-                throw new NhzException.NotValidException("Transactions of this type must have recipient == Genesis, amount == 0");
+                throw new NxtException.NotValidException("Transactions of this type must have recipient == Genesis, amount == 0");
             }
         }
 
         for (Appendix.AbstractAppendix appendage : appendages) {
             if (! appendage.verifyVersion(this.version)) {
-                throw new NhzException.NotValidException("Invalid attachment version " + appendage.getVersion()
+                throw new NxtException.NotValidException("Invalid attachment version " + appendage.getVersion()
                         + " for transaction version " + this.version);
             }
         }
@@ -511,7 +511,7 @@ final class TransactionImpl implements Transaction {
         }
     }
 
-    static TransactionImpl parseTransaction(byte[] bytes) throws NhzException.ValidationException {
+    static TransactionImpl parseTransaction(byte[] bytes) throws NxtException.ValidationException {
         try {
             ByteBuffer buffer = ByteBuffer.wrap(bytes);
             buffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -570,7 +570,7 @@ final class TransactionImpl implements Transaction {
                 builder.encryptToSelfMessage(new Appendix.EncryptToSelfMessage(buffer, version));
             }
             return builder.build();
-        } catch (NhzException.NotValidException|RuntimeException e) {
+        } catch (NxtException.NotValidException|RuntimeException e) {
             Logger.logDebugMessage("Failed to parse transaction bytes: " + Convert.toHexString(bytes));
             throw e;
         }
@@ -623,7 +623,7 @@ final class TransactionImpl implements Transaction {
         return json;
     }
 
-    static TransactionImpl parseTransaction(JSONObject transactionData) throws NhzException.NotValidException {
+    static TransactionImpl parseTransaction(JSONObject transactionData) throws NxtException.NotValidException {
         try {
             byte type = ((Long) transactionData.get("type")).byteValue();
             byte subtype = ((Long) transactionData.get("subtype")).byteValue();
@@ -640,7 +640,7 @@ final class TransactionImpl implements Transaction {
 
             TransactionType transactionType = TransactionType.findTransactionType(type, subtype);
             if (transactionType == null) {
-                throw new NhzException.NotValidException("Invalid transaction type: " + type + ", " + subtype);
+                throw new NxtException.NotValidException("Invalid transaction type: " + type + ", " + subtype);
             }
             TransactionImpl.BuilderImpl builder = new TransactionImpl.BuilderImpl(version, senderPublicKey,
                     amountNQT, feeNQT, timestamp, deadline,
@@ -662,7 +662,7 @@ final class TransactionImpl implements Transaction {
                 builder.ecBlockId(Convert.parseUnsignedLong((String) transactionData.get("ecBlockId")));
             }
             return builder.build();
-        } catch (NhzException.NotValidException|RuntimeException e) {
+        } catch (NxtException.NotValidException|RuntimeException e) {
             Logger.logDebugMessage("Failed to parse transaction: " + transactionData.toJSONString());
             throw e;
         }
@@ -720,7 +720,7 @@ final class TransactionImpl implements Transaction {
     private boolean useNQT() {
         return this.height > Constants.NQT_BLOCK
                 && (this.height < Integer.MAX_VALUE
-                || Nhz.getBlockchain().getHeight() >= Constants.NQT_BLOCK);
+                || Nxt.getBlockchain().getHeight() >= Constants.NQT_BLOCK);
     }
 
     private byte[] zeroSignature(byte[] data) {
@@ -753,11 +753,11 @@ final class TransactionImpl implements Transaction {
     }
 
     @Override
-    public void validate() throws NhzException.ValidationException {
-        if (Nhz.getBlockchain().getHeight() >= Constants.PUBLIC_KEY_ANNOUNCEMENT_BLOCK && type.hasRecipient() && recipientId != null) {
+    public void validate() throws NxtException.ValidationException {
+        if (Nxt.getBlockchain().getHeight() >= Constants.PUBLIC_KEY_ANNOUNCEMENT_BLOCK && type.hasRecipient() && recipientId != null) {
             Account recipientAccount = Account.getAccount(recipientId);
             if ((recipientAccount == null || recipientAccount.getPublicKey() == null) && publicKeyAnnouncement == null) {
-                throw new NhzException.NotCurrentlyValidException("Recipient account does not have a public key, must attach a public key announcement");
+                throw new NxtException.NotCurrentlyValidException("Recipient account does not have a public key, must attach a public key announcement");
             }
         }
         for (Appendix.AbstractAppendix appendage : appendages) {

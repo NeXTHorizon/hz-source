@@ -1,4 +1,4 @@
-package nhz.util;
+package nxt.util;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

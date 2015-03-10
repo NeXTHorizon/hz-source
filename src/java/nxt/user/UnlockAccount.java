@@ -1,11 +1,11 @@
-package nhz.user;
+package nxt.user;
 
-import nhz.Account;
-import nhz.Block;
-import nhz.Nhz;
-import nhz.Transaction;
-import nhz.util.Convert;
-import nhz.util.DbIterator;
+import nxt.Account;
+import nxt.Block;
+import nxt.Nxt;
+import nxt.Transaction;
+import nxt.util.Convert;
+import nxt.util.DbIterator;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
@@ -18,7 +18,7 @@ import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import static nhz.user.JSONResponses.LOCK_ACCOUNT;
+import static nxt.user.JSONResponses.LOCK_ACCOUNT;
 
 public final class UnlockAccount extends UserServlet.UserRequestHandler {
 
@@ -83,7 +83,7 @@ public final class UnlockAccount extends UserServlet.UserRequestHandler {
 
             JSONArray myTransactions = new JSONArray();
             byte[] accountPublicKey = account.getPublicKey();
-            for (Transaction transaction : Nhz.getTransactionProcessor().getAllUnconfirmedTransactions()) {
+            for (Transaction transaction : Nxt.getTransactionProcessor().getAllUnconfirmedTransactions()) {
 
                 if (Arrays.equals(transaction.getSenderPublicKey(), accountPublicKey)) {
 
@@ -122,8 +122,8 @@ public final class UnlockAccount extends UserServlet.UserRequestHandler {
 
             SortedSet<JSONObject> myTransactionsSet = new TreeSet<>(myTransactionsComparator);
 
-            int blockchainHeight = Nhz.getBlockchain().getLastBlock().getHeight();
-            try (DbIterator<? extends Block> blockIterator = Nhz.getBlockchain().getBlocks(account, 0)) {
+            int blockchainHeight = Nxt.getBlockchain().getLastBlock().getHeight();
+            try (DbIterator<? extends Block> blockIterator = Nxt.getBlockchain().getBlocks(account, 0)) {
                 while (blockIterator.hasNext()) {
                     Block block = blockIterator.next();
                     if (block.getTotalFeeNQT() > 0) {
@@ -140,7 +140,7 @@ public final class UnlockAccount extends UserServlet.UserRequestHandler {
                 }
             }
 
-            try (DbIterator<? extends Transaction> transactionIterator = Nhz.getBlockchain().getTransactions(account, (byte) -1, (byte) -1, 0)) {
+            try (DbIterator<? extends Transaction> transactionIterator = Nxt.getBlockchain().getTransactions(account, (byte) -1, (byte) -1, 0)) {
                 while (transactionIterator.hasNext()) {
                     Transaction transaction = transactionIterator.next();
                     if (transaction.getSenderId().equals(accountId)) {

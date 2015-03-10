@@ -1,17 +1,17 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Nhz;
-import nhz.NhzException;
-import nhz.Transaction;
-import nhz.util.Convert;
+import nxt.Nxt;
+import nxt.NxtException;
+import nxt.Transaction;
+import nxt.util.Convert;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 import org.json.simple.JSONValue;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.INCORRECT_TRANSACTION_BYTES;
-import static nhz.http.JSONResponses.MISSING_TRANSACTION_BYTES_OR_JSON;
+import static nxt.http.JSONResponses.INCORRECT_TRANSACTION_BYTES;
+import static nxt.http.JSONResponses.MISSING_TRANSACTION_BYTES_OR_JSON;
 
 public final class BroadcastTransaction extends APIServlet.APIRequestHandler {
 
@@ -22,7 +22,7 @@ public final class BroadcastTransaction extends APIServlet.APIRequestHandler {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException.ValidationException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException.ValidationException {
 
         String transactionBytes = Convert.emptyToNull(req.getParameter("transactionBytes"));
         String transactionJSON = Convert.emptyToNull(req.getParameter("transactionJSON"));
@@ -35,20 +35,20 @@ public final class BroadcastTransaction extends APIServlet.APIRequestHandler {
             Transaction transaction;
             if (transactionBytes != null) {
                 byte[] bytes = Convert.parseHexString(transactionBytes);
-                transaction = Nhz.getTransactionProcessor().parseTransaction(bytes);
+                transaction = Nxt.getTransactionProcessor().parseTransaction(bytes);
             } else {
                 JSONObject json = (JSONObject) JSONValue.parse(transactionJSON);
-                transaction = Nhz.getTransactionProcessor().parseTransaction(json);
+                transaction = Nxt.getTransactionProcessor().parseTransaction(json);
             }
             transaction.validate();
 
             JSONObject response = new JSONObject();
 
             try {
-                Nhz.getTransactionProcessor().broadcast(transaction);
+                Nxt.getTransactionProcessor().broadcast(transaction);
                 response.put("transaction", transaction.getStringId());
                 response.put("fullHash", transaction.getFullHash());
-            } catch (NhzException.ValidationException e) {
+            } catch (NxtException.ValidationException e) {
                 response.put("error", e.getMessage());
             }
 

@@ -1,9 +1,9 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.NhzException;
+import nxt.NxtException;
 import org.json.simple.JSONStreamAware;
 
-final class ParameterException extends NhzException {
+final class ParameterException extends NxtException {
 
     private final JSONStreamAware errorResponse;
 

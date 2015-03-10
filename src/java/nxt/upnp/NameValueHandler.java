@@ -22,7 +22,7 @@
  * 
  */
 
-package nhz.upnp;
+package nxt.upnp;
 
 import java.util.Map;
 import org.xml.sax.Attributes;

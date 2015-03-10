@@ -1,7 +1,7 @@
-package nhz.peer;
+package nxt.peer;
 
-import nhz.Nhz;
-import nhz.util.Convert;
+import nxt.Nxt;
+import nxt.util.Convert;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
@@ -22,7 +22,7 @@ final class GetNextBlockIds extends PeerServlet.PeerRequestHandler {
 
         JSONArray nextBlockIds = new JSONArray();
         Long blockId = Convert.parseUnsignedLong((String) request.get("blockId"));
-        List<Long> ids = Nhz.getBlockchain().getBlockIdsAfter(blockId, 1440);
+        List<Long> ids = Nxt.getBlockchain().getBlockIdsAfter(blockId, 1440);
 
         for (Long id : ids) {
             nextBlockIds.add(Convert.toUnsignedLong(id));

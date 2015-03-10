@@ -1,19 +1,19 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Account;
-import nhz.Attachment;
-import nhz.DigitalGoodsStore;
-import nhz.NhzException;
-import nhz.util.Convert;
+import nxt.Account;
+import nxt.Attachment;
+import nxt.DigitalGoodsStore;
+import nxt.NxtException;
+import nxt.util.Convert;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.INCORRECT_DELIVERY_DEADLINE_TIMESTAMP;
-import static nhz.http.JSONResponses.INCORRECT_PURCHASE_PRICE;
-import static nhz.http.JSONResponses.INCORRECT_PURCHASE_QUANTITY;
-import static nhz.http.JSONResponses.MISSING_DELIVERY_DEADLINE_TIMESTAMP;
-import static nhz.http.JSONResponses.UNKNOWN_GOODS;
+import static nxt.http.JSONResponses.INCORRECT_DELIVERY_DEADLINE_TIMESTAMP;
+import static nxt.http.JSONResponses.INCORRECT_PURCHASE_PRICE;
+import static nxt.http.JSONResponses.INCORRECT_PURCHASE_QUANTITY;
+import static nxt.http.JSONResponses.MISSING_DELIVERY_DEADLINE_TIMESTAMP;
+import static nxt.http.JSONResponses.UNKNOWN_GOODS;
 
 public final class DGSPurchase extends CreateTransaction {
 
@@ -25,7 +25,7 @@ public final class DGSPurchase extends CreateTransaction {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
 
         DigitalGoodsStore.Goods goods = ParameterParser.getGoods(req);
         if (goods.isDelisted()) {

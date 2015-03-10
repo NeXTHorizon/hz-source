@@ -1,14 +1,14 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Account;
-import nhz.crypto.Crypto;
-import nhz.util.Convert;
+import nxt.Account;
+import nxt.crypto.Crypto;
+import nxt.util.Convert;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.MISSING_SECRET_PHRASE_OR_PUBLIC_KEY;
+import static nxt.http.JSONResponses.MISSING_SECRET_PHRASE_OR_PUBLIC_KEY;
 
 public final class GetAccountId extends APIServlet.APIRequestHandler {
 

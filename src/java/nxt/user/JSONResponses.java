@@ -1,6 +1,6 @@
-package nhz.user;
+package nxt.user;
 
-import nhz.util.JSON;
+import nxt.util.JSON;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 

@@ -1,7 +1,7 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Order;
-import nhz.util.Convert;
+import nxt.Order;
+import nxt.util.Convert;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;

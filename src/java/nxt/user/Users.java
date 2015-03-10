@@ -1,19 +1,19 @@
-package nhz.user;
+package nxt.user;
 
-import nhz.Account;
-import nhz.Block;
-import nhz.BlockchainProcessor;
-import nhz.Constants;
-import nhz.Generator;
-import nhz.Nhz;
-import nhz.Transaction;
-import nhz.TransactionProcessor;
-import nhz.peer.Peer;
-import nhz.peer.Peers;
-import nhz.util.Convert;
-import nhz.util.Listener;
-import nhz.util.Logger;
-import nhz.util.ThreadPool;
+import nxt.Account;
+import nxt.Block;
+import nxt.BlockchainProcessor;
+import nxt.Constants;
+import nxt.Generator;
+import nxt.Nxt;
+import nxt.Transaction;
+import nxt.TransactionProcessor;
+import nxt.peer.Peer;
+import nxt.peer.Peers;
+import nxt.util.Convert;
+import nxt.util.Listener;
+import nxt.util.Logger;
+import nxt.util.ThreadPool;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
@@ -68,21 +68,21 @@ public final class Users {
 
     static {
 
-        List<String> allowedUserHostsList = Nhz.getStringListProperty("nhz.allowedUserHosts");
+        List<String> allowedUserHostsList = Nxt.getStringListProperty("nxt.allowedUserHosts");
         if (! allowedUserHostsList.contains("*")) {
             allowedUserHosts = Collections.unmodifiableSet(new HashSet<>(allowedUserHostsList));
         } else {
             allowedUserHosts = null;
         }
 
-        boolean enableUIServer = Nhz.getBooleanProperty("nhz.enableUIServer");
+        boolean enableUIServer = Nxt.getBooleanProperty("nxt.enableUIServer");
         if (enableUIServer) {
-            final int port = Constants.isTestnet ? TESTNET_UI_PORT : Nhz.getIntProperty("nhz.uiServerPort");
-            final String host = Nhz.getStringProperty("nhz.uiServerHost");
+            final int port = Constants.isTestnet ? TESTNET_UI_PORT : Nxt.getIntProperty("nxt.uiServerPort");
+            final String host = Nxt.getStringProperty("nxt.uiServerHost");
             userServer = new Server();
             ServerConnector connector;
 
-            boolean enableSSL = Nhz.getBooleanProperty("nhz.uiSSL");
+            boolean enableSSL = Nxt.getBooleanProperty("nxt.uiSSL");
             if (enableSSL) {
                 Logger.logMessage("Using SSL (https) for the user interface server");
                 HttpConfiguration https_config = new HttpConfiguration();
@@ -90,8 +90,8 @@ public final class Users {
                 https_config.setSecurePort(port);
                 https_config.addCustomizer(new SecureRequestCustomizer());
                 SslContextFactory sslContextFactory = new SslContextFactory();
-                sslContextFactory.setKeyStorePath(Nhz.getStringProperty("nhz.keyStorePath"));
-                sslContextFactory.setKeyStorePassword(Nhz.getStringProperty("nhz.keyStorePassword"));
+                sslContextFactory.setKeyStorePath(Nxt.getStringProperty("nxt.keyStorePath"));
+                sslContextFactory.setKeyStorePassword(Nxt.getStringProperty("nxt.keyStorePassword"));
                 sslContextFactory.setExcludeCipherSuites("SSL_RSA_WITH_DES_CBC_SHA", "SSL_DHE_RSA_WITH_DES_CBC_SHA",
                         "SSL_DHE_DSS_WITH_DES_CBC_SHA", "SSL_RSA_EXPORT_WITH_RC4_40_MD5", "SSL_RSA_EXPORT_WITH_DES40_CBC_SHA",
                         "SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA", "SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA");
@@ -104,7 +104,7 @@ public final class Users {
 
             connector.setPort(port);
             connector.setHost(host);
-            connector.setIdleTimeout(Nhz.getIntProperty("nhz.uiServerIdleTimeout"));
+            connector.setIdleTimeout(Nxt.getIntProperty("nxt.uiServerIdleTimeout"));
             connector.setReuseAddress(true);
             userServer.addConnector(connector);
 
@@ -114,11 +114,11 @@ public final class Users {
             ResourceHandler userFileHandler = new ResourceHandler();
             userFileHandler.setDirectoriesListed(false);
             userFileHandler.setWelcomeFiles(new String[]{"index.html"});
-            userFileHandler.setResourceBase(Nhz.getStringProperty("nhz.uiResourceBase"));
+            userFileHandler.setResourceBase(Nxt.getStringProperty("nxt.uiResourceBase"));
 
             userHandlers.addHandler(userFileHandler);
 
-            String javadocResourceBase = Nhz.getStringProperty("nhz.javadocResourceBase");
+            String javadocResourceBase = Nxt.getStringProperty("nxt.javadocResourceBase");
             if (javadocResourceBase != null) {
                 ContextHandler contextHandler = new ContextHandler("/doc");
                 ResourceHandler docFileHandler = new ResourceHandler();
@@ -133,7 +133,7 @@ public final class Users {
             ServletHolder userHolder = userHandler.addServletWithMapping(UserServlet.class, "/nhz");
             userHolder.setAsyncSupported(true);
 
-            if (Nhz.getBooleanProperty("nhz.uiServerCORS")) {
+            if (Nxt.getBooleanProperty("nxt.uiServerCORS")) {
                 FilterHolder filterHolder = userHandler.addFilterWithMapping(CrossOriginFilter.class, "/*", FilterMapping.DEFAULT);
                 filterHolder.setInitParameter("allowedHeaders", "*");
                 filterHolder.setAsyncSupported(true);
@@ -382,7 +382,7 @@ public final class Users {
                 }
             }, Peers.Event.NEW_PEER);
 
-            Nhz.getTransactionProcessor().addListener(new Listener<List<Transaction>>() {
+            Nxt.getTransactionProcessor().addListener(new Listener<List<Transaction>>() {
                 @Override
                 public void notify(List<Transaction> transactions) {
                     JSONObject response = new JSONObject();
@@ -397,7 +397,7 @@ public final class Users {
                 }
             }, TransactionProcessor.Event.REMOVED_UNCONFIRMED_TRANSACTIONS);
 
-            Nhz.getTransactionProcessor().addListener(new Listener<List<Transaction>>() {
+            Nxt.getTransactionProcessor().addListener(new Listener<List<Transaction>>() {
                 @Override
                 public void notify(List<Transaction> transactions) {
                     JSONObject response = new JSONObject();
@@ -419,7 +419,7 @@ public final class Users {
                 }
             }, TransactionProcessor.Event.ADDED_UNCONFIRMED_TRANSACTIONS);
 
-            Nhz.getTransactionProcessor().addListener(new Listener<List<Transaction>>() {
+            Nxt.getTransactionProcessor().addListener(new Listener<List<Transaction>>() {
                 @Override
                 public void notify(List<Transaction> transactions) {
                     JSONObject response = new JSONObject();
@@ -441,7 +441,7 @@ public final class Users {
                 }
             }, TransactionProcessor.Event.ADDED_CONFIRMED_TRANSACTIONS);
 
-            Nhz.getTransactionProcessor().addListener(new Listener<List<Transaction>>() {
+            Nxt.getTransactionProcessor().addListener(new Listener<List<Transaction>>() {
                 @Override
                 public void notify(List<Transaction> transactions) {
                     JSONObject response = new JSONObject();
@@ -463,7 +463,7 @@ public final class Users {
                 }
             }, TransactionProcessor.Event.ADDED_DOUBLESPENDING_TRANSACTIONS);
 
-            Nhz.getBlockchainProcessor().addListener(new Listener<Block>() {
+            Nxt.getBlockchainProcessor().addListener(new Listener<Block>() {
                 @Override
                 public void notify(Block block) {
                     JSONObject response = new JSONObject();
@@ -486,7 +486,7 @@ public final class Users {
                 }
             }, BlockchainProcessor.Event.BLOCK_POPPED);
 
-            Nhz.getBlockchainProcessor().addListener(new Listener<Block>() {
+            Nxt.getBlockchainProcessor().addListener(new Listener<Block>() {
                 @Override
                 public void notify(Block block) {
                     JSONObject response = new JSONObject();

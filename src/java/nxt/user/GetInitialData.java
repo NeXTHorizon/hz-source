@@ -1,12 +1,12 @@
-package nhz.user;
+package nxt.user;
 
-import nhz.Block;
-import nhz.Constants;
-import nhz.Nhz;
-import nhz.Transaction;
-import nhz.peer.Peer;
-import nhz.peer.Peers;
-import nhz.util.Convert;
+import nxt.Block;
+import nxt.Constants;
+import nxt.Nxt;
+import nxt.Transaction;
+import nxt.peer.Peer;
+import nxt.peer.Peers;
+import nxt.util.Convert;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
@@ -29,7 +29,7 @@ public final class GetInitialData extends UserServlet.UserRequestHandler {
         JSONArray activePeers = new JSONArray(), knownPeers = new JSONArray(), blacklistedPeers = new JSONArray();
         JSONArray recentBlocks = new JSONArray();
 
-        for (Transaction transaction : Nhz.getTransactionProcessor().getAllUnconfirmedTransactions()) {
+        for (Transaction transaction : Nxt.getTransactionProcessor().getAllUnconfirmedTransactions()) {
 
             JSONObject unconfirmedTransaction = new JSONObject();
             unconfirmedTransaction.put("index", Users.getIndex(transaction));
@@ -91,8 +91,8 @@ public final class GetInitialData extends UserServlet.UserRequestHandler {
             }
         }
 
-        int height = Nhz.getBlockchain().getLastBlock().getHeight();
-        List<? extends Block> lastBlocks = Nhz.getBlockchain().getBlocksFromHeight(Math.max(0, height - 59));
+        int height = Nxt.getBlockchain().getLastBlock().getHeight();
+        List<? extends Block> lastBlocks = Nxt.getBlockchain().getBlocksFromHeight(Math.max(0, height - 59));
 
         for (int i = lastBlocks.size() - 1; i >=0; i--) {
             Block block = lastBlocks.get(i);
@@ -115,7 +115,7 @@ public final class GetInitialData extends UserServlet.UserRequestHandler {
 
         JSONObject response = new JSONObject();
         response.put("response", "processInitialData");
-        response.put("version", Nhz.VERSION);
+        response.put("version", Nxt.VERSION);
         if (unconfirmedTransactions.size() > 0) {
             response.put("unconfirmedTransactions", unconfirmedTransactions);
         }

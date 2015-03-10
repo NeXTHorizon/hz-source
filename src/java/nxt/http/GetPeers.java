@@ -1,7 +1,7 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.peer.Peer;
-import nhz.peer.Peers;
+import nxt.peer.Peer;
+import nxt.peer.Peers;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;

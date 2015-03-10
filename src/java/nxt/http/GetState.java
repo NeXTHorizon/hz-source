@@ -1,17 +1,17 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Account;
-import nhz.Alias;
-import nhz.Asset;
-import nhz.Generator;
-import nhz.Nhz;
-import nhz.Order;
-import nhz.Poll;
-import nhz.Trade;
-import nhz.Vote;
-import nhz.peer.Peer;
-import nhz.peer.Peers;
-import nhz.util.Convert;
+import nxt.Account;
+import nxt.Alias;
+import nxt.Asset;
+import nxt.Generator;
+import nxt.Nxt;
+import nxt.Order;
+import nxt.Poll;
+import nxt.Trade;
+import nxt.Vote;
+import nxt.peer.Peer;
+import nxt.peer.Peers;
+import nxt.util.Convert;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
@@ -31,11 +31,11 @@ public final class GetState extends APIServlet.APIRequestHandler {
 
         JSONObject response = new JSONObject();
 
-        response.put("application", Nhz.APPLICATION);
-        response.put("version", Nhz.VERSION);
+        response.put("application", Nxt.APPLICATION);
+        response.put("version", Nxt.VERSION);
         response.put("time", Convert.getEpochTime());
-        response.put("lastBlock", Nhz.getBlockchain().getLastBlock().getStringId());
-        response.put("cumulativeDifficulty", Nhz.getBlockchain().getLastBlock().getCumulativeDifficulty().toString());
+        response.put("lastBlock", Nxt.getBlockchain().getLastBlock().getStringId());
+        response.put("cumulativeDifficulty", Nxt.getBlockchain().getLastBlock().getCumulativeDifficulty().toString());
 
         long totalEffectiveBalance = 0;
         for (Account account : Account.getAllAccounts()) {
@@ -46,8 +46,8 @@ public final class GetState extends APIServlet.APIRequestHandler {
         }
         response.put("totalEffectiveBalanceNHZ", totalEffectiveBalance);
 
-        response.put("numberOfBlocks", Nhz.getBlockchain().getHeight() + 1);
-        response.put("numberOfTransactions", Nhz.getBlockchain().getTransactionCount());
+        response.put("numberOfBlocks", Nxt.getBlockchain().getHeight() + 1);
+        response.put("numberOfTransactions", Nxt.getBlockchain().getTransactionCount());
         response.put("numberOfAccounts", Account.getAllAccounts().size());
         response.put("numberOfAssets", Asset.getAllAssets().size());
         response.put("numberOfOrders", Order.Ask.getAllAskOrders().size() + Order.Bid.getAllBidOrders().size());
@@ -61,10 +61,10 @@ public final class GetState extends APIServlet.APIRequestHandler {
         response.put("numberOfVotes", Vote.getVotes().size());
         response.put("numberOfPeers", Peers.getAllPeers().size());
         response.put("numberOfUnlockedAccounts", Generator.getAllGenerators().size());
-        Peer lastBlockchainFeeder = Nhz.getBlockchainProcessor().getLastBlockchainFeeder();
+        Peer lastBlockchainFeeder = Nxt.getBlockchainProcessor().getLastBlockchainFeeder();
         response.put("lastBlockchainFeeder", lastBlockchainFeeder == null ? null : lastBlockchainFeeder.getAnnouncedAddress());
-        response.put("lastBlockchainFeederHeight", Nhz.getBlockchainProcessor().getLastBlockchainFeederHeight());
-        response.put("isScanning", Nhz.getBlockchainProcessor().isScanning());
+        response.put("lastBlockchainFeederHeight", Nxt.getBlockchainProcessor().getLastBlockchainFeederHeight());
+        response.put("isScanning", Nxt.getBlockchainProcessor().isScanning());
         response.put("availableProcessors", Runtime.getRuntime().availableProcessors());
         response.put("maxMemory", Runtime.getRuntime().maxMemory());
         response.put("totalMemory", Runtime.getRuntime().totalMemory());

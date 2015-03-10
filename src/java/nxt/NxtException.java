@@ -1,24 +1,24 @@
-package nhz;
+package nxt;
 
-public abstract class NhzException extends Exception {
+public abstract class NxtException extends Exception {
 
-    protected NhzException() {
+    protected NxtException() {
         super();
     }
 
-    protected NhzException(String message) {
+    protected NxtException(String message) {
         super(message);
     }
 
-    protected NhzException(String message, Throwable cause) {
+    protected NxtException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    protected NhzException(Throwable cause) {
+    protected NxtException(Throwable cause) {
         super(cause);
     }
 
-    public static abstract class ValidationException extends NhzException {
+    public static abstract class ValidationException extends NxtException {
 
         private ValidationException(String message) {
             super(message);

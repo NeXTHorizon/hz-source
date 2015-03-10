@@ -1,14 +1,14 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Nhz;
-import nhz.util.Convert;
+import nxt.Nxt;
+import nxt.util.Convert;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.INCORRECT_HEIGHT;
-import static nhz.http.JSONResponses.MISSING_HEIGHT;
+import static nxt.http.JSONResponses.INCORRECT_HEIGHT;
+import static nxt.http.JSONResponses.MISSING_HEIGHT;
 
 public final class GetBlockId extends APIServlet.APIRequestHandler {
 
@@ -34,7 +34,7 @@ public final class GetBlockId extends APIServlet.APIRequestHandler {
 
         try {
             JSONObject response = new JSONObject();
-            response.put("block", Convert.toUnsignedLong(Nhz.getBlockchain().getBlockIdAtHeight(height)));
+            response.put("block", Convert.toUnsignedLong(Nxt.getBlockchain().getBlockIdAtHeight(height)));
             return response;
         } catch (RuntimeException e) {
             return INCORRECT_HEIGHT;

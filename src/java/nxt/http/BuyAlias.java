@@ -1,14 +1,14 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Account;
-import nhz.Alias;
-import nhz.Attachment;
-import nhz.NhzException;
+import nxt.Account;
+import nxt.Alias;
+import nxt.Attachment;
+import nxt.NxtException;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.INCORRECT_ALIAS_NOTFORSALE;
+import static nxt.http.JSONResponses.INCORRECT_ALIAS_NOTFORSALE;
 
 
 public final class BuyAlias extends CreateTransaction {
@@ -20,7 +20,7 @@ public final class BuyAlias extends CreateTransaction {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
         Account buyer = ParameterParser.getSenderAccount(req);
         Alias alias = ParameterParser.getAlias(req);
         long amountNQT = ParameterParser.getAmountNQT(req);

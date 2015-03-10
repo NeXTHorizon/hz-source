@@ -1,13 +1,13 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Account;
-import nhz.NhzException;
-import nhz.crypto.EncryptedData;
+import nxt.Account;
+import nxt.NxtException;
+import nxt.crypto.EncryptedData;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.INCORRECT_RECIPIENT;
+import static nxt.http.JSONResponses.INCORRECT_RECIPIENT;
 
 public final class EncryptTo extends APIServlet.APIRequestHandler {
 
@@ -18,7 +18,7 @@ public final class EncryptTo extends APIServlet.APIRequestHandler {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
 
         Long recipientId = ParameterParser.getRecipientId(req);
         Account recipientAccount = Account.getAccount(recipientId);

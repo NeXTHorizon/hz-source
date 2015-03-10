@@ -1,6 +1,6 @@
-package nhz.peer;
+package nxt.peer;
 
-import nhz.util.JSON;
+import nxt.util.JSON;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;

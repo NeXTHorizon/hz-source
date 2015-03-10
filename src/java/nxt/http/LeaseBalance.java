@@ -1,16 +1,16 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Account;
-import nhz.Attachment;
-import nhz.NhzException;
-import nhz.util.Convert;
+import nxt.Account;
+import nxt.Attachment;
+import nxt.NxtException;
+import nxt.util.Convert;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.INCORRECT_PERIOD;
-import static nhz.http.JSONResponses.MISSING_PERIOD;
+import static nxt.http.JSONResponses.INCORRECT_PERIOD;
+import static nxt.http.JSONResponses.MISSING_PERIOD;
 
 public final class LeaseBalance extends CreateTransaction {
 
@@ -21,7 +21,7 @@ public final class LeaseBalance extends CreateTransaction {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
 
         String periodString = Convert.emptyToNull(req.getParameter("period"));
         if (periodString == null) {

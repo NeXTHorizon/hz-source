@@ -1,23 +1,23 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Account;
-import nhz.Alias;
-import nhz.Appendix;
-import nhz.Asset;
-import nhz.Block;
-import nhz.DigitalGoodsStore;
-import nhz.Nhz;
-import nhz.Order;
-import nhz.Poll;
-import nhz.Token;
-import nhz.Trade;
-import nhz.Transaction;
-import nhz.TransactionType;
-import nhz.crypto.Crypto;
-import nhz.crypto.EncryptedData;
-import nhz.peer.Hallmark;
-import nhz.peer.Peer;
-import nhz.util.Convert;
+import nxt.Account;
+import nxt.Alias;
+import nxt.Appendix;
+import nxt.Asset;
+import nxt.Block;
+import nxt.DigitalGoodsStore;
+import nxt.Nxt;
+import nxt.Order;
+import nxt.Poll;
+import nxt.Token;
+import nxt.Trade;
+import nxt.Transaction;
+import nxt.TransactionType;
+import nxt.crypto.Crypto;
+import nxt.crypto.EncryptedData;
+import nxt.peer.Hallmark;
+import nxt.peer.Peer;
+import nxt.util.Convert;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -315,7 +315,7 @@ final class JSONData {
     static JSONObject transaction(Transaction transaction) {
         JSONObject json = unconfirmedTransaction(transaction);
         json.put("block", Convert.toUnsignedLong(transaction.getBlockId()));
-        json.put("confirmations", Nhz.getBlockchain().getLastBlock().getHeight() - transaction.getHeight());
+        json.put("confirmations", Nxt.getBlockchain().getLastBlock().getHeight() - transaction.getHeight());
         json.put("blockTimestamp", transaction.getBlockTimestamp());
         return json;
     }

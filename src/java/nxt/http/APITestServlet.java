@@ -1,6 +1,6 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.util.Convert;
+import nxt.util.Convert;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -77,7 +77,7 @@ public class APITestServlet extends HttpServlet {
             "       </div>" +
             "       <div class=\"navbar-collapse collapse\">" +
             "           <ul class=\"nav navbar-nav navbar-right\">" +
-            "               <li><a href=\"https://wiki.nhzcrypto.org/wiki/Nhz_API\" target=\"_blank\">wiki docs</a></li>" +
+            "               <li><a href=\"https://wiki.nxtcrypto.org/wiki/Nxt_API\" target=\"_blank\">wiki docs</a></li>" +
             "           </ul>" +
             "       </div>" +
             "   </div>" + 

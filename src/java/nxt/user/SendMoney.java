@@ -1,19 +1,19 @@
-package nhz.user;
+package nxt.user;
 
-import nhz.Account;
-import nhz.Attachment;
-import nhz.Constants;
-import nhz.Nhz;
-import nhz.NhzException;
-import nhz.Transaction;
-import nhz.util.Convert;
+import nxt.Account;
+import nxt.Attachment;
+import nxt.Constants;
+import nxt.Nxt;
+import nxt.NxtException;
+import nxt.Transaction;
+import nxt.util.Convert;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-import static nhz.user.JSONResponses.NOTIFY_OF_ACCEPTED_TRANSACTION;
+import static nxt.user.JSONResponses.NOTIFY_OF_ACCEPTED_TRANSACTION;
 
 public final class SendMoney extends UserServlet.UserRequestHandler {
 
@@ -22,7 +22,7 @@ public final class SendMoney extends UserServlet.UserRequestHandler {
     private SendMoney() {}
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req, User user) throws NhzException.ValidationException, IOException {
+    JSONStreamAware processRequest(HttpServletRequest req, User user) throws NxtException.ValidationException, IOException {
         if (user.getSecretPhrase() == null) {
             return null;
         }
@@ -124,12 +124,12 @@ public final class SendMoney extends UserServlet.UserRequestHandler {
 
         } else {
 
-            final Transaction transaction = Nhz.getTransactionProcessor().newTransactionBuilder(user.getPublicKey(),
+            final Transaction transaction = Nxt.getTransactionProcessor().newTransactionBuilder(user.getPublicKey(),
                     amountNQT, feeNQT, deadline, Attachment.ORDINARY_PAYMENT).recipientId(recipient).build();
             transaction.validate();
             transaction.sign(user.getSecretPhrase());
 
-            Nhz.getTransactionProcessor().broadcast(transaction);
+            Nxt.getTransactionProcessor().broadcast(transaction);
 
             return NOTIFY_OF_ACCEPTED_TRANSACTION;
 

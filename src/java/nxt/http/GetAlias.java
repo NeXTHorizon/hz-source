@@ -1,6 +1,6 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Alias;
+import nxt.Alias;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;

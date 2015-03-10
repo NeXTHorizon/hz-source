@@ -1,15 +1,15 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.crypto.Crypto;
-import nhz.util.Convert;
+import nxt.crypto.Crypto;
+import nxt.util.Convert;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.MessageDigest;
 
-import static nhz.http.JSONResponses.MISSING_SIGNATURE_HASH;
-import static nhz.http.JSONResponses.MISSING_UNSIGNED_BYTES;
+import static nxt.http.JSONResponses.MISSING_SIGNATURE_HASH;
+import static nxt.http.JSONResponses.MISSING_UNSIGNED_BYTES;
 
 public final class CalculateFullHash extends APIServlet.APIRequestHandler {
 

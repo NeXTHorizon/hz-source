@@ -1,26 +1,26 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Account;
-import nhz.Attachment;
-import nhz.Constants;
-import nhz.NhzException;
+import nxt.Account;
+import nxt.Attachment;
+import nxt.Constants;
+import nxt.NxtException;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
-import static nhz.http.JSONResponses.INCORRECT_MAXNUMBEROFOPTIONS;
-import static nhz.http.JSONResponses.INCORRECT_MINNUMBEROFOPTIONS;
-import static nhz.http.JSONResponses.INCORRECT_OPTIONSAREBINARY;
-import static nhz.http.JSONResponses.INCORRECT_POLL_DESCRIPTION_LENGTH;
-import static nhz.http.JSONResponses.INCORRECT_POLL_NAME_LENGTH;
-import static nhz.http.JSONResponses.INCORRECT_POLL_OPTION_LENGTH;
-import static nhz.http.JSONResponses.MISSING_DESCRIPTION;
-import static nhz.http.JSONResponses.MISSING_MAXNUMBEROFOPTIONS;
-import static nhz.http.JSONResponses.MISSING_MINNUMBEROFOPTIONS;
-import static nhz.http.JSONResponses.MISSING_NAME;
-import static nhz.http.JSONResponses.MISSING_OPTIONSAREBINARY;
+import static nxt.http.JSONResponses.INCORRECT_MAXNUMBEROFOPTIONS;
+import static nxt.http.JSONResponses.INCORRECT_MINNUMBEROFOPTIONS;
+import static nxt.http.JSONResponses.INCORRECT_OPTIONSAREBINARY;
+import static nxt.http.JSONResponses.INCORRECT_POLL_DESCRIPTION_LENGTH;
+import static nxt.http.JSONResponses.INCORRECT_POLL_NAME_LENGTH;
+import static nxt.http.JSONResponses.INCORRECT_POLL_OPTION_LENGTH;
+import static nxt.http.JSONResponses.MISSING_DESCRIPTION;
+import static nxt.http.JSONResponses.MISSING_MAXNUMBEROFOPTIONS;
+import static nxt.http.JSONResponses.MISSING_MINNUMBEROFOPTIONS;
+import static nxt.http.JSONResponses.MISSING_NAME;
+import static nxt.http.JSONResponses.MISSING_OPTIONSAREBINARY;
 
 public final class CreatePoll extends CreateTransaction {
 
@@ -32,7 +32,7 @@ public final class CreatePoll extends CreateTransaction {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
 
         String nameValue = req.getParameter("name");
         String descriptionValue = req.getParameter("description");

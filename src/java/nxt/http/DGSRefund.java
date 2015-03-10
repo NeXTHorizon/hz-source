@@ -1,19 +1,19 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Account;
-import nhz.Attachment;
-import nhz.Constants;
-import nhz.DigitalGoodsStore;
-import nhz.NhzException;
-import nhz.util.Convert;
+import nxt.Account;
+import nxt.Attachment;
+import nxt.Constants;
+import nxt.DigitalGoodsStore;
+import nxt.NxtException;
+import nxt.util.Convert;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.DUPLICATE_REFUND;
-import static nhz.http.JSONResponses.GOODS_NOT_DELIVERED;
-import static nhz.http.JSONResponses.INCORRECT_DGS_REFUND;
-import static nhz.http.JSONResponses.INCORRECT_PURCHASE;
+import static nxt.http.JSONResponses.DUPLICATE_REFUND;
+import static nxt.http.JSONResponses.GOODS_NOT_DELIVERED;
+import static nxt.http.JSONResponses.INCORRECT_DGS_REFUND;
+import static nxt.http.JSONResponses.INCORRECT_PURCHASE;
 
 public final class DGSRefund extends CreateTransaction {
 
@@ -25,7 +25,7 @@ public final class DGSRefund extends CreateTransaction {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
 
         Account sellerAccount = ParameterParser.getSenderAccount(req);
         DigitalGoodsStore.Purchase purchase = ParameterParser.getPurchase(req);

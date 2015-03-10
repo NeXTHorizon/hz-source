@@ -1,10 +1,10 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Constants;
-import nhz.Nhz;
-import nhz.NhzException;
-import nhz.util.JSON;
-import nhz.util.Logger;
+import nxt.Constants;
+import nxt.Nxt;
+import nxt.NxtException;
+import nxt.util.JSON;
+import nxt.util.Logger;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.ServletException;
@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static nhz.http.JSONResponses.ERROR_INCORRECT_REQUEST;
-import static nhz.http.JSONResponses.ERROR_NOT_ALLOWED;
-import static nhz.http.JSONResponses.POST_REQUIRED;
+import static nxt.http.JSONResponses.ERROR_INCORRECT_REQUEST;
+import static nxt.http.JSONResponses.ERROR_NOT_ALLOWED;
+import static nxt.http.JSONResponses.POST_REQUIRED;
 
 public final class APIServlet extends HttpServlet {
 
@@ -45,7 +45,7 @@ public final class APIServlet extends HttpServlet {
             return apiTags;
         }
 
-        abstract JSONStreamAware processRequest(HttpServletRequest request) throws NhzException;
+        abstract JSONStreamAware processRequest(HttpServletRequest request) throws NxtException;
 
         boolean requirePost() {
             return false;
@@ -53,7 +53,7 @@ public final class APIServlet extends HttpServlet {
 
     }
 
-    private static final boolean enforcePost = Nhz.getBooleanProperty("nhz.apiServerEnforcePOST");
+    private static final boolean enforcePost = Nxt.getBooleanProperty("nxt.apiServerEnforcePOST");
 
     static final Map<String,APIRequestHandler> apiRequestHandlers;
 
@@ -198,7 +198,7 @@ public final class APIServlet extends HttpServlet {
                 response = apiRequestHandler.processRequest(req);
             } catch (ParameterException e) {
                 response = e.getErrorResponse();
-            } catch (NhzException |RuntimeException e) {
+            } catch (NxtException |RuntimeException e) {
                 Logger.logDebugMessage("Error processing API request", e);
                 response = ERROR_INCORRECT_REQUEST;
             }

@@ -1,10 +1,10 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Account;
-import nhz.Nhz;
-import nhz.NhzException;
-import nhz.Transaction;
-import nhz.util.DbIterator;
+import nxt.Account;
+import nxt.Nxt;
+import nxt.NxtException;
+import nxt.Transaction;
+import nxt.util.DbIterator;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
@@ -20,7 +20,7 @@ public final class GetAccountTransactions extends APIServlet.APIRequestHandler {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
 
         Account account = ParameterParser.getAccount(req);
         int timestamp = ParameterParser.getTimestamp(req);
@@ -43,7 +43,7 @@ public final class GetAccountTransactions extends APIServlet.APIRequestHandler {
         int lastIndex = ParameterParser.getLastIndex(req);
 
         JSONArray transactions = new JSONArray();
-        try (DbIterator<? extends Transaction> iterator = Nhz.getBlockchain().getTransactions(account, numberOfConfirmations, type, subtype, timestamp,
+        try (DbIterator<? extends Transaction> iterator = Nxt.getBlockchain().getTransactions(account, numberOfConfirmations, type, subtype, timestamp,
                 firstIndex, lastIndex)) {
             while (iterator.hasNext()) {
                 Transaction transaction = iterator.next();

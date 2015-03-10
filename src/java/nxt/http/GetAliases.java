@@ -1,7 +1,7 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Alias;
-import nhz.NhzException;
+import nxt.Alias;
+import nxt.NxtException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
@@ -17,7 +17,7 @@ public final class GetAliases extends APIServlet.APIRequestHandler {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
         int timestamp = ParameterParser.getTimestamp(req);
         Long accountId = ParameterParser.getAccount(req).getId();
 

@@ -1,12 +1,12 @@
 /*
-    Reed Solomon Encoding and Decoding for Nhz
+    Reed Solomon Encoding and Decoding for Nxt
 
-    Version: 1.0, license: Public Domain, coder: NhzChg (admin@nhzchg.com)
+    Version: 1.0, license: Public Domain, coder: NxtChg (admin@nxtchg.com)
     Java Version: ChuckOne (ChuckOne@mail.de).
 */
-package nhz.crypto;
+package nxt.crypto;
 
-import nhz.util.Convert;
+import nxt.util.Convert;
 
 import java.math.BigInteger;
 

@@ -1,4 +1,4 @@
-package nhz.http;
+package nxt.http;
 
 public enum APITag {
 

@@ -1,12 +1,12 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.peer.Hallmark;
+import nxt.peer.Hallmark;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.INCORRECT_HALLMARK;
-import static nhz.http.JSONResponses.MISSING_HALLMARK;
+import static nxt.http.JSONResponses.INCORRECT_HALLMARK;
+import static nxt.http.JSONResponses.MISSING_HALLMARK;
 
 public final class DecodeHallmark extends APIServlet.APIRequestHandler {
 

@@ -1,14 +1,14 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Account;
-import nhz.Attachment;
-import nhz.DigitalGoodsStore;
-import nhz.NhzException;
+import nxt.Account;
+import nxt.Attachment;
+import nxt.DigitalGoodsStore;
+import nxt.NxtException;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.UNKNOWN_GOODS;
+import static nxt.http.JSONResponses.UNKNOWN_GOODS;
 
 public final class DGSPriceChange extends CreateTransaction {
 
@@ -20,7 +20,7 @@ public final class DGSPriceChange extends CreateTransaction {
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) throws NhzException {
+    JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
         Account account = ParameterParser.getSenderAccount(req);
         DigitalGoodsStore.Goods goods = ParameterParser.getGoods(req);
         long priceNQT = ParameterParser.getPriceNQT(req);

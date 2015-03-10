@@ -1,14 +1,14 @@
-package nhz.http;
+package nxt.http;
 
-import nhz.Poll;
-import nhz.util.Convert;
+import nxt.Poll;
+import nxt.util.Convert;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static nhz.http.JSONResponses.INCORRECT_POLL;
-import static nhz.http.JSONResponses.MISSING_POLL;
-import static nhz.http.JSONResponses.UNKNOWN_POLL;
+import static nxt.http.JSONResponses.INCORRECT_POLL;
+import static nxt.http.JSONResponses.MISSING_POLL;
+import static nxt.http.JSONResponses.UNKNOWN_POLL;
 
 public final class GetPoll extends APIServlet.APIRequestHandler {
 
