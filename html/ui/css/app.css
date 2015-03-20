@@ -2010,6 +2010,7 @@ text-transform:uppercase;
 .btn.btn-success {
   background-color: #00a65a;
   border-color: #008d4c;
+  width: 100%;
 }
 .btn.btn-success:hover,
 .btn.btn-success:active,
