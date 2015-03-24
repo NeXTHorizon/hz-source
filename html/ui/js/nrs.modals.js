@@ -1,236 +1,283 @@
 /**
  * @depends {nrs.js}
  */
-var NRS = (function(NRS, $, undefined) {
-	NRS.fetchingModalData = false;
+var NRS = (function (NRS, $, undefined) {
+    NRS.fetchingModalData = false;
 
-	// save the original function object
-	var _superModal = $.fn.modal;
+    // save the original function object
+    var _superModal = $.fn.modal;
 
-	// add locked as a new option
-	$.extend(_superModal.Constructor.DEFAULTS, {
-		locked: false
-	});
+    // add locked as a new option
+    $.extend(_superModal.Constructor.DEFAULTS, {
+        locked: false
+    });
 
-	// capture the original hide
-	var _hide = _superModal.Constructor.prototype.hide;
+    // capture the original hide
+    var _hide = _superModal.Constructor.prototype.hide;
 
-	// add the lock, unlock and override the hide of modal
-	$.extend(_superModal.Constructor.prototype, {
-		// locks the dialog so that it cannot be hidden
-		lock: function() {
-			this.options.locked = true;
-			this.$element.addClass("locked");
-		}
-		// unlocks the dialog so that it can be hidden by 'esc' or clicking on the backdrop (if not static)
-		,
-		unlock: function() {
-			this.options.locked = false;
-			this.$element.removeClass("locked");
-		},
-		// override the original hide so that the original is only called if the modal is unlocked
-		hide: function() {
-			if (this.options.locked) return;
+    // add the lock, unlock and override the hide of modal
+    $.extend(_superModal.Constructor.prototype, {
+        // locks the dialog so that it cannot be hidden
+        lock: function () {
+            this.options.locked = true;
+            this.$element.addClass("locked");
+        }
+        // unlocks the dialog so that it can be hidden by 'esc' or clicking on the backdrop (if not static)
+        ,
+        unlock: function () {
+            this.options.locked = false;
+            this.$element.removeClass("locked");
+        },
+        // override the original hide so that the original is only called if the modal is unlocked
+        hide: function () {
+            if (this.options.locked)
+                return;
 
-			_hide.apply(this, arguments);
-		}
-	});
+            _hide.apply(this, arguments);
+        }
+    });
 
-	//Reset scroll position of tab when shown.
-	$('a[data-toggle="tab"]').on("shown.bs.tab", function(e) {
-		var target = $(e.target).attr("href");
-		$(target).scrollTop(0);
-	})
+    //Reset scroll position of tab when shown.
+    $('a[data-toggle="tab"]').on("shown.bs.tab", function (e) {
+        var target = $(e.target).attr("href");
+        $(target).scrollTop(0);
+    })
 
-	$(".add_message").on("change", function(e) {
-		if ($(this).is(":checked")) {
-			$(this).closest("form").find(".optional_message").fadeIn();
-			$(this).closest(".form-group").css("margin-bottom", "5px");
-		} else {
-			$(this).closest("form").find(".optional_message").hide();
-			$(this).closest(".form-group").css("margin-bottom", "");
-		}
-	});
+    $(".add_message").on("change", function (e) {
+        if ($(this).is(":checked")) {
+            $(this).closest("form").find(".optional_message").fadeIn();
+            $(this).closest(".form-group").css("margin-bottom", "5px");
+        } else {
+            $(this).closest("form").find(".optional_message").hide();
+            $(this).closest(".form-group").css("margin-bottom", "");
+        }
+    });
 
-	$(".add_note_to_self").on("change", function(e) {
-		if ($(this).is(":checked")) {
-			$(this).closest("form").find(".optional_note").fadeIn();
-		} else {
-			$(this).closest("form").find(".optional_note").hide();
-		}
-	});
+    $(".add_note_to_self").on("change", function (e) {
+        if ($(this).is(":checked")) {
+            $(this).closest("form").find(".optional_note").fadeIn();
+        } else {
+            $(this).closest("form").find(".optional_note").hide();
+        }
+    });
 
-	//hide modal when another one is activated.
-	$(".modal").on("show.bs.modal", function(e) {
-		var $inputFields = $(this).find("input[name=recipient], input[name=account_id]").not("[type=hidden]");
+    //hide modal when another one is activated.
+    $(".modal").on("show.bs.modal", function (e) {
+        var $inputFields = $(this).find("input[name=recipient], input[name=account_id]").not("[type=hidden]");
 
-		$.each($inputFields, function() {
-			if ($(this).hasClass("noMask")) {
-				$(this).mask("NHZ-****-****-****-*****", {
-					"noMask": true
-				}).removeClass("noMask");
-			} else {
-				$(this).mask("NHZ-****-****-****-*****");
-			}
-		});
+        $.each($inputFields, function () {
+            if ($(this).hasClass("noMask")) {
+                $(this).mask("NHZ-****-****-****-*****", {
+                    "noMask": true
+                }).removeClass("noMask");
+            } else {
+                $(this).mask("NHZ-****-****-****-*****");
+            }
+        });
 
-		var $visible_modal = $(".modal.in");
+        var $visible_modal = $(".modal.in");
 
-		if ($visible_modal.length) {
-			if ($visible_modal.hasClass("locked")) {
-				var $btn = $visible_modal.find("button.btn-primary:not([data-dismiss=modal])");
-				NRS.unlockForm($visible_modal, $btn, true);
-			} else {
-				$visible_modal.modal("hide");
-			}
-		}
+        if ($visible_modal.length) {
+            if ($visible_modal.hasClass("locked")) {
+                var $btn = $visible_modal.find("button.btn-primary:not([data-dismiss=modal])");
+                NRS.unlockForm($visible_modal, $btn, true);
+            } else {
+                $visible_modal.modal("hide");
+            }
+        }
 
-		$(this).find(".form-group").css("margin-bottom", "");
-	});
+        $(this).find(".form-group").css("margin-bottom", "");
 
-	$(".modal").on("shown.bs.modal", function() {
-		$(this).find("input[type=text]:first, textarea:first, input[type=password]:first").not("[readonly]").first().focus();
-		$(this).find("input[name=converted_account_id]").val("");
-		NRS.showedFormWarning = false; //maybe not the best place... we assume forms are only in modals?
-	});
+        $(this).find(".advanced").hide();
 
-	//Reset form to initial state when modal is closed
-	$(".modal").on("hidden.bs.modal", function(e) {
-		$(this).find("input[name=recipient], input[name=account_id]").not("[type=hidden]").trigger("unmask");
+        $(this).find(".recipient_public_key").hide();
 
-		$(this).find(":input:not(button)").each(function(index) {
-			var defaultValue = $(this).data("default");
-			var type = $(this).attr("type");
-			var tag = $(this).prop("tagName").toLowerCase();
+        $(this).find(".optional_message, .optional_note").hide();
 
-			if (type == "checkbox") {
-				if (defaultValue == "checked") {
-					$(this).prop("checked", true);
-				} else {
-					$(this).prop("checked", false);
-				}
-			} else if (type == "hidden") {
-				if (defaultValue !== undefined) {
-					$(this).val(defaultValue);
-				}
-			} else if (tag == "select") {
-				if (defaultValue !== undefined) {
-					$(this).val(defaultValue);
-				} else {
-					$(this).find("option:selected").prop("selected", false);
-					$(this).find("option:first").prop("selected", "selected");
-				}
-			} else {
-				if (defaultValue !== undefined) {
-					$(this).val(defaultValue);
-				} else {
-					$(this).val("");
-				}
-			}
-		});
+        if (!$(this).find("advanced")) {
+            var not = ".optional_note";
+            if (!NRS.dgsBlockPassed) {
+                not += ", .dgs_block";
+            }
+            $(this).find(".advanced").not(not).fadeIn();
+        } else {
+            $(this).find(".advanced").hide();
+        }
 
-		//Hidden form field
-		$(this).find("input[name=converted_account_id]").val("");
+        $(this).find(".advanced_extend").each(function (index, obj) {
+            var normalSize = $(obj).data("normal");
+            var advancedSize = $(obj).data("advanced");
 
-		//Hide/Reset any possible error messages
-		$(this).find(".callout-danger:not(.never_hide), .error_message, .account_info").html("").hide();
+            if (!$(this).find("advanced")) {
+                $(obj).addClass("col-xs-" + advancedSize + " col-sm-" + advancedSize + " col-md-" + advancedSize).removeClass("col-xs-" + normalSize + " col-sm-" + normalSize + " col-md-" + normalSize);
+            } else {
+                $(obj).removeClass("col-xs-" + advancedSize + " col-sm-" + advancedSize + " col-md-" + advancedSize).addClass("col-xs-" + normalSize + " col-sm-" + normalSize + " col-md-" + normalSize);
+            }
+        });
+    });
 
-		$(this).find(".advanced").hide();
+    $(".modal").on("shown.bs.modal", function () {
+        $(".modal").on("hidden.bs.modal", function (e) {
+            $(this).find("input[name=recipient], input[name=account_id]").not("[type=hidden]").trigger("unmask");
 
-		$(this).find(".recipient_public_key").hide();
+            $(this).find(":input:not(button)").each(function (index) {
+                var defaultValue = $(this).data("default");
+                var type = $(this).attr("type");
+                var tag = $(this).prop("tagName").toLowerCase();
 
-		$(this).find(".optional_message, .optional_note").hide();
+                if (type == "checkbox") {
+                    if (defaultValue == "checked") {
+                        $(this).prop("checked", true);
+                    } else {
+                        $(this).prop("checked", false);
+                    }
+                } else if (type == "hidden") {
+                    if (defaultValue !== undefined) {
+                        $(this).val(defaultValue);
+                    }
+                } else if (tag == "select") {
+                    if (defaultValue !== undefined) {
+                        $(this).val(defaultValue);
+                    } else {
+                        $(this).find("option:selected").prop("selected", false);
+                        $(this).find("option:first").prop("selected", "selected");
+                    }
+                } else {
+                    if (defaultValue !== undefined) {
+                        $(this).val(defaultValue);
+                    } else {
+                        $(this).val("");
+                    }
+                }
+            });
 
-		$(this).find(".advanced_info a").text($.t("advanced"));
+            //Hidden form field
+            $(this).find("input[name=converted_account_id]").val("");
 
-		$(this).find(".advanced_extend").each(function(index, obj) {
-			var normalSize = $(obj).data("normal");
-			var advancedSize = $(obj).data("advanced");
-			$(obj).removeClass("col-xs-" + advancedSize + " col-sm-" + advancedSize + " col-md-" + advancedSize).addClass("col-xs-" + normalSize + " col-sm-" + normalSize + " col-md-" + normalSize);
-		});
+            //Hide/Reset any possible error messages
+            $(this).find(".callout-danger:not(.never_hide), .error_message, .account_info").html("").hide();
 
-		var $feeInput = $(this).find("input[name=feeNHZ]");
+            $(this).find(".advanced").hide();
 
-		if ($feeInput.length) {
-			var defaultFee = $feeInput.data("default");
-			if (!defaultFee) {
-				defaultFee = 1;
-			}
+            $(this).find(".recipient_public_key").hide();
 
-			$(this).find(".advanced_fee").html(NRS.formatAmount(NRS.convertToNQT(defaultFee)) + " NHZ");
-		}
+            $(this).find(".optional_message, .optional_note").hide();
 
-		NRS.showedFormWarning = false;
-	});
+            $(this).find(".advanced_info a").text($.t("advanced"));
 
-	NRS.showModalError = function(errorMessage, $modal) {
-		var $btn = $modal.find("button.btn-primary:not([data-dismiss=modal], .ignore)");
+            $(this).find(".advanced_extend").each(function (index, obj) {
+                var normalSize = $(obj).data("normal");
+                var advancedSize = $(obj).data("advanced");
+                $(obj).removeClass("col-xs-" + advancedSize + " col-sm-" + advancedSize + " col-md-" + advancedSize).addClass("col-xs-" + normalSize + " col-sm-" + normalSize + " col-md-" + normalSize);
+            });
 
-		$modal.find("button").prop("disabled", false);
+            var $feeInput = $(this).find("input[name=feeNHZ]");
 
-		$modal.find(".error_message").html(String(errorMessage).escapeHTML()).show();
-		$btn.button("reset");
-		$modal.modal("unlock");
-	}
+            if ($feeInput.length) {
+                var defaultFee = $feeInput.data("default");
+                if (!defaultFee) {
+                    defaultFee = 1;
+                }
 
-	NRS.closeModal = function($modal) {
-		if (!$modal) {
-			$modal = $("div.modal.in:first");
-		}
+                $(this).find(".advanced_fee").html(NRS.formatAmount(NRS.convertToNQT(defaultFee)) + " NHZ");
+            }
 
-		$modal.find("button").prop("disabled", false);
+            NRS.showedFormWarning = false;
+        });
 
-		var $btn = $modal.find("button.btn-primary:not([data-dismiss=modal], .ignore)");
+        $(this).find("input[type=text]:first, textarea:first, input[type=password]:first").not("[readonly]").first().focus();
+        $(this).find("input[name=converted_account_id]").val("");
+        NRS.showedFormWarning = false; //maybe not the best place... we assume forms are only in modals?
+    });
 
-		$btn.button("reset");
-		$modal.modal("unlock");
-		$modal.modal("hide");
-	}
+    //Reset form to initial state when modal is closed
+    $(".modal").on("hidden.bs.modal", function (e) {
+        var $feeInput = $(this).find("input[name=feeNHZ]");
 
-	$("input[name=feeNHZ]").on("change", function() {
-		var $modal = $(this).closest(".modal");
+        if ($feeInput.length) {
+            var defaultFee = $feeInput.data("default");
+            if (!defaultFee) {
+                defaultFee = 1;
+            }
 
-		var $feeInfo = $modal.find(".advanced_fee");
+            $(this).find(".advanced_fee").html(NRS.formatAmount(NRS.convertToNQT(defaultFee)) + " NHZ");
+        }
 
-		if ($feeInfo.length) {
-			$feeInfo.html(NRS.formatAmount(NRS.convertToNQT($(this).val())) + " NHZ");
-		}
-	});
+        NRS.showedFormWarning = false;
+    });
 
-	$(".advanced_info a").on("click", function(e) {
-		e.preventDefault();
+    NRS.showModalError = function (errorMessage, $modal) {
+        var $btn = $modal.find("button.btn-primary:not([data-dismiss=modal], .ignore)");
 
-		var $modal = $(this).closest(".modal");
+        $modal.find("button").prop("disabled", false);
 
-		var text = $(this).text().toLowerCase();
+        $modal.find(".error_message").html(String(errorMessage).escapeHTML()).show();
+        $btn.button("reset");
+        $modal.modal("unlock");
+    }
 
-		if (text == $.t("advanced")) {
-			var not = ".optional_note";
-			if (!NRS.dgsBlockPassed) {
-				not += ", .dgs_block";
-			}
-			$modal.find(".advanced").not(not).fadeIn();
-		} else {
-			$modal.find(".advanced").hide();
-		}
+    NRS.closeModal = function ($modal) {
+        if (!$modal) {
+            $modal = $("div.modal.in:first");
+        }
 
-		$modal.find(".advanced_extend").each(function(index, obj) {
-			var normalSize = $(obj).data("normal");
-			var advancedSize = $(obj).data("advanced");
+        $modal.find("button").prop("disabled", false);
 
-			if (text == "advanced") {
-				$(obj).addClass("col-xs-" + advancedSize + " col-sm-" + advancedSize + " col-md-" + advancedSize).removeClass("col-xs-" + normalSize + " col-sm-" + normalSize + " col-md-" + normalSize);
-			} else {
-				$(obj).removeClass("col-xs-" + advancedSize + " col-sm-" + advancedSize + " col-md-" + advancedSize).addClass("col-xs-" + normalSize + " col-sm-" + normalSize + " col-md-" + normalSize);
-			}
-		});
+        var $btn = $modal.find("button.btn-primary:not([data-dismiss=modal], .ignore)");
 
-		if (text == $.t("advanced")) {
-			$(this).text($.t("basic"));
-		} else {
-			$(this).text($.t("advanced"));
-		}
-	});
+        $btn.button("reset");
+        $modal.modal("unlock");
+        $modal.modal("hide");
+    }
 
-	return NRS;
+    $("input[name=feeNHZ]").on("change", function () {
+        var $modal = $(this).closest(".modal");
+
+        var $feeInfo = $modal.find(".advanced_fee");
+
+        if ($feeInfo.length) {
+            $feeInfo.html(NRS.formatAmount(NRS.convertToNQT($(this).val())) + " NHZ");
+        }
+    });
+
+    $(".advanced_info a").on("click", function (e) {
+        e.preventDefault();
+
+        var $modal = $(this).closest(".modal");
+
+        var text = $(this).text().toLowerCase();
+
+        if (text == $.t("advanced")) {
+            var not = ".optional_note";
+            if (!NRS.dgsBlockPassed) {
+                not += ", .dgs_block";
+            }
+            $modal.find(".advanced").not(not).fadeIn();
+            $modal.find(".recipient_public_key").show();
+            $modal.find(".optional_message, .optional_note").show();
+        } else {
+            $modal.find(".advanced").hide();
+            $modal.find(".recipient_public_key").hide();
+            $modal.find(".optional_message, .optional_note").hide();
+        }
+
+        $modal.find(".advanced_extend").each(function (index, obj) {
+            var normalSize = $(obj).data("normal");
+            var advancedSize = $(obj).data("advanced");
+
+            if (text == "advanced") {
+                $(obj).addClass("col-xs-" + advancedSize + " col-sm-" + advancedSize + " col-md-" + advancedSize).removeClass("col-xs-" + normalSize + " col-sm-" + normalSize + " col-md-" + normalSize);
+            } else {
+                $(obj).removeClass("col-xs-" + advancedSize + " col-sm-" + advancedSize + " col-md-" + advancedSize).addClass("col-xs-" + normalSize + " col-sm-" + normalSize + " col-md-" + normalSize);
+            }
+        });
+
+        if (text == $.t("advanced")) {
+            $(this).text($.t("basic"));
+        } else {
+            $(this).text($.t("advanced"));
+        }
+    });
+
+    return NRS;
 }(NRS || {}, jQuery));
