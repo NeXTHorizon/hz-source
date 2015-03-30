@@ -491,17 +491,17 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                     throw new BlockNotAcceptedException("Invalid version " + block.getVersion());
                 }
 
+                if (previousLastBlock.getHeight() % 720 == 0 && previousLastBlock.getHeight()<=(CheckPoints.previousBlockId.length-1)*720) {
+                	int i = previousLastBlock.getHeight()/720;
+            		if (! ((new BigInteger(CheckPoints.previousBlockId[i])).longValue() == previousLastBlock.getId())) {
+            			throw new BlockNotAcceptedException("BlockId check failed at block height "+previousLastBlock.getHeight()+". Expected "+ CheckPoints.previousBlockId[i] +" but found "+Convert.toUnsignedLong(previousLastBlock.getId()));
+            		} else {
+            			Logger.logDebugMessage("Checkpoint passed at block height "+previousLastBlock.getHeight());
+            		}                	
+                }
+                
                 if (! Constants.isTestnet) {
-                	
-                    if (previousLastBlock.getHeight() % 720 == 0 && previousLastBlock.getHeight()<=(CheckPoints.previousBlockId.length-1)*720) {
-                    	int i = previousLastBlock.getHeight()/720;
-                		if (! ((new BigInteger(CheckPoints.previousBlockId[i])).longValue() == previousLastBlock.getId())) {
-                			throw new BlockNotAcceptedException("BlockId check failed at block height "+previousLastBlock.getHeight()+". Expected "+ CheckPoints.previousBlockId[i] +" but found "+Convert.toUnsignedLong(previousLastBlock.getId()));
-                		} else {
-                			Logger.logDebugMessage("Checkpoint passed at block height "+previousLastBlock.getHeight());
-                		}                	
-                    }
-                    
+             	
 	                if (previousLastBlock.getHeight() == Constants.TRANSPARENT_FORGING_BLOCK) {
 	                    byte[] checksum = calculateTransactionsChecksum();
 	                    if (CHECKSUM_TRANSPARENT_FORGING == null) {
