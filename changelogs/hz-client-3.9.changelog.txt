@@ -5,7 +5,7 @@ Peers updated and new pool peer addresses added to wellKnownPeers. The pool addr
 to provide a daily fresh list of peers.
 
 Checkpoint checks during blockchain download added. Every 720th block is checked. Checkpoints are hard coded blockId checks. 
-Only blockIds and heights in the blockchain up to the time of the release are recognized.
+Only blockIds and heights in the blockchain up to the time of the release are recognized. Disable it by setting nhz.useCheckpoints to false.
 
 GUI bug fixes:
 * Sometimes mainnet got recognized as testnet.

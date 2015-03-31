@@ -473,7 +473,9 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
         }
         return digest.digest();
     }
-
+    
+    private static final boolean useCheckpoints = Nhz.getBooleanProperty("nhz.useCheckpoints");
+    
     private void pushBlock(final BlockImpl block) throws BlockNotAcceptedException {
 
         int curTime = Convert.getEpochTime();
@@ -491,7 +493,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                     throw new BlockNotAcceptedException("Invalid version " + block.getVersion());
                 }
 
-                if (previousLastBlock.getHeight() % 720 == 0 && previousLastBlock.getHeight()<=(CheckPoints.previousBlockId.length-1)*720) {
+                if (useCheckpoints && previousLastBlock.getHeight() % 720 == 0 && previousLastBlock.getHeight()<=(CheckPoints.previousBlockId.length-1)*720) {
                 	int i = previousLastBlock.getHeight()/720;
             		if (! ((new BigInteger(CheckPoints.previousBlockId[i])).longValue() == previousLastBlock.getId())) {
             			throw new BlockNotAcceptedException("BlockId check failed at block height "+previousLastBlock.getHeight()+". Expected "+ CheckPoints.previousBlockId[i] +" but found "+Convert.toUnsignedLong(previousLastBlock.getId()));
