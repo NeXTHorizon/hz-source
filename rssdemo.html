@@ -1,0 +1,33 @@
+
+	<!-- css -->
+    <link type="text/css" rel="stylesheet" href="assets/css/fedget.min.css" />
+
+    <!-- css for jquery ui theme -->
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/themes/black-tie/jquery-ui.css" rel="stylesheet" type="text/css"> 
+
+     <!-- js for jquery and jquery ui-->
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
+
+    <!-- js for feedget -->
+    <script src="assets/js/feedget-1.1.2.min.js"></script>
+	
+	<script>
+		$(function() {
+			$('.yourDiv').feedget(
+				{
+					feed: 'http://www.engadget.com/rss.xml',
+                    direction: 'vertical',
+                    entries: 10,
+                    images: false,
+                    buttons: false,
+                    facebook: false,
+                    reverse: false,
+                    loadingImg: 'loading.gif'
+				});
+		});
+	</script>
+
+
+
+		<div class="yourDiv" style="width:300px; height:600px; float:left;"></div>

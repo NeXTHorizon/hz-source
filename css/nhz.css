@@ -1,0 +1,52 @@
+#login_panel {
+  width: 450px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 200px;
+  padding: 10px 0px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border:2px solid #000000;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  border-radius: 20px;
+  -webkit-box-shadow: #000 5px 5px 5px;
+  -moz-box-shadow: #000 5px 5px 5px;
+  box-shadow: #000 5px 5px 5px;
+}
+
+.left-side {
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+  background-color: #FBFBFB;
+}
+
+.sidebar > .sidebar-menu > li > a:hover,
+.sidebar > .sidebar-menu > li.active > a {
+  color: #10672F;
+}
+
+.sidebar a {
+  color: #003366;
+}
+
+.sidebar > .sidebar-menu > li > a:hover, .sidebar > .sidebar-menu > li.active > a {
+  color: #FFF;
+  background: #003366;
+}
+
+.sidebar-form {
+  border: 1px solid #036;
+}
+
+.navbar .sidebar-toggle .icon-bar {
+  background: #FFFFFF;
+}
+
+.logo {
+  margin-left: -10px;
+  margin-top: -2px;
+
+}
+
+.logo img {
+
+}
