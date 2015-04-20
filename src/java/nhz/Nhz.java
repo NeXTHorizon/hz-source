@@ -23,7 +23,7 @@ import java.net.InetAddress;
 public final class Nhz {
 
 	//be careful PeerImpl.java will only connect to versions starting with 'NHZ'
-    public static final String VERSION = "NHZ V3.9";
+    public static final String VERSION = "NHZ V3.9.1";
     public static final String APPLICATION = "NRS";
 
     private static final Properties defaultProperties = new Properties();
