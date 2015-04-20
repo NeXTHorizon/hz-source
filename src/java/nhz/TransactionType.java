@@ -1085,17 +1085,6 @@ public abstract class TransactionType {
         abstract static class ColoredCoinsOrderCancellation extends ColoredCoins {
 
             @Override
-            final void validateAttachment(Transaction transaction) throws NhzException.ValidationException {
-                Attachment.ColoredCoinsOrderCancellation attachment = (Attachment.ColoredCoinsOrderCancellation) transaction.getAttachment();
-                if (attachment.getOrderId() == null) {
-                    throw new NhzException.NotValidException("Invalid order cancellation attachment: " + attachment.getJSONObject());
-                }
-                doValidateAttachment(transaction);
-            }
-
-            abstract void doValidateAttachment(Transaction transaction) throws NhzException.ValidationException;
-
-            @Override
             final boolean applyAttachmentUnconfirmed(Transaction transaction, Account senderAccount) {
                 return true;
             }
@@ -1143,12 +1132,17 @@ public abstract class TransactionType {
             }
 
             @Override
-            void doValidateAttachment(Transaction transaction) throws NhzException.ValidationException {
+            void validateAttachment(Transaction transaction) throws NhzException.ValidationException {
                 Attachment.ColoredCoinsAskOrderCancellation attachment = (Attachment.ColoredCoinsAskOrderCancellation) transaction.getAttachment();
-                if (Order.Ask.getAskOrder(attachment.getOrderId()) == null) {
+                Order ask = Order.Ask.getAskOrder(attachment.getOrderId());
+                if (ask == null) {
                     throw new NhzException.NotCurrentlyValidException("Invalid ask order: " + Convert.toUnsignedLong(attachment.getOrderId()));
                 }
-            }
+                if (! (ask.getAccount().getId().equals(transaction.getSenderId()))) {
+                    throw new NhzException.NotValidException("Order " + Convert.toUnsignedLong(attachment.getOrderId()) + " was created by account "
+                            + Convert.toUnsignedLong(ask.getAccount().getId()));
+                }
+            }          
 
         };
 
@@ -1179,10 +1173,15 @@ public abstract class TransactionType {
             }
 
             @Override
-            void doValidateAttachment(Transaction transaction) throws NhzException.ValidationException {
+            void validateAttachment(Transaction transaction) throws NhzException.ValidationException {
                 Attachment.ColoredCoinsBidOrderCancellation attachment = (Attachment.ColoredCoinsBidOrderCancellation) transaction.getAttachment();
-                if (Order.Bid.getBidOrder(attachment.getOrderId()) == null) {
+                Order bid = Order.Bid.getBidOrder(attachment.getOrderId());
+                if (bid == null) {
                     throw new NhzException.NotCurrentlyValidException("Invalid bid order: " + Convert.toUnsignedLong(attachment.getOrderId()));
+                }
+                if (! bid.getAccount().getId().equals(transaction.getSenderId())) {
+                    throw new NhzException.NotValidException("Order " + Convert.toUnsignedLong(attachment.getOrderId()) + " was created by account "
+                            + Convert.toUnsignedLong(bid.getAccount().getId()));
                 }
             }
 
