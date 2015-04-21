@@ -44,7 +44,9 @@
                     result += ':</td><td>';
                     result += formatAmount(accountBalance);
                     result += '</td></tr>';
-                    balance += accountBalance;
+                    if (accountBalance) {
+                    	balance += accountBalance;
+                    }
                 }
             }
             result += '<tr><td>total:</td><td>';
