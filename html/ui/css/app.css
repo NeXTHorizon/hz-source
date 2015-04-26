@@ -1998,6 +1998,8 @@ text-transform:uppercase;
 .btn.btn-primary {
   background-color: #003366;
   border-color: #003366;
+  width: 100% !important;
+  margin-top: 5px !important;
 }
 .btn.btn-primary:hover,
 .btn.btn-primary:active,

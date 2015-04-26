@@ -207,7 +207,7 @@
     "error_asset_already_bookmarked": "Activo ya en la lista de favoritos.",
     "confirm_marketplace_deletion": "Confirmar Eliminación en el Mercado",
     "automatically_generated_passphrase_is": "Su contraseña generada automáticamente es:",
-    "error_invalid_token": "El identificador es <strong>INV�?LIDO<\/strong>. Parece pertenecer a la cuenta __account_link__. Fue generado en __timestamp__.",
+    "error_invalid_token": "El identificador es <strong>INVÁLIDO<\/strong>. Parece pertenecer a la cuenta __account_link__. Fue generado en __timestamp__.",
     "purchase": "Compra",
     "register": "Registrar",
     "submit_forms_on_enter": "Enviar Formularios al Introducir",
