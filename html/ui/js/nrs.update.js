@@ -127,7 +127,8 @@ var NRS = (function(NRS, $, undefined) {
 			return -1;
 		}
 
-                v1 = v1.substr(5);
+		//remove leading "NHZ v"
+        v1 = v1.substr(5);
 		v2 = v2.substr(5);
 		
 		//https://gist.github.com/TheDistantSea/8021359 (based on)
@@ -276,8 +277,8 @@ var NRS = (function(NRS, $, undefined) {
 			}, "*");
 			$("#nrs_modal").modal("hide");
 		} else {
-			var filename = NRS.downloadedVersion.versionNr.toLowerCase();
-			$("#nrs_update_iframe").attr("src", "http://files.nhzcrypto.org/binaries/" + filename + ".zip");
+			var versionNumber = NRS.downloadedVersion.versionNr.toLowerCase();
+			$("#nrs_update_iframe").attr("src", "https://github.com/NeXTHorizon/hz-source/releases/download/" + versionNumber + "/" + versionNumber + ".zip");
 			$("#nrs_update_explanation").hide();
 			$("#nrs_update_drop_zone").show();
 
