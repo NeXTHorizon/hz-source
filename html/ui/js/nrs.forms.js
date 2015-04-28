@@ -83,9 +83,7 @@ var NRS = (function(NRS, $, undefined) {
 		};
 
 		if (data.add_message && data.message) {
-			if (!NRS.dgsBlockPassed) {
-				data.message = converters.stringToHexString(data.message);
-			} else if (data.encrypt_message) {
+			if (data.encrypt_message) {
 				try {
 					var options = {};
 
@@ -118,9 +116,6 @@ var NRS = (function(NRS, $, undefined) {
 		}
 
 		if (data.add_note_to_self && data.note_to_self) {
-			if (!NRS.dgsBlockPassed) {
-				delete data.note_to_self;
-			} else {
 				try {
 					var options = {};
 
@@ -136,7 +131,6 @@ var NRS = (function(NRS, $, undefined) {
 				} catch (err) {
 					throw err;
 				}
-			}
 		} else {
 			delete data.note_to_self;
 		}

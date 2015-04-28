@@ -30,8 +30,7 @@ var NRS = (function (NRS, $, undefined) {
         },
         // override the original hide so that the original is only called if the modal is unlocked
         hide: function () {
-            if (this.options.locked)
-                return;
+			if (this.options.locked) return;
 
             _hide.apply(this, arguments);
         }
@@ -96,9 +95,6 @@ var NRS = (function (NRS, $, undefined) {
 
         if (!$(this).find("advanced")) {
             var not = ".optional_note";
-            if (!NRS.dgsBlockPassed) {
-                not += ", .dgs_block";
-            }
             $(this).find(".advanced").not(not).fadeIn();
         } else {
             $(this).find(".advanced").hide();
@@ -230,7 +226,7 @@ var NRS = (function (NRS, $, undefined) {
         $modal.modal("hide");
     }
 
-    $("input[name=feeNHZ]").on("change", function () {
+    $("input[name=feeNHZ]").on("change", function() {
         var $modal = $(this).closest(".modal");
 
         var $feeInfo = $modal.find(".advanced_fee");
@@ -249,9 +245,6 @@ var NRS = (function (NRS, $, undefined) {
 
         if (text == $.t("advanced")) {
             var not = ".optional_note";
-            if (!NRS.dgsBlockPassed) {
-                not += ", .dgs_block";
-            }
             $modal.find(".advanced").not(not).fadeIn();
             $modal.find(".recipient_public_key").show();
             $modal.find(".optional_message, .optional_note").show();
