@@ -19,7 +19,7 @@
  * @depends {crypto/3rdparty/seedrandom.js}
  * @depends {util/converters.js}
  * @depends {util/extensions.js}
- * @depends {util/nhzaddress.js}
+ * @depends {util/nxtaddress.js}
  */
 var NRS = (function(NRS, $, undefined) {
 	"use strict";

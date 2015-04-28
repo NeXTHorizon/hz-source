@@ -1,7 +1,7 @@
 /*
     NHZ address class, extended version (with error guessing).
 
-    Version: 1.0, license: Public Domain, coder: NhzChg (admin@nhzchg.com).
+    Version: 1.0, license: Public Domain, coder: NxtChg (admin@nxtchg.com).
 */
 
 function NhzAddress() {

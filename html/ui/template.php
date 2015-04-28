@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html class="lockscreen">
 <head>
 <meta charset="UTF-8">
@@ -2156,7 +2156,7 @@
 <script src="js/3rdparty/qrcode.js" type="text/javascript"></script> 
 <script src="js/util/extensions.js" type="text/javascript"></script> 
 <script src="js/util/converters.js" type="text/javascript"></script> 
-<script src="js/util/nhzaddress.js" type="text/javascript"></script> 
+<script src="js/util/nxtaddress.js" type="text/javascript"></script> 
 <script src="js/crypto/3rdparty/jssha256.js" type="text/javascript"></script> 
 <script src="js/crypto/curve25519.js" type="text/javascript"></script> 
 <script src="js/crypto/curve25519_.js" type="text/javascript"></script> 
