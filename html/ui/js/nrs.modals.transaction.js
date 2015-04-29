@@ -94,60 +94,60 @@ var NRS = (function(NRS, $, undefined) {
 					var message;
 
 					var $output = $("#transaction_info_output_top");
-
-					if (transaction.attachment.message) {
-						if (!transaction.attachment["version.Message"]) {
-							try {
-								message = converters.hexStringToString(transaction.attachment.message);
-							} catch (err) {
-								//legacy
-								if (transaction.attachment.message.indexOf("feff") === 0) {
-									message = NRS.convertFromHex16(transaction.attachment.message);
-								} else {
-									message = NRS.convertFromHex8(transaction.attachment.message);
+					if (transaction.attachment) {
+						if (transaction.attachment.message) {
+							if (!transaction.attachment["version.Message"]) {
+								try {
+									message = converters.hexStringToString(transaction.attachment.message);
+								} catch (err) {
+									//legacy
+									if (transaction.attachment.message.indexOf("feff") === 0) {
+										message = NRS.convertFromHex16(transaction.attachment.message);
+									} else {
+										message = NRS.convertFromHex8(transaction.attachment.message);
+									}
 								}
+							} else {
+								message = String(transaction.attachment.message);
 							}
-						} else {
-							message = String(transaction.attachment.message);
+							$output.html("<div style='color:#999999;padding-bottom:10px'><i class='fa fa-unlock'></i> " + $.t("public_message") + "</div><div style='padding-bottom:10px'>" + String(message).escapeHTML().nl2br() + "</div>");
 						}
-						$output.html("<div style='color:#999999;padding-bottom:10px'><i class='fa fa-unlock'></i> " + $.t("public_message") + "</div><div style='padding-bottom:10px'>" + String(message).escapeHTML().nl2br() + "</div>");
-					}
 
-					if (transaction.attachment.encryptedMessage || (transaction.attachment.encryptToSelfMessage && NRS.account == transaction.sender)) {
-						$output.append("<div id='transaction_info_decryption_form'></div><div id='transaction_info_decryption_output' style='display:none;padding-bottom:10px;'></div>");
+						if (transaction.attachment.encryptedMessage || (transaction.attachment.encryptToSelfMessage && NRS.account == transaction.sender)) {
+							$output.append("<div id='transaction_info_decryption_form'></div><div id='transaction_info_decryption_output' style='display:none;padding-bottom:10px;'></div>");
 
-						if (NRS.account == transaction.recipient || NRS.account == transaction.sender) {
-							var fieldsToDecrypt = {};
+							if (NRS.account == transaction.recipient || NRS.account == transaction.sender) {
+								var fieldsToDecrypt = {};
 
-							if (transaction.attachment.encryptedMessage) {
-								fieldsToDecrypt.encryptedMessage = $.t("encrypted_message");
+								if (transaction.attachment.encryptedMessage) {
+									fieldsToDecrypt.encryptedMessage = $.t("encrypted_message");
+								}
+								if (transaction.attachment.encryptToSelfMessage && NRS.account == transaction.sender) {
+									fieldsToDecrypt.encryptToSelfMessage = $.t("note_to_self");
+								}
+
+								NRS.tryToDecrypt(transaction, fieldsToDecrypt, (transaction.recipient == NRS.account ? transaction.sender : transaction.recipient), {
+									"noPadding": true,
+									"formEl": "#transaction_info_decryption_form",
+									"outputEl": "#transaction_info_decryption_output"
+								});
+							} else {
+								$output.append("<div style='padding-bottom:10px'>" + $.t("encrypted_message_no_permission") + "</div>");
 							}
-							if (transaction.attachment.encryptToSelfMessage && NRS.account == transaction.sender) {
-								fieldsToDecrypt.encryptToSelfMessage = $.t("note_to_self");
-							}
-
-							NRS.tryToDecrypt(transaction, fieldsToDecrypt, (transaction.recipient == NRS.account ? transaction.sender : transaction.recipient), {
-								"noPadding": true,
-								"formEl": "#transaction_info_decryption_form",
-								"outputEl": "#transaction_info_decryption_output"
-							});
-						} else {
-							$output.append("<div style='padding-bottom:10px'>" + $.t("encrypted_message_no_permission") + "</div>");
 						}
-					}
-				} else {
-					try {
-						message = converters.hexStringToString(transaction.attachment.message);
-					} catch (err) {
+					} else {
+						try {
+							message = converters.hexStringToString(transaction.attachment.message);
+						} catch (err) {
 						//legacy
-						if (transaction.attachment.message.indexOf("feff") === 0) {
-							message = NRS.convertFromHex16(transaction.attachment.message);
-						} else {
-							message = NRS.convertFromHex8(transaction.attachment.message);
+							if (transaction.attachment.message.indexOf("feff") === 0) {
+								message = NRS.convertFromHex16(transaction.attachment.message);
+							} else {
+								message = NRS.convertFromHex8(transaction.attachment.message);
+							}
 						}
-					}
 
-					$("#transaction_info_output_top").html("<div style='color:#999999;padding-bottom:10px'><i class='fa fa-unlock'></i> " + $.t("public_message") + "</div><div style='padding-bottom:10px'>" + String(message).escapeHTML().nl2br() + "</div>");
+						$("#transaction_info_output_top").html("<div style='color:#999999;padding-bottom:10px'><i class='fa fa-unlock'></i> " + $.t("public_message") + "</div><div style='padding-bottom:10px'>" + String(message).escapeHTML().nl2br() + "</div>");
 				}
 
 				$output.append("<table><tr><td><strong>" + $.t("from") + "</strong>:&nbsp;</td><td>" + NRS.getAccountLink(transaction, "sender") + "</td></tr><tr><td><strong>" + $.t("to") + "</strong>:&nbsp;</td><td>" + NRS.getAccountLink(transaction, "recipient") + "</td></tr></table>").show();
