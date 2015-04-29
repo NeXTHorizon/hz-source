@@ -29,37 +29,44 @@ public final class Nxt {
     private static final Properties defaultProperties = new Properties();
     static {
         System.out.println("Initializing Nhz server version " + Nxt.VERSION);
-        try (InputStream is = ClassLoader.getSystemResourceAsStream("nxt-default.properties")) {
+        try (InputStream is = ClassLoader.getSystemResourceAsStream("nhz-default.properties")) {
             if (is != null) {
                 Nxt.defaultProperties.load(is);
             } else {
-                String configFile = System.getProperty("nxt-default.properties");
+                String configFile = System.getProperty("nhz-default.properties");
                 if (configFile != null) {
                     try (InputStream fis = new FileInputStream(configFile)) {
                         Nxt.defaultProperties.load(fis);
                     } catch (IOException e) {
-                        throw new RuntimeException("Error loading nxt-default.properties from " + configFile);
+                        throw new RuntimeException("Error loading nhz-default.properties from " + configFile);
                     }
                 } else {
-                    throw new RuntimeException("nxt-default.properties not in classpath and system property nxt-default.properties not defined either");
+                    throw new RuntimeException("nhz-default.properties not in classpath and system property nhz-default.properties not defined either");
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException("Error loading nxt-default.properties", e);
+            throw new RuntimeException("Error loading nhz-default.properties", e);
         }
     }
     private static final Properties properties = new Properties(defaultProperties);
     static {
-        try (InputStream is = ClassLoader.getSystemResourceAsStream("nxt.properties")) {
+        try (InputStream is = ClassLoader.getSystemResourceAsStream("nhz.properties")) {
             if (is != null) {
                 Nxt.properties.load(is);
             } // ignore if missing
         } catch (IOException e) {
-            throw new RuntimeException("Error loading nxt.properties", e);
+            throw new RuntimeException("Error loading nhz.properties", e);
         }
     }
 
+    private static String replaceNxtWithNhz(String nxtString){
+    	if( nxtString.startsWith("nxt.")) 
+    		return "nhz"+nxtString.substring(3);
+    	return nxtString;
+    }
+    
     public static int getIntProperty(String name) {
+    	name=replaceNxtWithNhz(name);
         try {
             int result = Integer.parseInt(properties.getProperty(name));
             Logger.logMessage(name + " = \"" + result + "\"");
@@ -75,6 +82,7 @@ public final class Nxt {
     }
 
     public static String getStringProperty(String name, String defaultValue) {
+    	name=replaceNxtWithNhz(name);
         String value = properties.getProperty(name);
         if (value != null && ! "".equals(value)) {
             Logger.logMessage(name + " = \"" + value + "\"");
@@ -101,6 +109,7 @@ public final class Nxt {
     }
 
     public static Boolean getBooleanProperty(String name) {
+    	name=replaceNxtWithNhz(name);
         String value = properties.getProperty(name);
         if (Boolean.TRUE.toString().equals(value)) {
             Logger.logMessage(name + " = \"true\"");
