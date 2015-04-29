@@ -4,7 +4,6 @@ import nxt.Account;
 import nxt.Appendix;
 import nxt.Attachment;
 import nxt.Constants;
-import nxt.Genesis;
 import nxt.Nxt;
 import nxt.NxtException;
 import nxt.Transaction;
@@ -47,11 +46,7 @@ abstract class CreateTransaction extends APIServlet.APIRequestHandler {
 
     final JSONStreamAware createTransaction(HttpServletRequest req, Account senderAccount, Attachment attachment)
         throws NxtException {
-    	if (Nxt.getBlockchain().getHeight()>=Constants.TRANSACTIONS_VERSION_1_BLOCK) {
     		return createTransaction(req, senderAccount, null, 0, attachment);
-    	} else { //We need the CREATOR_ID as recipient until hard fork
-    		return createTransaction(req, senderAccount, Genesis.CREATOR_ID, 0, attachment);
-    	}
     }
 
     final JSONStreamAware createTransaction(HttpServletRequest req, Account senderAccount, Long recipientId, long amountNQT)
@@ -137,7 +132,7 @@ abstract class CreateTransaction extends APIServlet.APIRequestHandler {
         try {
             Transaction.Builder builder = Nxt.getTransactionProcessor().newTransactionBuilder(publicKey, amountNQT, feeNQT,
                     deadline, attachment).referencedTransactionFullHash(referencedTransactionFullHash);
-            if (attachment.getTransactionType().hasRecipient() || (recipientId != null && recipientId.equals(Genesis.CREATOR_ID))) {
+            if (attachment.getTransactionType().hasRecipient()) {
                 builder.recipientId(recipientId);
             }
             if (encryptedMessage != null) {

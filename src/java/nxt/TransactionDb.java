@@ -113,12 +113,12 @@ final class TransactionDb {
                     .senderId(senderId)
                     .blockTimestamp(blockTimestamp)
                     .fullHash(fullHash);
-            //if (transactionType.hasRecipient()) {
+            if (transactionType.hasRecipient()) {
                 long recipientId = rs.getLong("recipient_id");
                 if (! rs.wasNull()) {
                     builder.recipientId(recipientId);
                 }
-            //}
+            }
             if (rs.getBoolean("has_message")) {
                 builder.message(new Appendix.Message(buffer, version));
             }
@@ -174,8 +174,7 @@ final class TransactionDb {
                     pstmt.setLong(++i, transaction.getId());
                     pstmt.setShort(++i, transaction.getDeadline());
                     pstmt.setBytes(++i, transaction.getSenderPublicKey());
-                    if ((transaction.getType().hasRecipient() && transaction.getRecipientId() != null) || 
-                    		(transaction.getRecipientId() != null && transaction.getRecipientId().equals(Genesis.CREATOR_ID))) {
+                    if (transaction.getType().hasRecipient() && transaction.getRecipientId() != null) {
                         pstmt.setLong(++i, transaction.getRecipientId());
                     } else {
                         pstmt.setNull(++i, Types.BIGINT);

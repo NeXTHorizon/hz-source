@@ -222,6 +222,33 @@ final class DbVersion {
             case 70:
                 apply("DROP INDEX transaction_timestamp_idx");
             case 71:
+                try (Connection con = Db.getConnection();
+                        Statement stmt = con.createStatement();
+                        PreparedStatement pstmt = con.prepareStatement("UPDATE transaction SET recipient_id = null WHERE type = ? AND subtype = ?")) {
+                       try {
+                           for (byte type = 0; type <= 4; type++) {
+                               for (byte subtype = 0; subtype <= 8; subtype++) {
+                                   TransactionType transactionType = TransactionType.findTransactionType(type, subtype);
+                                   if (transactionType == null) {
+                                       continue;
+                                   }
+                                   if (!transactionType.hasRecipient()) {
+                                       pstmt.setByte(1, type);
+                                       pstmt.setByte(2, subtype);
+                                       pstmt.executeUpdate();
+                                   }
+                               }
+                           }
+                           stmt.executeUpdate("UPDATE version SET next_update = next_update + 1");
+                           con.commit();
+                       } catch (SQLException e) {
+                           con.rollback();
+                           throw e;
+                       }
+                   } catch (SQLException e) {
+                       throw new RuntimeException(e);
+                   }
+            case 72:
                 return;
             default:
                 throw new RuntimeException("Database inconsistent with code, probably trying to run older code on newer database");

@@ -249,7 +249,7 @@ final class TransactionImpl implements Transaction {
         }
 
         if (! type.hasRecipient()) {
-            if (recipientId != null && !recipientId.equals(Genesis.CREATOR_ID) || getAmountNQT() != 0) {
+            if (recipientId != null || getAmountNQT() != 0) {
                 throw new NxtException.NotValidException("Transactions of this type must have recipient == Genesis, amount == 0");
             }
         }
@@ -550,7 +550,7 @@ final class TransactionImpl implements Transaction {
                     .signature(signature)
                     .ecBlockHeight(ecBlockHeight)
                     .ecBlockId(ecBlockId);
-            if (transactionType.hasRecipient() || (recipientId != null && recipientId.equals(Genesis.CREATOR_ID))) {
+            if (transactionType.hasRecipient()) {
                 builder.recipientId(recipientId);
             }
             int position = 1;
@@ -601,7 +601,7 @@ final class TransactionImpl implements Transaction {
         json.put("timestamp", timestamp);
         json.put("deadline", deadline);
         json.put("senderPublicKey", Convert.toHexString(senderPublicKey));
-        if (type.hasRecipient() || (recipientId != null && recipientId.equals(Genesis.CREATOR_ID))) {
+        if (type.hasRecipient()) {
             json.put("recipient", Convert.toUnsignedLong(recipientId));
         }
         json.put("amountNQT", amountNQT);
@@ -647,8 +647,8 @@ final class TransactionImpl implements Transaction {
                     transactionType.parseAttachment(attachmentData))
                     .referencedTransactionFullHash(referencedTransactionFullHash)
                     .signature(signature);
+            if (transactionType.hasRecipient()) {
             Long recipientId = Convert.parseUnsignedLong((String) transactionData.get("recipient"));            
-            if (transactionType.hasRecipient() || (recipientId != null && recipientId.equals(Genesis.CREATOR_ID))) {
                 builder.recipientId(recipientId);
             }
             if (attachmentData != null) {
