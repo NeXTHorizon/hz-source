@@ -4,21 +4,21 @@ import java.math.BigInteger;
 
 public final class Genesis {
 
-	public static final Long CREATOR_ID = Constants.isTestnet ? -6095114967623032667L : -4771042114618049272L;
+	public static final long CREATOR_ID = Constants.isTestnet ? -6095114967623032667L : -4771042114618049272L;
 	
 	public static final byte[] CREATOR_PUBLIC_KEY = Constants.isTestnet
 			? new byte[] { 121, -92, 22, 4, 72, -26, -128, -101, 79, 79, 112, -112, -25, 85, -55, 48, 96, -76, 28, 50, 41, 109, -123, 63, -24, -109, 50, 41, 72, 117, 48, 75 } 
 			: new byte[] {-74, -28, 104, 49, 67, -27, -77, 39, -128, -34, -92, 46, -79, 68, 95, 27, 19, -106, -112, 30, 76, -46, 101, -65, 74, 4, 12, -34, 0, -47, -106, 72};
 
-	public static final Long[] GENESIS_RECIPIENTS = Constants.isTestnet
-			? new Long[] {(new BigInteger("629929808385737828")).longValue(),
+	public static final long[] GENESIS_RECIPIENTS = Constants.isTestnet
+			? new long[] {(new BigInteger("629929808385737828")).longValue(),
 						(new BigInteger("602001404311011236")).longValue(),
     					(new BigInteger("11264237887918188544")).longValue(),
     					(new BigInteger("6783351237015279639")).longValue(),
     					(new BigInteger("5523773861766985698")).longValue(),
     					(new BigInteger("993379753657137068")).longValue()}
-			: new Long[] { Long.valueOf(new BigInteger("5284279215227947913").longValue()), 
-						Long.valueOf(new BigInteger("7152054609364438286").longValue())};
+			: new long[] { new BigInteger("5284279215227947913").longValue(), 
+						new BigInteger("7152054609364438286").longValue()};
 		
 	public static final int[] GENESIS_AMOUNTS = Constants.isTestnet
 			? new int[] { 300000000, 100000000, 150000000, 250000000, 190000000, 10000000 }
@@ -42,7 +42,7 @@ public final class Genesis {
 			? new byte[] { -115, -110, 3, 16, 92, 104, -107, 57, 28, -38, -110, 40, 100, -73, 43, 77, 47, -102, 109, 76, 70, -111, 33, 51, -69, -14, 37, 25, 70, 31, 17, 10, -50, -55, -79, 6, -105, -115, -34, -124, 118, -65, 57, 53, 116, 91, 118, 11, -83, -126, -2, 42, 51, -18, 20, -118, 52, 58, 127, 76, 8, -108, -119, -59 }
 			: new byte[] { 65, 30, -106, -120, 96, -91, 72, 116, 124, -108, -113, -55, 71, -113, 77, -113,-102, -120, -127, 107, 50, -62, 27, 24, -122, -123, -38, -75, -58, 126, 61, 11,-54, 116, -87, 51, 71, -2, -74, -57, 35, 90, 30, -97, -127, 67, -40, -28, -117,54, -118, 5, -76, 26, 103, 127, 28, 57, -62, 18, -119, 103, 49, -124};
 
-	public static final Long GENESIS_BLOCK_ID= Constants.isTestnet ? -5306177814804783910L : -4015909528786180271L;
+	public static final long GENESIS_BLOCK_ID= Constants.isTestnet ? -5306177814804783910L : -4015909528786180271L;
 	
 	
 	private Genesis() {} // never

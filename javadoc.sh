@@ -1,5 +1,5 @@
 #!/bin/sh
-CP=nhz.jar:lib/*:conf
+CP=classes:lib/*:conf
 SP=src/java/
 
 /bin/rm -rf html/doc/*

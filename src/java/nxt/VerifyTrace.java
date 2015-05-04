@@ -1,6 +1,7 @@
 package nxt;
 
 import nxt.util.Convert;
+import nxt.util.Logger;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -15,10 +16,12 @@ import java.util.Set;
 public final class VerifyTrace {
 
     private static final List<String> balanceHeaders = Arrays.asList("balance", "unconfirmed balance");
-    private static final List<String> deltaHeaders = Arrays.asList("transaction amount", "transaction fee",
-            "generation fee", "trade cost", "purchase cost", "discount", "refund");
+    private static final List<String> deltaHeaders = Arrays.asList("transaction amount", "transaction fee", "dividend",
+            "generation fee", "trade cost", "purchase cost", "discount", "refund", "exchange cost", "currency cost");
     private static final List<String> assetQuantityHeaders = Arrays.asList("asset balance", "unconfirmed asset balance");
     private static final List<String> deltaAssetQuantityHeaders = Arrays.asList("asset quantity", "trade quantity");
+    private static final List<String> currencyBalanceHeaders = Arrays.asList("currency balance", "unconfirmed currency balance");
+    private static final List<String> deltaCurrencyUnitHeaders = Arrays.asList("currency units", "exchange quantity");
 
     private static boolean isBalance(String header) {
         return balanceHeaders.contains(header);
@@ -35,6 +38,13 @@ public final class VerifyTrace {
     private static boolean isDeltaAssetQuantity(String header) {
         return deltaAssetQuantityHeaders.contains(header);
     }
+    private static boolean isCurrencyBalance(String header) {
+        return currencyBalanceHeaders.contains(header);
+    }
+
+    private static boolean isDeltaCurrencyUnits(String header) {
+        return deltaCurrencyUnitHeaders.contains(header);
+    }
 
     public static void main(String[] args) {
         String fileName = args.length == 1 ? args[0] : "nxt-trace.csv";
@@ -46,6 +56,9 @@ public final class VerifyTrace {
             Map<String,Map<String,Map<String,Long>>> accountAssetTotals = new HashMap<>();
             Map<String,Long> issuedAssetQuantities = new HashMap<>();
             Map<String,Long> accountAssetQuantities = new HashMap<>();
+            Map<String,Map<String,Map<String,Long>>> accountCurrencyTotals = new HashMap<>();
+            Map<String,Long> issuedCurrencyUnits = new HashMap<>();
+            Map<String,Long> accountCurrencyUnits = new HashMap<>();
 
             while ((line = reader.readLine()) != null) {
                 String[] values = unquote(line.split(DebugTrace.SEPARATOR));
@@ -64,9 +77,35 @@ public final class VerifyTrace {
                     accountAssetMap = new HashMap<>();
                     accountAssetTotals.put(accountId, accountAssetMap);
                 }
-                if ("asset issuance".equals(valueMap.get("event"))) {
+                String event = valueMap.get("event");
+                if ("asset issuance".equals(event)) {
                     String assetId = valueMap.get("asset");
                     issuedAssetQuantities.put(assetId, Long.parseLong(valueMap.get("asset quantity")));
+                }
+                Map<String,Map<String,Long>> accountCurrencyMap = accountCurrencyTotals.get(accountId);
+                if (accountCurrencyMap == null) {
+                    accountCurrencyMap = new HashMap<>();
+                    accountCurrencyTotals.put(accountId, accountCurrencyMap);
+                }
+                if ("currency issuance".equals(event)) {
+                    String currencyId = valueMap.get("currency");
+                    issuedCurrencyUnits.put(currencyId, Long.parseLong(valueMap.get("currency units")));
+                }
+                if ("crowdfunding".equals(event)) {
+                    String currencyId = valueMap.get("currency");
+                    issuedCurrencyUnits.put(currencyId, Long.parseLong(valueMap.get("crowdfunding")));
+                }
+                if ("currency mint".equals(event)) {
+                    String currencyId = valueMap.get("currency");
+                    issuedCurrencyUnits.put(currencyId, Convert.safeAdd(nullToZero(issuedCurrencyUnits.get(currencyId)), Long.parseLong(valueMap.get("currency units"))));
+                }
+                if ("currency claim".equals(event)) {
+                    String currencyId = valueMap.get("currency");
+                    issuedCurrencyUnits.put(currencyId, Convert.safeAdd(nullToZero(issuedCurrencyUnits.get(currencyId)), Long.parseLong(valueMap.get("currency units"))));
+                }
+                if ("currency delete".equals(event) || "undo crowdfunding".equals(event)) {
+                    String currencyId = valueMap.get("currency");
+                    issuedCurrencyUnits.put(currencyId, 0L);
                 }
                 for (Map.Entry<String,String> mapEntry : valueMap.entrySet()) {
                     String header = mapEntry.getKey();
@@ -77,7 +116,7 @@ public final class VerifyTrace {
                     if (isBalance(header)) {
                         accountTotals.put(header, Long.parseLong(value));
                     } else if (isDelta(header)) {
-                        long previousValue = Convert.nullToZero(accountTotals.get(header));
+                        long previousValue = nullToZero(accountTotals.get(header));
                         accountTotals.put(header, Convert.safeAdd(previousValue, Long.parseLong(value)));
                     } else if (isAssetQuantity(header)) {
                         String assetId = valueMap.get("asset");
@@ -94,8 +133,25 @@ public final class VerifyTrace {
                             assetTotals = new HashMap<>();
                             accountAssetMap.put(assetId, assetTotals);
                         }
-                        long previousValue = Convert.nullToZero(assetTotals.get(header));
+                        long previousValue = nullToZero(assetTotals.get(header));
                         assetTotals.put(header, Convert.safeAdd(previousValue, Long.parseLong(value)));
+                    } else if (isCurrencyBalance(header)) {
+                        String currencyId = valueMap.get("currency");
+                        Map<String,Long> currencyTotals = accountCurrencyMap.get(currencyId);
+                        if (currencyTotals == null) {
+                            currencyTotals = new HashMap<>();
+                            accountCurrencyMap.put(currencyId, currencyTotals);
+                        }
+                        currencyTotals.put(header, Long.parseLong(value));
+                    } else if (isDeltaCurrencyUnits(header)) {
+                        String currencyId = valueMap.get("currency");
+                        Map<String,Long> currencyTotals = accountCurrencyMap.get(currencyId);
+                        if (currencyTotals == null) {
+                            currencyTotals = new HashMap<>();
+                            accountCurrencyMap.put(currencyId, currencyTotals);
+                        }
+                        long previousValue = nullToZero(currencyTotals.get(header));
+                        currencyTotals.put(header, Convert.safeAdd(previousValue, Long.parseLong(value)));
                     }
                 }
             }
@@ -106,17 +162,17 @@ public final class VerifyTrace {
                 Map<String,Long> accountValues = mapEntry.getValue();
                 System.out.println("account: " + accountId);
                 for (String balanceHeader : balanceHeaders) {
-                    System.out.println(balanceHeader + ": " + Convert.nullToZero(accountValues.get(balanceHeader)));
+                    System.out.println(balanceHeader + ": " + nullToZero(accountValues.get(balanceHeader)));
                 }
                 System.out.println("totals:");
                 long totalDelta = 0;
                 for (String header : deltaHeaders) {
-                    long delta = Convert.nullToZero(accountValues.get(header));
+                    long delta = nullToZero(accountValues.get(header));
                     totalDelta = Convert.safeAdd(totalDelta, delta);
                     System.out.println(header + ": " + delta);
                 }
                 System.out.println("total confirmed balance change: " + totalDelta);
-                long balance = Convert.nullToZero(accountValues.get("balance"));
+                long balance = nullToZero(accountValues.get("balance"));
                 if (balance != totalDelta) {
                     System.out.println("ERROR: balance doesn't match total change!!!");
                     failed.add(accountId);
@@ -131,17 +187,39 @@ public final class VerifyTrace {
                     }
                     long totalAssetDelta = 0;
                     for (String header : deltaAssetQuantityHeaders) {
-                        long delta = Convert.nullToZero(assetValues.get(header));
+                        long delta = nullToZero(assetValues.get(header));
                         totalAssetDelta = Convert.safeAdd(totalAssetDelta, delta);
                     }
                     System.out.println("total confirmed asset quantity change: " + totalAssetDelta);
-                    long assetBalance= assetValues.get("asset balance");
+                    long assetBalance = nullToZero(assetValues.get("asset balance"));
                     if (assetBalance != totalAssetDelta) {
                         System.out.println("ERROR: asset balance doesn't match total asset quantity change!!!");
                         failed.add(accountId);
                     }
-                    Long previousAssetQuantity = Convert.nullToZero(accountAssetQuantities.get(assetId));
+                    long previousAssetQuantity = nullToZero(accountAssetQuantities.get(assetId));
                     accountAssetQuantities.put(assetId, Convert.safeAdd(previousAssetQuantity, assetBalance));
+                }
+                Map<String,Map<String,Long>> accountCurrencyMap = accountCurrencyTotals.get(accountId);
+                for (Map.Entry<String,Map<String,Long>> currencyMapEntry : accountCurrencyMap.entrySet()) {
+                    String currencyId = currencyMapEntry.getKey();
+                    Map<String,Long> currencyValues = currencyMapEntry.getValue();
+                    System.out.println("currency: " + currencyId);
+                    for (Map.Entry<String,Long> currencyValueEntry : currencyValues.entrySet()) {
+                        System.out.println(currencyValueEntry.getKey() + ": " + currencyValueEntry.getValue());
+                    }
+                    long totalCurrencyDelta = 0;
+                    for (String header : deltaCurrencyUnitHeaders) {
+                        long delta = nullToZero(currencyValues.get(header));
+                        totalCurrencyDelta = Convert.safeAdd(totalCurrencyDelta, delta);
+                    }
+                    System.out.println("total confirmed currency units change: " + totalCurrencyDelta);
+                    long currencyBalance = nullToZero(currencyValues.get("currency balance"));
+                    if (currencyBalance != totalCurrencyDelta) {
+                        System.out.println("ERROR: currency balance doesn't match total currency units change!!!");
+                        failed.add(accountId);
+                    }
+                    long previousCurrencyQuantity = nullToZero(accountCurrencyUnits.get(currencyId));
+                    accountCurrencyUnits.put(currencyId, Convert.safeAdd(previousCurrencyQuantity, currencyBalance));
                 }
                 System.out.println();
             }
@@ -149,11 +227,22 @@ public final class VerifyTrace {
             for (Map.Entry<String,Long> assetEntry : issuedAssetQuantities.entrySet()) {
                 String assetId = assetEntry.getKey();
                 long issuedAssetQuantity = assetEntry.getValue();
-                if (issuedAssetQuantity != Convert.nullToZero(accountAssetQuantities.get(assetId))) {
+                if (issuedAssetQuantity != nullToZero(accountAssetQuantities.get(assetId))) {
                     System.out.println("ERROR: asset " + assetId + " balances don't match, issued: "
                             + issuedAssetQuantity
                             + ", total of account balances: " + accountAssetQuantities.get(assetId));
                     failedAssets.add(assetId);
+                }
+            }
+            Set<String> failedCurrencies = new HashSet<>();
+            for (Map.Entry<String,Long> currencyEntry : issuedCurrencyUnits.entrySet()) {
+                String currencyId = currencyEntry.getKey();
+                long issuedCurrencyQuantity = currencyEntry.getValue();
+                if (issuedCurrencyQuantity != nullToZero(accountCurrencyUnits.get(currencyId))) {
+                    System.out.println("ERROR: currency " + currencyId + " balances don't match, issued: "
+                            + issuedCurrencyQuantity
+                            + ", total of account balances: " + accountCurrencyUnits.get(currencyId));
+                    failedCurrencies.add(currencyId);
                 }
             }
             if (failed.size() > 0) {
@@ -168,11 +257,21 @@ public final class VerifyTrace {
             } else {
                 System.out.println("SUCCESS: all " + issuedAssetQuantities.size() + " assets quantities are correct!");
             }
+            if (failedCurrencies.size() > 0) {
+                System.out.println("ERROR: " + failedCurrencies.size() + " currencies have incorrect balances");
+                System.out.println(failedCurrencies);
+            } else {
+                System.out.println("SUCCESS: all " + issuedCurrencyUnits.size() + " currency units are correct!");
+            }
 
         } catch (IOException e) {
             System.out.println(e.toString());
             throw new RuntimeException(e);
         }
+    }
+
+    static {
+        Logger.init();
     }
 
     private static final String beginQuote = "^" + DebugTrace.QUOTE;
@@ -185,4 +284,9 @@ public final class VerifyTrace {
         }
         return result;
     }
+
+    private static long nullToZero(Long l) {
+        return l == null ? 0 : l;
+    }
+
 }

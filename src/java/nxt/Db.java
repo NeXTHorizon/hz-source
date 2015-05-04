@@ -1,63 +1,36 @@
 package nxt;
 
-import nxt.util.Logger;
-import org.h2.jdbcx.JdbcConnectionPool;
-
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import nxt.db.BasicDb;
+import nxt.db.TransactionalDb;
 
 public final class Db {
 
-    private static volatile JdbcConnectionPool cp;
-    private static volatile int maxActiveConnections;
+    public static final TransactionalDb db = new TransactionalDb(new BasicDb.DbProperties()
+            .maxCacheSize(Nxt.getIntProperty("nxt.dbCacheKB"))
+            .dbUrl(Constants.isTestnet ? Nxt.getStringProperty("nxt.testDbUrl") : Nxt.getStringProperty("nxt.dbUrl"))
+            .maxConnections(Nxt.getIntProperty("nxt.maxDbConnections"))
+            .loginTimeout(Nxt.getIntProperty("nxt.dbLoginTimeout"))
+            .defaultLockTimeout(Nxt.getIntProperty("nxt.dbDefaultLockTimeout") * 1000)
+    );
+
+    /*
+    public static final BasicDb userDb = new BasicDb(new BasicDb.DbProperties()
+            .maxCacheSize(Nxt.getIntProperty("nxt.userDbCacheKB"))
+            .dbUrl(Constants.isTestnet ? Nxt.getStringProperty("nxt.testUserDbUrl") : Nxt.getStringProperty("nxt.userDbUrl"))
+            .maxConnections(Nxt.getIntProperty("nxt.maxUserDbConnections"))
+            .loginTimeout(Nxt.getIntProperty("nxt.userDbLoginTimeout"))
+            .defaultLockTimeout(Nxt.getIntProperty("nxt.userDbDefaultLockTimeout") * 1000)
+    );
+    */
 
     static void init() {
-        long maxCacheSize = Nxt.getIntProperty("nxt.dbCacheKB");
-        if (maxCacheSize == 0) {
-            maxCacheSize = Runtime.getRuntime().maxMemory() / (1024 * 2);
-        }
-        String dbUrl = Constants.isTestnet ? Nxt.getStringProperty("nxt.testDbUrl") : Nxt.getStringProperty("nxt.dbUrl");
-        if (! dbUrl.contains("CACHE_SIZE=")) {
-            dbUrl += ";CACHE_SIZE=" + maxCacheSize;
-        }
-        Logger.logDebugMessage("Database jdbc url set to: " + dbUrl);
-        cp = JdbcConnectionPool.create(dbUrl, "sa", "sa");
-        cp.setMaxConnections(Nxt.getIntProperty("nxt.maxDbConnections"));
-        cp.setLoginTimeout(Nxt.getIntProperty("nxt.dbLoginTimeout"));
-        int defaultLockTimeout = Nxt.getIntProperty("nxt.dbDefaultLockTimeout") * 1000;
-        try (Connection con = cp.getConnection();
-             Statement stmt = con.createStatement()) {
-            stmt.executeUpdate("SET DEFAULT_LOCK_TIMEOUT " + defaultLockTimeout);
-        } catch (SQLException e) {
-            throw new RuntimeException(e.toString(), e);
-        }
-        DbVersion.init();
+        db.init("sa", "sa", new NxtDbVersion());
+        //userDb.init("sa", "databaseencryptionpassword sa", new UserDbVersion());
     }
 
     static void shutdown() {
-        if (cp != null) {
-            try (Connection con = cp.getConnection();
-                 Statement stmt = con.createStatement()) {
-                stmt.execute("SHUTDOWN COMPACT");
-                Logger.logMessage("Database shutdown completed");
-            } catch (SQLException e) {
-                Logger.logDebugMessage(e.toString(), e);
-            }
-            //cp.dispose();
-            cp = null;
-        }
-    }
-
-    public static Connection getConnection() throws SQLException {
-        Connection con = cp.getConnection();
-        con.setAutoCommit(false);
-        int activeConnections = cp.getActiveConnections();
-        if (activeConnections > maxActiveConnections) {
-            maxActiveConnections = activeConnections;
-            Logger.logDebugMessage("Database connection pool current size: " + activeConnections);
-        }
-        return con;
+        //userDb.shutdown();
+        db.shutdown();
     }
 
     private Db() {} // never

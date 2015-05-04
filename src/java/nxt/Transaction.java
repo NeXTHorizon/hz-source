@@ -4,11 +4,11 @@ import org.json.simple.JSONObject;
 
 import java.util.List;
 
-public interface Transaction extends Comparable<Transaction> {
+public interface Transaction {
 
     public static interface Builder {
 
-        Builder recipientId(Long recipientId);
+        Builder recipientId(long recipientId);
 
         Builder referencedTransactionFullHash(String referencedTransactionFullHash);
 
@@ -20,25 +20,33 @@ public interface Transaction extends Comparable<Transaction> {
 
         Builder publicKeyAnnouncement(Appendix.PublicKeyAnnouncement publicKeyAnnouncement);
 
+        Builder timestamp(int timestamp);
+
+        Builder ecBlockHeight(int height);
+
+        Builder ecBlockId(long blockId);
+
         Transaction build() throws NxtException.NotValidException;
 
     }
 
-    Long getId();
+    long getId();
 
     String getStringId();
 
-    Long getSenderId();
+    long getSenderId();
 
     byte[] getSenderPublicKey();
 
-    Long getRecipientId();
+    long getRecipientId();
 
     int getHeight();
 
-    Long getBlockId();
+    long getBlockId();
 
     Block getBlock();
+
+    short getIndex();
 
     int getTimestamp();
 
@@ -92,6 +100,6 @@ public interface Transaction extends Comparable<Transaction> {
 
     int getECBlockHeight();
 
-    Long getECBlockId();
+    long getECBlockId();
 
 }

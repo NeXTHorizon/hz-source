@@ -1,6 +1,6 @@
 /.idea/
 /nxt.iml
-/nxt_db/
+/nxt_db
 /webapps/
 /classes/
 /*.log
@@ -9,14 +9,14 @@
 /html/**/*.gz
 /keystore
 /nxt.jar
-/nxt_test_db/
-*.trace
-/nxt-trace.csv
+/nxt_test_db
 /README_win.txt
-/package.sh
 /nxt.log.lck
 /bin
 /.classpath
 /.project
 /.settings/
 /compile.bat
+/test/classes/
+*.csv
+/nxt.pro

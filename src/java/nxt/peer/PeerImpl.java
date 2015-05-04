@@ -3,10 +3,12 @@ package nxt.peer;
 import nxt.Account;
 import nxt.BlockchainProcessor;
 import nxt.Constants;
+import nxt.Nxt;
 import nxt.NxtException;
 import nxt.util.Convert;
 import nxt.util.CountingInputStream;
 import nxt.util.CountingOutputStream;
+import nxt.util.JSON;
 import nxt.util.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
@@ -21,7 +23,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
@@ -32,6 +33,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
@@ -46,12 +48,17 @@ final class PeerImpl implements Peer {
     private volatile String platform;
     private volatile String application;
     private volatile String version;
+    private volatile boolean isOldVersion;
     private volatile long adjustedWeight;
     private volatile long blacklistingTime;
+    private volatile String blacklistingCause;
     private volatile State state;
     private volatile long downloadedVolume;
     private volatile long uploadedVolume;
     private volatile int lastUpdated;
+    private volatile int lastConnectAttempt;
+    private volatile long hallmarkBalance = -1;
+    private volatile int hallmarkBalanceHeight;
 
     PeerImpl(String peerAddress, String announcedAddress) {
         this.peerAddress = peerAddress;
@@ -83,6 +90,8 @@ final class PeerImpl implements Peer {
         } else if (state != State.NON_CONNECTED) {
             this.state = state;
             Peers.notifyListeners(this, Peers.Event.CHANGED_ACTIVE_PEER);
+        } else {
+            this.state = state;
         }
     }
 
@@ -116,7 +125,41 @@ final class PeerImpl implements Peer {
     }
 
     void setVersion(String version) {
+        if (this.version != null && this.version.equals(version)) {
+            return;
+        }
         this.version = version;
+        isOldVersion = false;
+        if (Nxt.APPLICATION.equals(application)) {
+            String[] versions;
+            if (version.startsWith("NHZ V")){
+    			version=version.substring(5);
+            }
+            if (version == null || (versions = version.split("\\.")).length < Constants.MIN_VERSION.length) {
+                isOldVersion = true;
+            } else {
+                for (int i = 0; i < Constants.MIN_VERSION.length; i++) {
+                    try {
+                        int v = Integer.parseInt(versions[i]);
+                        if (v > Constants.MIN_VERSION[i]) {
+                            isOldVersion = false;
+                            break;
+                        } else if (v < Constants.MIN_VERSION[i]) {
+                            isOldVersion = true;
+                            break;
+                        }
+                    } catch (NumberFormatException e) {
+                        isOldVersion = true;
+                        break;
+                    }
+                }
+            }
+            if (isOldVersion) {
+                Logger.logDebugMessage(String.format("Blacklisting %s version %s", peerAddress, version));
+                setState(State.NON_CONNECTED);
+                Peers.notifyListeners(this, Peers.Event.BLACKLIST);
+            }
+        }
     }
 
     @Override
@@ -187,42 +230,55 @@ final class PeerImpl implements Peer {
         if (hallmark == null) {
             return 0;
         }
-        Account account = Account.getAccount(hallmark.getAccountId());
-        if (account == null) {
-            return 0;
+        if (hallmarkBalance == -1 || hallmarkBalanceHeight < Nxt.getBlockchain().getHeight() - 60) {
+            long accountId = hallmark.getAccountId();
+            Account account = Account.getAccount(accountId);
+            hallmarkBalance = account == null ? 0 : account.getBalanceNQT();
+            hallmarkBalanceHeight = Nxt.getBlockchain().getHeight();
         }
-        return (int)(adjustedWeight * (account.getBalanceNQT() / Constants.ONE_NHZ) / Constants.MAX_BALANCE_NHZ);
+        return (int)(adjustedWeight * (hallmarkBalance / Constants.ONE_NXT) / Constants.MAX_BALANCE_NXT);
     }
 
     @Override
     public boolean isBlacklisted() {
-        return blacklistingTime > 0 || Peers.knownBlacklistedPeers.contains(peerAddress);
+        return blacklistingTime > 0 || isOldVersion || Peers.knownBlacklistedPeers.contains(peerAddress);
     }
 
     @Override
     public void blacklist(Exception cause) {
-        if (cause instanceof NxtException.NotCurrentlyValidException || cause instanceof BlockchainProcessor.BlockOutOfOrderException) {
-            // don't blacklist peers just because a feature is not yet enabled
+        if (cause instanceof NxtException.NotCurrentlyValidException || cause instanceof BlockchainProcessor.BlockOutOfOrderException
+                || cause instanceof SQLException || cause.getCause() instanceof SQLException) {
+            // don't blacklist peers just because a feature is not yet enabled, or because of database timeouts
             // prevents erroneous blacklisting during loading of blockchain from scratch
             return;
         }
-        if (! isBlacklisted() && ! (cause instanceof IOException || cause instanceof ParseException)) {
-            Logger.logDebugMessage("Blacklisting " + peerAddress + " because of: " + cause.toString());
+        if (cause instanceof ParseException && Errors.END_OF_FILE.equals(cause.toString())) {
+            return;
         }
-        blacklist();
+        if (! isBlacklisted()) {
+            if (cause instanceof IOException || cause instanceof ParseException) {
+                Logger.logDebugMessage("Blacklisting " + peerAddress + " because of: " + cause.toString());
+            } else {
+                Logger.logDebugMessage("Blacklisting " + peerAddress + " because of: " + cause.toString(), cause);
+            }
+        }
+        blacklist(cause.toString());
     }
 
     @Override
-    public void blacklist() {
+    public void blacklist(String cause) {
         blacklistingTime = System.currentTimeMillis();
+        blacklistingCause = cause;
         setState(State.NON_CONNECTED);
         Peers.notifyListeners(this, Peers.Event.BLACKLIST);
     }
 
     @Override
     public void unBlacklist() {
+        Logger.logDebugMessage("Unblacklisting " + peerAddress);
         setState(State.NON_CONNECTED);
         blacklistingTime = 0;
+        blacklistingCause = null;
         Peers.notifyListeners(this, Peers.Event.UNBLACKLIST);
     }
 
@@ -234,7 +290,11 @@ final class PeerImpl implements Peer {
 
     @Override
     public void deactivate() {
-        setState(State.NON_CONNECTED);
+        if (state == State.CONNECTED) {
+            setState(State.DISCONNECTED);
+        } else {
+            setState(State.NON_CONNECTED);
+        }
         Peers.notifyListeners(this, Peers.Event.DEACTIVATE);
     }
 
@@ -254,13 +314,22 @@ final class PeerImpl implements Peer {
     }
 
     @Override
+    public String getBlacklistingCause() {
+        return blacklistingCause == null ? "unknown" : blacklistingCause;
+    }
+
+    int getLastConnectAttempt() {
+        return lastConnectAttempt;
+    }
+
+    @Override
     public JSONObject send(final JSONStreamAware request) {
-    	return send(request, Peers.MAX_RESPONSE_SIZE);
+        return send(request, Peers.MAX_RESPONSE_SIZE);
     }
     
     @Override
     public JSONObject send(final JSONStreamAware request, int maxResponseSize) {
-    	
+
         JSONObject response = null;
 
         String log = null;
@@ -270,15 +339,20 @@ final class PeerImpl implements Peer {
         try {
 
             String address = announcedAddress != null ? announcedAddress : peerAddress;
-            URL url = new URL("http://" + address + (port <= 0 ? ":" + (Constants.isTestnet ? Peers.TESTNET_PEER_PORT : Peers.DEFAULT_PEER_PORT) : "") + "/nhz");
+            StringBuilder buf = new StringBuilder("http://");
+            buf.append(address);
+            if (port <= 0) {
+                buf.append(':');
+                buf.append(Peers.getDefaultPeerPort());
+            }
+            buf.append("/nhz");
+            URL url = new URL(buf.toString());
 
             if (Peers.communicationLoggingMask != 0) {
-                StringWriter stringWriter = new StringWriter();
-                request.writeJSONString(stringWriter);
-                log = "\"" + url.toString() + "\": " + stringWriter.toString();
+                log = "\"" + url.toString() + "\": " + JSON.toString(request);
             }
 
-            connection = (HttpURLConnection)url.openConnection();
+            connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
             connection.setConnectTimeout(Peers.connectTimeout);
@@ -292,63 +366,59 @@ final class PeerImpl implements Peer {
             updateUploadedVolume(cos.getCount());
 
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-            	if (maxResponseSize > 0) {
-		            CountingInputStream cis = new CountingInputStream(connection.getInputStream(), maxResponseSize);
-		            InputStream responseStream = cis;
-		            if ("gzip".equals(connection.getHeaderField("Content-Encoding"))) {
-		                responseStream = new GZIPInputStream(cis);
-		            }
-		            if ((Peers.communicationLoggingMask & Peers.LOGGING_MASK_200_RESPONSES) != 0) {
-		                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		                byte[] buffer = new byte[1024];
-		                int numberOfBytes;
-		                try (InputStream inputStream = responseStream) {
-		                    while ((numberOfBytes = inputStream.read(buffer, 0, buffer.length)) > 0) {
-		                        byteArrayOutputStream.write(buffer, 0, numberOfBytes);
-		                    }
-		                }
-		                String responseValue = byteArrayOutputStream.toString("UTF-8");
-		                if (responseValue.length() > 0 && responseStream instanceof GZIPInputStream) {
-		                    log += String.format("[length: %d, compression ratio: %.2f]", cis.getCount(), (double) cis.getCount() / (double) responseValue.length());
-		                }
-		                log += " >>> " + responseValue;
-		                showLog = true;
-		                response = (JSONObject) JSONValue.parse(responseValue);
-		            } else {
-		                try (Reader reader = new BufferedReader(new InputStreamReader(responseStream, "UTF-8"))) {
-		                    response = (JSONObject) JSONValue.parseWithException(reader);
-		                }
-		            }
-		            updateDownloadedVolume(cis.getCount());
-            	}
+                if (maxResponseSize > 0) {
+                    CountingInputStream cis = new CountingInputStream(connection.getInputStream(), maxResponseSize);
+                    InputStream responseStream = cis;
+                    if ("gzip".equals(connection.getHeaderField("Content-Encoding"))) {
+                        responseStream = new GZIPInputStream(cis);
+                    }
+                    if ((Peers.communicationLoggingMask & Peers.LOGGING_MASK_200_RESPONSES) != 0) {
+                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                        byte[] buffer = new byte[1024];
+                        int numberOfBytes;
+                        try (InputStream inputStream = responseStream) {
+                            while ((numberOfBytes = inputStream.read(buffer, 0, buffer.length)) > 0) {
+                                byteArrayOutputStream.write(buffer, 0, numberOfBytes);
+                            }
+                        }
+                        String responseValue = byteArrayOutputStream.toString("UTF-8");
+                        if (responseValue.length() > 0 && responseStream instanceof GZIPInputStream) {
+                            log += String.format("[length: %d, compression ratio: %.2f]", cis.getCount(), (double) cis.getCount() / (double) responseValue.length());
+                        }
+                        log += " >>> " + responseValue;
+                        showLog = true;
+                        response = (JSONObject) JSONValue.parse(responseValue);
+                    } else {
+                        try (Reader reader = new BufferedReader(new InputStreamReader(responseStream, "UTF-8"))) {
+                            response = (JSONObject) JSONValue.parseWithException(reader);
+                        }
+                    }
+                    updateDownloadedVolume(cis.getCount());
+                    if (response != null && response.get("error") != null) {
+                        Logger.logDebugMessage("Peer " + peerAddress + " version " + version + " returned error: " + response.toJSONString()
+                                + ", request was: " + JSON.toString(request) + ", disconnecting");
+                        deactivate();
+                    }
+                }
             } else {
-
                 if ((Peers.communicationLoggingMask & Peers.LOGGING_MASK_NON200_RESPONSES) != 0) {
                     log += " >>> Peer responded with HTTP " + connection.getResponseCode() + " code!";
                     showLog = true;
                 }
-                if (state == State.CONNECTED) {
-                    setState(State.DISCONNECTED);
-                } else {
-                    setState(State.NON_CONNECTED);
-                }
-                response = null;
-
+                Logger.logDebugMessage("Peer " + peerAddress + " responded with HTTP " + connection.getResponseCode());
+                deactivate();
             }
-
-        } catch (RuntimeException|ParseException e) {
+        } catch (NxtException.NxtIOException e) {
             blacklist(e);
-        } catch (IOException e) {
-            if (! (e instanceof UnknownHostException || e instanceof SocketTimeoutException || e instanceof SocketException)) {
-                Logger.logDebugMessage("Error sending JSON request", e);
+        } catch (RuntimeException|ParseException|IOException e) {
+            if (! (e instanceof UnknownHostException || e instanceof SocketTimeoutException || e instanceof SocketException || Errors.END_OF_FILE.equals(e.toString()))) {
+                Logger.logDebugMessage("Error sending JSON request: " + e.toString());
             }
             if ((Peers.communicationLoggingMask & Peers.LOGGING_MASK_EXCEPTIONS) != 0) {
                 log += " >>> " + e.toString();
                 showLog = true;
             }
-            if (state == State.CONNECTED) {
-                setState(State.DISCONNECTED);
-            }
+            deactivate();
         }
 
         if (showLog) {
@@ -370,36 +440,38 @@ final class PeerImpl implements Peer {
         } else if (getWeight() < o.getWeight()) {
             return 1;
         }
-        return 0;
+        return getPeerAddress().compareTo(o.getPeerAddress());
     }
 
     void connect() {
+        lastConnectAttempt = Nxt.getEpochTime();
         JSONObject response = send(Peers.myPeerInfoRequest);
-        if (response != null) {
-            application = (String)response.get("application");
-            version = (String)response.get("version");
+        if (response != null && (application = (String)response.get("application")) != null) {
+            setVersion((String) response.get("version"));
             platform = (String)response.get("platform");
             shareAddress = Boolean.TRUE.equals(response.get("shareAddress"));
             String newAnnouncedAddress = Convert.emptyToNull((String)response.get("announcedAddress"));
-            if (newAnnouncedAddress != null && ! newAnnouncedAddress.equals(announcedAddress)) {
+            if (newAnnouncedAddress != null && ! (newAnnouncedAddress = Peers.addressWithPort(newAnnouncedAddress)).equals(announcedAddress)) {
                 // force verification of changed announced address
+                Logger.logDebugMessage("Peer " + peerAddress + " has new announced address " + newAnnouncedAddress + ", old is " + announcedAddress);
                 setState(Peer.State.NON_CONNECTED);
                 setAnnouncedAddress(newAnnouncedAddress);
                 return;
             }
             if (announcedAddress == null) {
                 setAnnouncedAddress(peerAddress);
-                Logger.logDebugMessage("Connected to peer without announced address, setting to " + peerAddress);
+                //Logger.logDebugMessage("Connected to peer without announced address, setting to " + peerAddress);
             }
-            if (analyzeHallmark(announcedAddress, (String)response.get("hallmark")) && version!=null 
-            		&& version.startsWith("NHZ") && ! version.startsWith("NHZ V3.2")) {
+            analyzeHallmark(announcedAddress, (String)response.get("hallmark"));
+            if (!isOldVersion) {
                 setState(State.CONNECTED);
                 Peers.updateAddress(this);
-            } else {
-                blacklist();
+            } else if (!isBlacklisted()) {
+                blacklist("Old version");
             }
-            lastUpdated = Convert.getEpochTime();
+            lastUpdated = lastConnectAttempt;
         } else {
+            //Logger.logDebugMessage("Failed to connect to peer " + peerAddress);
             setState(State.NON_CONNECTED);
         }
     }
@@ -424,13 +496,32 @@ final class PeerImpl implements Peer {
             String host = uri.getHost();
 
             Hallmark hallmark = Hallmark.parseHallmark(hallmarkString);
-            if (!hallmark.isValid()
-                    || !(hallmark.getHost().equals(host) || InetAddress.getByName(host).equals(InetAddress.getByName(hallmark.getHost())))) {
-                //Logger.logDebugMessage("Invalid hallmark for " + host + ", hallmark host is " + hallmark.getHost());
+            if (!hallmark.isValid()) {
+                Logger.logDebugMessage("Invalid hallmark " + hallmarkString + " for " + host);
+                this.hallmark = null;
                 return false;
             }
+            if (!hallmark.getHost().equals(host)) {
+                InetAddress[] hosts = InetAddress.getAllByName(host);
+                InetAddress[] hallmarks =
+                        InetAddress.getAllByName(hallmark.getHost());
+                boolean validHost = false;
+                hostLoop: for (InetAddress nextHost : hosts) {
+                    for (InetAddress nextHallmark : hallmarks) {
+                        if (nextHost.equals(nextHallmark)) {
+                            validHost = true;
+                            break hostLoop;
+                        }
+                    }
+                }
+                if (!validHost) {
+                    Logger.logDebugMessage("Hallmark host " + hallmark.getHost() + " doesn't match " + host);
+                    this.hallmark = null;
+                    return false;
+                }
+            }
             this.hallmark = hallmark;
-            Long accountId = Account.getId(hallmark.getPublicKey());
+            long accountId = Account.getId(hallmark.getPublicKey());
             List<PeerImpl> groupedPeers = new ArrayList<>();
             int mostRecentDate = 0;
             long totalWeight = 0;
@@ -438,7 +529,7 @@ final class PeerImpl implements Peer {
                 if (peer.hallmark == null) {
                     continue;
                 }
-                if (accountId.equals(peer.hallmark.getAccountId())) {
+                if (accountId == peer.hallmark.getAccountId()) {
                     groupedPeers.add(peer);
                     if (peer.hallmark.getDate() > mostRecentDate) {
                         mostRecentDate = peer.hallmark.getDate();
@@ -450,7 +541,7 @@ final class PeerImpl implements Peer {
             }
 
             for (PeerImpl peer : groupedPeers) {
-                peer.adjustedWeight = Constants.MAX_BALANCE_NHZ * peer.getHallmarkWeight(mostRecentDate) / totalWeight;
+                peer.adjustedWeight = Constants.MAX_BALANCE_NXT * peer.getHallmarkWeight(mostRecentDate) / totalWeight;
                 Peers.notifyListeners(peer, Peers.Event.WEIGHT);
             }
 
@@ -458,8 +549,9 @@ final class PeerImpl implements Peer {
 
         } catch (UnknownHostException ignore) {
         } catch (URISyntaxException | RuntimeException e) {
-            Logger.logDebugMessage("Failed to analyze hallmark for peer " + address + ", " + e.toString());
+            Logger.logDebugMessage("Failed to analyze hallmark for peer " + address + ", " + e.toString(), e);
         }
+        this.hallmark = null;
         return false;
 
     }

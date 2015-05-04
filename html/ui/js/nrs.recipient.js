@@ -3,7 +3,7 @@
  */
 var NRS = (function(NRS, $, undefined) {
 	NRS.automaticallyCheckRecipient = function() {
-		var $recipientFields = $("#send_money_recipient, #transfer_asset_recipient, #send_message_recipient, #add_contact_account_id, #update_contact_account_id, #lease_balance_recipient, #transfer_alias_recipient, #sell_alias_recipient");
+		var $recipientFields = $("#send_money_recipient, #transfer_asset_recipient, #transfer_currency_recipient, #send_message_recipient, #add_contact_account_id, #update_contact_account_id, #lease_balance_recipient, #transfer_alias_recipient, #sell_alias_recipient");
 
 		$recipientFields.on("blur", function() {
 			$(this).trigger("checkRecipient");
@@ -49,6 +49,7 @@ var NRS = (function(NRS, $, undefined) {
 		}
 	});
 
+    /* Removed variable fee, keeping fees at their minimal
 	$("#send_money_amount").on("input", function(e) {
 		var amount = parseInt($(this).val(), 10);
 		var fee = isNaN(amount) ? 1 : (amount < 500 ? 1 : Math.round(amount / 1000));
@@ -57,6 +58,7 @@ var NRS = (function(NRS, $, undefined) {
 
 		$(this).closest(".modal").find(".advanced_fee").html(NRS.formatAmount(NRS.convertToNQT(fee)) + " NHZ");
 	});
+	*/
 
 	//todo later: http://twitter.github.io/typeahead.js/
 	$("span.recipient_selector button").on("click", function(e) {
@@ -109,13 +111,25 @@ var NRS = (function(NRS, $, undefined) {
 			"account": accountId
 		}, function(response) {
 			if (response.publicKey) {
-				callback({
-					"type": "info",
-					"message": $.t("recipient_info", {
-						"nhz": NRS.formatAmount(response.unconfirmedBalanceNQT, false, true)
-					}),
-					"account": response
-				});
+				if (response.name){
+					callback({
+						"type": "info",
+						"message": $.t("recipient_info_with_name", {
+							"name" : response.name,
+							"nhz": NRS.formatAmount(response.unconfirmedBalanceNQT, false, true)
+						}),
+						"account": response
+					});
+				}
+				else{
+					callback({
+						"type": "info",
+						"message": $.t("recipient_info", {
+							"nhz": NRS.formatAmount(response.unconfirmedBalanceNQT, false, true)
+						}),
+						"account": response
+					});
+				}
 			} else {
 				if (response.errorCode) {
 					if (response.errorCode == 4) {
@@ -184,6 +198,7 @@ var NRS = (function(NRS, $, undefined) {
 					if (response.account && response.account.description) {
 						checkForMerchant(response.account.description, modal);
 					}
+
 					var message = response.message.escapeHTML();
 
 					callout.removeClass(classes).addClass("callout-" + response.type).html(message).show();
@@ -287,7 +302,8 @@ var NRS = (function(NRS, $, undefined) {
 								match[1] = address.toString();
 							} else {
 								accountInputField.val("");
-								callout.html("Invalid account alias.");
+								callout.removeClass(classes).addClass("callout-danger").html($.t("error_invalid_account_id")).show();
+								return;
 							}
 						}
 
@@ -302,12 +318,15 @@ var NRS = (function(NRS, $, undefined) {
 								checkForMerchant(response.account.description, modal);
 							}
 
-							accountInputField.val(match[1].escapeHTML());
-							callout.html($.t("alias_account_link", {
+							callout.removeClass(classes).addClass("callout-" + response.type).html($.t("alias_account_link", {
 								"account_id": String(match[1]).escapeHTML()
-							}) + ". " + $.t("recipient_unknown_pka") + " " + $.t("alias_last_adjusted", {
+							}) + " " + response.message.escapeHTML() + " " + $.t("alias_last_adjusted", {
 								"timestamp": NRS.formatTimestamp(timestamp)
-							})).removeClass(classes).addClass("callout-" + response.type).show();
+							})).show();
+
+							if (response.type == "info" || response.type == "warning") {
+								accountInputField.val(String(match[1]).escapeHTML());
+							}
 						});
 					} else {
 						callout.removeClass(classes).addClass("callout-danger").html($.t("alias_account_no_link") + (!alias ? $.t("error_uri_empty") : $.t("uri_is", {

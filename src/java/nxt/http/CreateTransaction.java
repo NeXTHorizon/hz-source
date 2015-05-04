@@ -3,7 +3,6 @@ package nxt.http;
 import nxt.Account;
 import nxt.Appendix;
 import nxt.Attachment;
-import nxt.Constants;
 import nxt.Nxt;
 import nxt.NxtException;
 import nxt.Transaction;
@@ -19,8 +18,6 @@ import java.util.Arrays;
 import static nxt.http.JSONResponses.FEATURE_NOT_AVAILABLE;
 import static nxt.http.JSONResponses.INCORRECT_ARBITRARY_MESSAGE;
 import static nxt.http.JSONResponses.INCORRECT_DEADLINE;
-import static nxt.http.JSONResponses.INCORRECT_FEE;
-import static nxt.http.JSONResponses.INCORRECT_REFERENCED_TRANSACTION;
 import static nxt.http.JSONResponses.MISSING_DEADLINE;
 import static nxt.http.JSONResponses.MISSING_SECRET_PHRASE;
 import static nxt.http.JSONResponses.NOT_ENOUGH_FUNDS;
@@ -46,25 +43,24 @@ abstract class CreateTransaction extends APIServlet.APIRequestHandler {
 
     final JSONStreamAware createTransaction(HttpServletRequest req, Account senderAccount, Attachment attachment)
         throws NxtException {
-    		return createTransaction(req, senderAccount, null, 0, attachment);
+        return createTransaction(req, senderAccount, 0, 0, attachment);
     }
 
-    final JSONStreamAware createTransaction(HttpServletRequest req, Account senderAccount, Long recipientId, long amountNQT)
+    final JSONStreamAware createTransaction(HttpServletRequest req, Account senderAccount, long recipientId, long amountNQT)
             throws NxtException {
         return createTransaction(req, senderAccount, recipientId, amountNQT, Attachment.ORDINARY_PAYMENT);
     }
 
-    final JSONStreamAware createTransaction(HttpServletRequest req, Account senderAccount, Long recipientId,
+    final JSONStreamAware createTransaction(HttpServletRequest req, Account senderAccount, long recipientId,
                                             long amountNQT, Attachment attachment)
             throws NxtException {
         String deadlineValue = req.getParameter("deadline");
         String referencedTransactionFullHash = Convert.emptyToNull(req.getParameter("referencedTransactionFullHash"));
-        String referencedTransactionId = Convert.emptyToNull(req.getParameter("referencedTransaction"));
         String secretPhrase = Convert.emptyToNull(req.getParameter("secretPhrase"));
         String publicKeyValue = Convert.emptyToNull(req.getParameter("publicKey"));
         boolean broadcast = !"false".equalsIgnoreCase(req.getParameter("broadcast"));
         Appendix.EncryptedMessage encryptedMessage = null;
-        if (attachment.getTransactionType().hasRecipient()) {
+        if (attachment.getTransactionType().canHaveRecipient()) {
             EncryptedData encryptedData = ParameterParser.getEncryptedMessage(req, Account.getAccount(recipientId));
             if (encryptedData != null) {
                 encryptedMessage = new Appendix.EncryptedMessage(encryptedData, !"false".equalsIgnoreCase(req.getParameter("messageToEncryptIsText")));
@@ -108,21 +104,6 @@ abstract class CreateTransaction extends APIServlet.APIRequestHandler {
         }
 
         long feeNQT = ParameterParser.getFeeNQT(req);
-        if (feeNQT < minimumFeeNQT()) {
-            return INCORRECT_FEE;
-        }
-
-        try {
-            if (Convert.safeAdd(amountNQT, feeNQT) > senderAccount.getUnconfirmedBalanceNQT()) {
-                return NOT_ENOUGH_FUNDS;
-            }
-        } catch (ArithmeticException e) {
-            return NOT_ENOUGH_FUNDS;
-        }
-
-        if (referencedTransactionId != null) {
-            return INCORRECT_REFERENCED_TRANSACTION;
-        }
 
         JSONObject response = new JSONObject();
 
@@ -130,9 +111,9 @@ abstract class CreateTransaction extends APIServlet.APIRequestHandler {
         byte[] publicKey = secretPhrase != null ? Crypto.getPublicKey(secretPhrase) : Convert.parseHexString(publicKeyValue);
 
         try {
-            Transaction.Builder builder = Nxt.getTransactionProcessor().newTransactionBuilder(publicKey, amountNQT, feeNQT,
+            Transaction.Builder builder = Nxt.newTransactionBuilder(publicKey, amountNQT, feeNQT,
                     deadline, attachment).referencedTransactionFullHash(referencedTransactionFullHash);
-            if (attachment.getTransactionType().hasRecipient()) {
+            if (attachment.getTransactionType().canHaveRecipient()) {
                 builder.recipientId(recipientId);
             }
             if (encryptedMessage != null) {
@@ -148,8 +129,13 @@ abstract class CreateTransaction extends APIServlet.APIRequestHandler {
                 builder.encryptToSelfMessage(encryptToSelfMessage);
             }
             Transaction transaction = builder.build();
-            transaction.validate();
-
+            try {
+                if (Convert.safeAdd(amountNQT, transaction.getFeeNQT()) > senderAccount.getUnconfirmedBalanceNQT()) {
+                    return NOT_ENOUGH_FUNDS;
+                }
+            } catch (ArithmeticException e) {
+                return NOT_ENOUGH_FUNDS;
+            }
             if (secretPhrase != null) {
                 transaction.sign(secretPhrase);
                 response.put("transaction", transaction.getStringId());
@@ -160,9 +146,11 @@ abstract class CreateTransaction extends APIServlet.APIRequestHandler {
                     Nxt.getTransactionProcessor().broadcast(transaction);
                     response.put("broadcasted", true);
                 } else {
+                    transaction.validate();
                     response.put("broadcasted", false);
                 }
             } else {
+                transaction.validate();
                 response.put("broadcasted", false);
             }
             response.put("unsignedTransactionBytes", Convert.toHexString(transaction.getUnsignedBytes()));
@@ -180,10 +168,6 @@ abstract class CreateTransaction extends APIServlet.APIRequestHandler {
     @Override
     final boolean requirePost() {
         return true;
-    }
-
-    long minimumFeeNQT() {
-        return Constants.ONE_NHZ;
     }
 
 }

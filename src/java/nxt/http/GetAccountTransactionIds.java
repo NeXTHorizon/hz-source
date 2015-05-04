@@ -4,7 +4,7 @@ import nxt.Account;
 import nxt.Nxt;
 import nxt.NxtException;
 import nxt.Transaction;
-import nxt.util.DbIterator;
+import nxt.db.DbIterator;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
@@ -16,7 +16,7 @@ public final class GetAccountTransactionIds extends APIServlet.APIRequestHandler
     static final GetAccountTransactionIds instance = new GetAccountTransactionIds();
 
     private GetAccountTransactionIds() {
-        super(new APITag[] {APITag.ACCOUNTS}, "account", "timestamp", "type", "subtype", "firstIndex", "lastIndex", "numberOfConfirmations");
+        super(new APITag[] {APITag.ACCOUNTS, APITag.TRANSACTIONS}, "account", "timestamp", "type", "subtype", "firstIndex", "lastIndex", "numberOfConfirmations", "withMessage");
     }
 
     @Override
@@ -25,6 +25,7 @@ public final class GetAccountTransactionIds extends APIServlet.APIRequestHandler
         Account account = ParameterParser.getAccount(req);
         int timestamp = ParameterParser.getTimestamp(req);
         int numberOfConfirmations = ParameterParser.getNumberOfConfirmations(req);
+        boolean withMessage = "true".equalsIgnoreCase(req.getParameter("withMessage"));
 
         byte type;
         byte subtype;
@@ -44,7 +45,7 @@ public final class GetAccountTransactionIds extends APIServlet.APIRequestHandler
 
         JSONArray transactionIds = new JSONArray();
         try (DbIterator<? extends Transaction> iterator = Nxt.getBlockchain().getTransactions(account, numberOfConfirmations, type, subtype, timestamp,
-                firstIndex, lastIndex)) {
+                withMessage, firstIndex, lastIndex)) {
             while (iterator.hasNext()) {
                 Transaction transaction = iterator.next();
                 transactionIds.add(transaction.getStringId());

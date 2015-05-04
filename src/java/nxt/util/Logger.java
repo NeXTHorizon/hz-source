@@ -58,8 +58,9 @@ public final class Logger {
         System.setProperty("java.util.logging.manager", "nxt.util.NxtLogManager");
         if (!(LogManager.getLogManager() instanceof NxtLogManager)) {
             System.setProperty("java.util.logging.manager",
-                               (oldManager!=null ? oldManager : "java.util.logging.LogManager"));
-        } else {
+                    (oldManager != null ? oldManager : "java.util.logging.LogManager"));
+        }
+        if (! Boolean.getBoolean("nxt.doNotConfigureLogging")) {
             try {
                 boolean foundProperties = false;
                 Properties loggingProperties = new Properties();
@@ -168,6 +169,27 @@ public final class Logger {
         doLog(Level.ERROR, message, exc);
     }
 
+    public static void logShutdownMessage(String message) {
+        if (LogManager.getLogManager() instanceof NxtLogManager) {
+            logMessage(message);
+        } else {
+            System.out.println(message);
+        }
+    }
+
+    public static void logShutdownMessage(String message, Exception e) {
+        if (LogManager.getLogManager() instanceof NxtLogManager) {
+            logMessage(message, e);
+        } else {
+            System.out.println(message);
+            System.out.println(e.toString());
+        }
+    }
+
+    public static boolean isErrorEnabled() {
+        return log.isErrorEnabled();
+    }
+
     /**
      * Log an ERROR message
      *
@@ -185,6 +207,10 @@ public final class Logger {
      */
     public static void logErrorMessage(String message, Exception exc) {
         doLog(Level.ERROR, message, exc);
+    }
+
+    public static boolean isWarningEnabled() {
+        return log.isWarnEnabled();
     }
 
     /**
@@ -206,6 +232,10 @@ public final class Logger {
         doLog(Level.WARN, message, exc);
     }
 
+    public static boolean isInfoEnabled() {
+        return log.isInfoEnabled();
+    }
+
     /**
      * Log an INFO message
      *
@@ -213,6 +243,16 @@ public final class Logger {
      */
     public static void logInfoMessage(String message) {
         doLog(Level.INFO, message, null);
+    }
+
+    /**
+     * Log an INFO message
+     *
+     * @param       format             Message format
+     * @param       args               Message args
+     */
+    public static void logInfoMessage(String format, Object ... args) {
+        doLog(Level.INFO, String.format(format, args), null);
     }
 
     /**
@@ -225,6 +265,10 @@ public final class Logger {
         doLog(Level.INFO, message, exc);
     }
 
+    public static boolean isDebugEnabled() {
+        return log.isDebugEnabled();
+    }
+
     /**
      * Log a debug message
      *
@@ -232,6 +276,16 @@ public final class Logger {
      */
     public static void logDebugMessage(String message) {
         doLog(Level.DEBUG, message, null);
+    }
+
+    /**
+     * Log a debug message
+     *
+     * @param       format             Message format
+     * @param       args               Message args
+     */
+    public static void logDebugMessage(String format, Object ... args) {
+        doLog(Level.DEBUG, String.format(format, args), null);
     }
 
     /**

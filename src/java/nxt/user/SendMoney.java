@@ -33,7 +33,7 @@ public final class SendMoney extends UserServlet.UserRequestHandler {
         String deadlineValue = req.getParameter("deadline");
         String secretPhrase = req.getParameter("secretPhrase");
 
-        Long recipient;
+        long recipient;
         long amountNQT = 0;
         long feeNQT = 0;
         short deadline = 0;
@@ -41,7 +41,7 @@ public final class SendMoney extends UserServlet.UserRequestHandler {
         try {
 
             recipient = Convert.parseUnsignedLong(recipientValue);
-            if (recipient == null) throw new IllegalArgumentException("invalid recipient");
+            if (recipient == 0) throw new IllegalArgumentException("invalid recipient");
             amountNQT = Convert.parseNHZ(amountValue.trim());
             feeNQT = Convert.parseNHZ(feeValue.trim());
             deadline = (short)(Double.parseDouble(deadlineValue) * 60);
@@ -83,7 +83,7 @@ public final class SendMoney extends UserServlet.UserRequestHandler {
 
             return response;
 
-        } else if (feeNQT < Constants.ONE_NHZ || feeNQT > Constants.MAX_BALANCE_NQT) {
+        } else if (feeNQT < Constants.ONE_NXT || feeNQT > Constants.MAX_BALANCE_NQT) {
 
             JSONObject response = new JSONObject();
             response.put("response", "notifyOfIncorrectTransaction");
@@ -124,9 +124,8 @@ public final class SendMoney extends UserServlet.UserRequestHandler {
 
         } else {
 
-            final Transaction transaction = Nxt.getTransactionProcessor().newTransactionBuilder(user.getPublicKey(),
+            final Transaction transaction = Nxt.newTransactionBuilder(user.getPublicKey(),
                     amountNQT, feeNQT, deadline, Attachment.ORDINARY_PAYMENT).recipientId(recipient).build();
-            transaction.validate();
             transaction.sign(user.getSecretPhrase());
 
             Nxt.getTransactionProcessor().broadcast(transaction);

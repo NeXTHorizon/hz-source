@@ -5,6 +5,7 @@ import nxt.peer.Peers;
 import nxt.user.Users;
 import nxt.util.Logger;
 import nxt.util.ThreadPool;
+import nxt.util.Time;
 
 import nxt.upnp.GatewayDevice;
 import nxt.upnp.GatewayDiscover;
@@ -23,8 +24,10 @@ import java.net.InetAddress;
 public final class Nxt {
 
 	//be careful PeerImpl.java will only connect to versions starting with 'NHZ'
-    public static final String VERSION = "NHZ V3.9.1";
+    public static final String VERSION = "NHZ V4.0";
     public static final String APPLICATION = "NRS";
+
+    private static volatile Time time = new Time.EpochTime();
 
     private static final Properties defaultProperties = new Properties();
     static {
@@ -43,6 +46,9 @@ public final class Nxt {
                 } else {
                     throw new RuntimeException("nhz-default.properties not in classpath and system property nhz-default.properties not defined either");
                 }
+            }
+            if (!VERSION.equals(Nxt.defaultProperties.getProperty("nhz.version"))) {
+                throw new RuntimeException("Using an nxt-default.properties file from a version other than " + VERSION + " is not supported!!!");
             }
         } catch (IOException e) {
             throw new RuntimeException("Error loading nhz-default.properties", e);
@@ -78,14 +84,18 @@ public final class Nxt {
     }
 
     public static String getStringProperty(String name) {
-        return getStringProperty(name, null);
+        return getStringProperty(name, null, false);
     }
 
     public static String getStringProperty(String name, String defaultValue) {
-    	name=replaceNxtWithNhz(name);
+        return getStringProperty(name, defaultValue, false);
+    }
+
+    public static String getStringProperty(String name, String defaultValue, boolean doNotLog) {
+        name=replaceNxtWithNhz(name);
         String value = properties.getProperty(name);
         if (value != null && ! "".equals(value)) {
-            Logger.logMessage(name + " = \"" + value + "\"");
+            Logger.logMessage(name + " = \"" + (doNotLog ? "{not logged}" : value) + "\"");
             return value;
         } else {
             Logger.logMessage(name + " not defined");
@@ -94,6 +104,7 @@ public final class Nxt {
     }
 
     public static List<String> getStringListProperty(String name) {
+        name=replaceNxtWithNhz(name);
         String value = getStringProperty(name);
         if (value == null || value.length() == 0) {
             return Collections.emptyList();
@@ -134,14 +145,30 @@ public final class Nxt {
         return TransactionProcessorImpl.getInstance();
     }
 
+    public static Transaction.Builder newTransactionBuilder(byte[] senderPublicKey, long amountNQT, long feeNQT, short deadline, Attachment attachment) {
+        return new TransactionImpl.BuilderImpl((byte)1, senderPublicKey, amountNQT, feeNQT, deadline, (Attachment.AbstractAttachment)attachment);
+    }
+
+    public static int getEpochTime() {
+        return time.getTime();
+    }
+
+    static void setTime(Time time) {
+        Nxt.time = time;
+    }
+
     public static void main(String[] args) {
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Nxt.shutdown();
-            }
-        }));
-        init();
+        try {
+            Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Nxt.shutdown();
+                }
+            }));
+            init();
+        } catch (Throwable t) {
+            System.out.println("Fatal error: " + t.toString());
+        }
     }
 
     public static void init(Properties customProperties) {
@@ -181,14 +208,13 @@ public final class Nxt {
     }
     
     public static void shutdown() {
-        Logger.logMessage("Shutting down...");
+        Logger.logShutdownMessage("Shutting down...");
         API.shutdown();
         Users.shutdown();
         Peers.shutdown();
-        TransactionProcessorImpl.getInstance().shutdown();
         ThreadPool.shutdown();
         Db.shutdown();
-        Logger.logMessage("Nhz server " + VERSION + " stopped.");
+        Logger.logShutdownMessage("Horizon server " + VERSION + " stopped.");
         Logger.shutdown();
     }
 
@@ -198,26 +224,49 @@ public final class Nxt {
             try {
                 long startTime = System.currentTimeMillis();
                 Logger.init();
-    			if (Nxt.getBooleanProperty("nxt.enableUPNP")) {
-    				try{
-    					upnp();
-    				} catch (Exception e) {
-    						Logger.logMessage("upnp detection failed");
-    				}
+                logSystemProperties();
+    		if (Nxt.getBooleanProperty("nxt.enableUPNP")) {
+    			try{
+    				upnp();
+    			} catch (Exception e) {
+    					Logger.logMessage("upnp detection failed");
     			}
+    		}
                 Db.init();
-                BlockchainProcessorImpl.getInstance();
                 TransactionProcessorImpl.getInstance();
+                BlockchainProcessorImpl.getInstance();
+                Account.init();
+                Alias.init();
+                Asset.init();
+                DigitalGoodsStore.init();
+                Hub.init();
+                Order.init();
+                Poll.init();
+                Trade.init();
+                AssetTransfer.init();
+                Vote.init();
+                Currency.init();
+                CurrencyBuyOffer.init();
+                CurrencySellOffer.init();
+                CurrencyFounder.init();
+                CurrencyMint.init();
+                CurrencyTransfer.init();
+                Exchange.init();
                 Peers.init();
                 Generator.init();
                 API.init();
                 Users.init();
                 DebugTrace.init();
-                ThreadPool.start();
+                int timeMultiplier = (Constants.isTestnet && Constants.isOffline) ? Math.max(Nxt.getIntProperty("nxt.timeMultiplier"), 1) : 1;
+                ThreadPool.start(timeMultiplier);
+                if (timeMultiplier > 1) {
+                    setTime(new Time.FasterTime(Math.max(getEpochTime(), Nxt.getBlockchain().getLastBlock().getTimestamp()), timeMultiplier));
+                    Logger.logMessage("TIME WILL FLOW " + timeMultiplier + " TIMES FASTER!");
+                }
 
                 long currentTime = System.currentTimeMillis();
                 Logger.logMessage("Initialization took " + (currentTime - startTime) / 1000 + " seconds");
-                Logger.logMessage("Nhz server " + VERSION + " started successfully.");
+                Logger.logMessage("Horizon server " + VERSION + " started successfully.");
                 if (Constants.isTestnet) {
                     Logger.logMessage("RUNNING ON TESTNET - DO NOT USE REAL ACCOUNTS!");
                 }
@@ -231,6 +280,28 @@ public final class Nxt {
 
         private Init() {} // never
 
+    }
+
+    private static void logSystemProperties() {
+        String[] loggedProperties = new String[] {
+                "java.version",
+                "java.vm.version",
+                "java.vm.name",
+                "java.vendor",
+                "java.vm.vendor",
+                "java.home",
+                "java.library.path",
+                "java.class.path",
+                "os.arch",
+                "sun.arch.data.model",
+                "os.name",
+                "file.encoding"
+        };
+        for (String property : loggedProperties) {
+            Logger.logDebugMessage(String.format("%s = %s", property, System.getProperty(property)));
+        }
+        Logger.logDebugMessage(String.format("availableProcessors = %s", Runtime.getRuntime().availableProcessors()));
+        Logger.logDebugMessage(String.format("maxMemory = %s", Runtime.getRuntime().maxMemory()));
     }
 
     private Nxt() {} // never

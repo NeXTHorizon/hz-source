@@ -13,6 +13,7 @@ http://localhost:7776 , where the Nhz UI should now be available. To stop the
 application, type Ctrl-C inside the console window.
 
 
+
 Customization:
 
 There are many configuration parameters that could be changed, but the defaults
@@ -27,6 +28,17 @@ settings in nhz.properties override those in nhz-default.properties. This way,
 when upgrading the software, you can safely overwrite nhz-default.properties
 with the updated file from the new package, while your customizations remain
 safe in the nhz.properties file.
+
+
+How to contribute?
+
+There are many ways to contribute to Horizon. Here are some examples:
+
+ * create pull requests
+ * review pull requests
+ * review existing code
+ * create issues (aka feature ideas, bug reports, documentation etc.)
+ * answer issues
 
 
 Technical details:
@@ -87,6 +99,8 @@ Compiling:
 
 The source is included in the src subdirectory. To compile it on linux, just
 run the enclosed compile.sh script. This will compile all java classes and
-package them in an nhz.jar file, replacing the existing one.
-
+put them under the classes subdirectory, which is already in the classpath
+used by the run.sh startup script. The compiled class files can optionally be
+packaged in a nhz.jar file using the enclosed jar.sh script, and then nhz.jar
+should be included in the classpath instead of the classes subdirectory.
 

@@ -15,6 +15,6 @@ echo "DIR is '$DIR'"
 
 cd $DIR
 
-java -cp nhz.jar:lib/*:conf nxt.Nxt
+java -cp classes:lib/*:conf nxt.Nxt
 
 pause
