@@ -139,6 +139,9 @@ public abstract class MonetarySystem extends TransactionType {
 
         @Override
         void validateAttachment(Transaction transaction) throws NxtException.ValidationException {
+            if (Nxt.getBlockchain().getLastBlock().getHeight() < Constants.MONETARY_SYSTEM_BLOCK) {
+                throw new NxtException.NotYetEnabledException("Monetary system not yet enabled at height " + Nxt.getBlockchain().getLastBlock().getHeight());
+            }
             Attachment.MonetarySystemCurrencyIssuance attachment = (Attachment.MonetarySystemCurrencyIssuance) transaction.getAttachment();
             if (attachment.getMaxSupply() > Constants.MAX_CURRENCY_TOTAL_SUPPLY
                     || attachment.getMaxSupply() <= 0
