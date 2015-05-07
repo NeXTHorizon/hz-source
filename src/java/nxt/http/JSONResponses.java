@@ -122,7 +122,7 @@ public final class JSONResponses {
     public static final JSONStreamAware INCORRECT_OFFER = incorrect("offer");
     public static final JSONStreamAware INCORRECT_MESSAGE_PATTERN_REGEX = incorrect("messagePatternRegex");
     public static final JSONStreamAware INCORRECT_MESSAGE_PATTERN_FLAGS = incorrect("messagePatternFlags");
-    public static final JSONStreamAware INCORRECT_ADMIN_PASSWORD = incorrect("adminPassword", "(the specified password does not match nxt.adminPassword)");
+    public static final JSONStreamAware INCORRECT_ADMIN_PASSWORD = incorrect("adminPassword", "(the specified password does not match nhz.adminPassword)");
     
     public static final JSONStreamAware NOT_ENOUGH_FUNDS;
     static {
@@ -248,7 +248,7 @@ public final class JSONResponses {
     static {
         JSONObject response = new JSONObject();
         response.put("errorCode", 8);
-        response.put("errorDescription", "Administrator's password is not configured. Please set nxt.adminPassword");
+        response.put("errorDescription", "Administrator's password is not configured. Please set nhz.adminPassword");
         NO_PASSWORD_IN_CONFIG = JSON.prepare(response);
     }
 
