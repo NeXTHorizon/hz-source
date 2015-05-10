@@ -269,7 +269,7 @@ public class MintWorker {
         String urlParams = getUrlParams(params);
         URL url;
         try {
-            url = new URL(protocol, host, port, "/nxt?" + urlParams);
+            url = new URL(protocol, host, port, "/nhz?" + urlParams);
         } catch (MalformedURLException e) {
             throw new IllegalStateException(e);
         }
