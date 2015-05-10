@@ -605,11 +605,9 @@ class NxtDbVersion extends DbVersion {
                 apply("CREATE UNIQUE INDEX IF NOT EXISTS public_key_account_id_idx ON public_key (account_id)");
             case 203:            	
                 apply("ALTER TABLE account DROP COLUMN IF EXISTS public_key");
-            case 204:
-            	apply(null);
+            case 204:            	
                 apply("ALTER TABLE block DROP COLUMN IF EXISTS generator_public_key");
-            case 205:
-            	apply(null);
+            case 205:            	
                 apply("ALTER TABLE transaction DROP COLUMN IF EXISTS sender_public_key");
             case 206:
                 apply("CREATE INDEX IF NOT EXISTS account_height_idx ON account(height)");
