@@ -82,20 +82,19 @@ public final class Constants {
     public static final int TRANSPARENT_FORGING_BLOCK_3 = (isTestnet ? 0 : 51);
     public static final int TRANSPARENT_FORGING_BLOCK_4 = (isTestnet ? 0 : 64);
     public static final int TRANSPARENT_FORGING_BLOCK_5 = (isTestnet ? 0 : 67);
-    public static final int BLOCK_1000 = 1000;
     public static final int TRANSPARENT_FORGING_BLOCK_6 =  (isTestnet ? 0 : 65000);
     public static final int TRANSPARENT_FORGING_BLOCK_7 =  Integer.MAX_VALUE;
     public static final int TRANSPARENT_FORGING_BLOCK_8 = Integer.MAX_VALUE;  //TODO
+    public static final int BLOCK_1000 = 1000;
     public static final int NQT_BLOCK = (isTestnet ? 1 : 67000);
     public static final int ASSET_EXCHANGE_BLOCK = (isTestnet ? 0 : 70000);
     public static final int REFERENCED_TRANSACTION_FULL_HASH_BLOCK = (isTestnet ? 1 : 75000);
     public static final int REFERENCED_TRANSACTION_FULL_HASH_BLOCK_TIMESTAMP = Integer.MAX_VALUE;
     public static final int VOTING_SYSTEM_BLOCK = Integer.MAX_VALUE;
     public static final int TRANSACTIONS_VERSION_1_BLOCK =  (isTestnet ? 580 : 275000);
-    public static final int DIGITAL_GOODS_STORE_BLOCK = Integer.MAX_VALUE; // dgs transactions are disabled
-    public static final int PUBLIC_KEY_ANNOUNCEMENT_BLOCK = Integer.MAX_VALUE; // never force pk
-    public static final int MONETARY_SYSTEM_BLOCK = Integer.MAX_VALUE;
-    public static final int LAST_KNOWN_BLOCK = isTestnet ? 50000 : 355000;
+    public static final int DIGITAL_GOODS_STORE_BLOCK =  (isTestnet ? 99000 : Integer.MAX_VALUE); // dgs transactions are disabled
+    public static final int MONETARY_SYSTEM_BLOCK = (isTestnet ? 99000 : Integer.MAX_VALUE);
+    public static final int LAST_KNOWN_BLOCK = CheckPoints.previousBlockId.length*720;
 
     public static final int[] MIN_VERSION = new int[] {3, 8};
 
