@@ -732,7 +732,6 @@ public final class Account {
 
     public long getEffectiveBalanceNXT() {
 
-        
         if (Constants.isTestnet) {
         	if (getPublicKey() != null && getPublicKey().equals(Genesis.CREATOR_PUBLIC_KEY)) {
         		return Constants.MAX_BALANCE_NXT;
@@ -741,16 +740,18 @@ public final class Account {
         }
 
         Block lastBlock = Nxt.getBlockchain().getLastBlock();
-        if (lastBlock.getHeight() >= Constants.TRANSPARENT_FORGING_BLOCK_6
-                && (keyHeight == 0 || lastBlock.getHeight() - keyHeight <= 40)) {
-            return 0; // Accounts with the public key revealed less than 40 blocks ago are not allowed to generate blocks
+        final int EFFECTIVE_BLOCKS = (lastBlock.getHeight() < Constants.MONETARY_SYSTEM_BLOCK ? 40 : 1440 );
+        
+        if (lastBlock.getHeight() >= Constants.TRANSPARENT_FORGING_BLOCK_6 
+                && (keyHeight == 0 || lastBlock.getHeight() - keyHeight <= EFFECTIVE_BLOCKS)) {
+            return 0; // Accounts with the public key revealed less than EFFECTIVE_BLOCKS blocks ago are not allowed to generate blocks
         }
         if (lastBlock.getHeight() < Constants.TRANSPARENT_FORGING_BLOCK_3
                 && this.creationHeight < Constants.TRANSPARENT_FORGING_BLOCK_2) {
             if (this.creationHeight == 0) {
                 return getBalanceNQT() / Constants.ONE_NXT;
             }
-            if (lastBlock.getHeight() - this.creationHeight < 40) {
+            if (lastBlock.getHeight() - this.creationHeight < EFFECTIVE_BLOCKS) {
                 return 0;
             }
             long receivedInlastBlock = 0;
@@ -762,7 +763,7 @@ public final class Account {
             return (getBalanceNQT() - receivedInlastBlock) / Constants.ONE_NXT;
         }
         if (lastBlock.getHeight() < currentLeasingHeightFrom) {
-            return (getGuaranteedBalanceNQT(40) + getLessorsGuaranteedBalanceNQT()) / Constants.ONE_NXT;
+            return (getGuaranteedBalanceNQT() + getLessorsGuaranteedBalanceNQT()) / Constants.ONE_NXT;
         }
         return getLessorsGuaranteedBalanceNQT() / Constants.ONE_NXT;
     }
@@ -771,7 +772,7 @@ public final class Account {
         long lessorsGuaranteedBalanceNQT = 0;
         try (DbIterator<Account> lessors = getLessors()) {
             while (lessors.hasNext()) {
-                lessorsGuaranteedBalanceNQT += lessors.next().getGuaranteedBalanceNQT(40);
+                lessorsGuaranteedBalanceNQT += lessors.next().getGuaranteedBalanceNQT();
             }
         }
         return lessorsGuaranteedBalanceNQT;
@@ -799,7 +800,13 @@ public final class Account {
         }
         return accountTable.getManyBy(getLessorsClause(height), height, 0, -1);
     }
-
+    	
+    public long getGuaranteedBalanceNQT(){
+    	final int height=Nxt.getBlockchain().getHeight();
+    	final int EFFECTIVE_BLOCKS = (height < Constants.MONETARY_SYSTEM_BLOCK ? 40 : 1440 );
+    	return getGuaranteedBalanceNQT(EFFECTIVE_BLOCKS, height);
+    }
+    
     public long getGuaranteedBalanceNQT(final int numberOfConfirmations) {
         return getGuaranteedBalanceNQT(numberOfConfirmations, Nxt.getBlockchain().getHeight());
     }
