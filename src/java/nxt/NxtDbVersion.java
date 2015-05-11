@@ -557,16 +557,14 @@ class NxtDbVersion extends DbVersion {
 									pstmt2.setLong(1, transaction.getRecipientId());
 									pstmt2.setBytes(2,transaction.getPublicKeyAnnouncement().getPublicKey());
 									pstmt2.setInt(3, transaction.getHeight());
-									pstmt2.addBatch();
+									pstmt2.executeUpdate();
 									Logger.logDebugMessage("PublicKeyAnnouncement account " + transaction.getRecipientId() + " pk: " 
 											+ Convert.toHexString(transaction.getPublicKeyAnnouncement().getPublicKey()));
 								} catch (ValidationException e) {
 									con.rollback();
 									throw new RuntimeException(e);
-								}
-                                 
-                        	 }
-                        	 pstmt2.execute();
+								}                                 
+                        	 }                        	 
                         	con.commit();
                           } catch (SQLException e) {
                         	  con.rollback();
