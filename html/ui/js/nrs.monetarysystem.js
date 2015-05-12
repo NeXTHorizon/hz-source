@@ -59,10 +59,10 @@ var NRS = (function(NRS, $, undefined) {
 		}
 		NRS.pageNumber = 1;
 		var currencyCode = $.trim($("#currency_search").find("input[name=q]").val());
-		$("#buy_currency_with_nhz").html("Exchange NHZ for " + currencyCode);
-		$("#buy_currency_offers").html("Offers to Exchange NHZ for " + currencyCode);
-		$("#sell_currency_with_nhz").html("Exchange " + currencyCode + " for NHZ");
-		$("#sell_currency_offers").html("Offers to Exchange " + currencyCode + " for NHZ");
+		$("#buy_currency_with_nhz").html("Exchange HZ for " + currencyCode);
+		$("#buy_currency_offers").html("Offers to Exchange HZ for " + currencyCode);
+		$("#sell_currency_with_nhz").html("Exchange " + currencyCode + " for HZ");
+		$("#sell_currency_offers").html("Offers to Exchange " + currencyCode + " for HZ");
 		$(".currency_code").html(String(currencyCode).escapeHTML());
 
 		var currencyId = 0;
@@ -569,8 +569,8 @@ var NRS = (function(NRS, $, undefined) {
 		}
 
 		$("#currency_order_description").html(description);
-		$("#currency_order_total").html(totalNHZ + " NHZ");
-		$("#currency_order_fee_paid").html(NRS.formatAmount(feeNQT) + " NHZ");
+		$("#currency_order_total").html(totalNHZ + " HZ");
+		$("#currency_order_fee_paid").html(NRS.formatAmount(feeNQT) + " HZ");
 
 		var totalTooltip = $("#currency_order_total_tooltip");
       if (units != "1") {
@@ -848,13 +848,13 @@ var NRS = (function(NRS, $, undefined) {
 	issueCurrencyCode.keyup(function() {
 		if(issueCurrencyCode.val().length < 4){
 			$("#issue_currency_fee").val("25000");
-			$("#issue_currency_modal").find(".advanced_fee").html("25'000 NHZ");
+			$("#issue_currency_modal").find(".advanced_fee").html("25'000 HZ");
 		} else if($("#issue_currency_code").val().length == 4){
 			$("#issue_currency_fee").val("1000");
-			$("#issue_currency_modal").find(".advanced_fee").html("1'000 NHZ");
+			$("#issue_currency_modal").find(".advanced_fee").html("1'000 HZ");
 		} else {
 			$("#issue_currency_fee").val("40");
-			$("#issue_currency_modal").find(".advanced_fee").html("40 NHZ");
+			$("#issue_currency_modal").find(".advanced_fee").html("40 HZ");
 		}
 		this.value = this.value.toLocaleUpperCase();
 	});
@@ -862,13 +862,13 @@ var NRS = (function(NRS, $, undefined) {
 	issueCurrencyCode.blur(function() {
 		if(issueCurrencyCode.val().length < 4){
 			$("#issue_currency_fee").val("25000");
-			$("#issue_currency_moda").find(".advanced_fee").html("25'000 NHZ");
+			$("#issue_currency_moda").find(".advanced_fee").html("25'000 HZ");
 		} else if($("#issue_currency_code").val().length == 4){
 			$("#issue_currency_fee").val("1000");
-			$("#issue_currency_modal").find(".advanced_fee").html("1'000 NHZ");
+			$("#issue_currency_modal").find(".advanced_fee").html("1'000 HZ");
 		} else {
 			$("#issue_currency_fee").val("40");
-			$("#issue_currency_modal").find(".advanced_fee").html("40 NHZ");
+			$("#issue_currency_modal").find(".advanced_fee").html("40 HZ");
 		}
 		this.value = this.value.toLocaleUpperCase();
 	});
@@ -1160,7 +1160,7 @@ var NRS = (function(NRS, $, undefined) {
 			"currency": currency
 		}, function (response) {
 			var currentReservePerUnitNQT = new BigInteger(response.currentReservePerUnitNQT).multiply(new BigInteger("" + Math.pow(10, response.decimals)));
-			$("#claimRate").html(NRS.formatAmount(currentReservePerUnitNQT) + " [NHZ/" + currencyCode + "]");
+			$("#claimRate").html(NRS.formatAmount(currentReservePerUnitNQT) + " [HZ/" + currencyCode + "]");
 		});
 
 		$("#claim_currency_decimals").val($invoker.data("decimals"));

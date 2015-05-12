@@ -146,7 +146,7 @@ var ATS = (function(ATS, $, undefined) {
             hljs.highlightBlock(code_elem);
         })
         .error(function() {
-            alert('API not available, check if Nhz Server is running!');
+            alert('API not available, check if Horizon Server is running!');
         });
         if ($(form).has('.uri-link').length > 0) { 
             var uri = '/nhz?' + jQuery.param(params, true);

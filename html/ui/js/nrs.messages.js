@@ -203,7 +203,7 @@ var NRS = (function(NRS, $, undefined) {
 						decoded = "<i class='fa fa-warning'></i> " + decoded;
 					} else if (extra == "decrypted") {
 						if (type == "payment") {
-							decoded = "<strong>+" + NRS.formatAmount(messages[i].amountNQT) + " NHZ</strong><br />" + decoded;
+							decoded = "<strong>+" + NRS.formatAmount(messages[i].amountNQT) + " HZ</strong><br />" + decoded;
 						}
 
 						decoded = "<i class='fa fa-lock'></i> " + decoded;

@@ -12,7 +12,7 @@ import java.util.Set;
 public enum CurrencyType {
 
     /**
-     * Can be exchanged from/to NXT<br>
+     * Can be exchanged from/to HZ<br>
      */
     EXCHANGEABLE(0x01) {
 
@@ -239,7 +239,7 @@ public enum CurrencyType {
 
     private static void validate(Currency currency, int type, Transaction transaction) throws NxtException.ValidationException {
         if (transaction.getAmountNQT() != 0) {
-            throw new NxtException.NotValidException("Currency transaction NXT amount must be 0");
+            throw new NxtException.NotValidException("Currency transaction HZ amount must be 0");
         }
 
         final EnumSet<CurrencyType> validators = EnumSet.noneOf(CurrencyType.class);
@@ -281,7 +281,7 @@ public enum CurrencyType {
                 throw new NxtException.NotValidException("Invalid currency code: " + code + " code must be all upper case");
             }
         }
-        if (code.contains("NXT") || code.contains("NEXT") || "nxt".equals(normalizedName) || "next".equals(normalizedName)) {
+        if (code.contains("HZ") || code.contains("HORIZON") || "nhz".equals(normalizedName) || "horizon".equals(normalizedName)) {
             throw new NxtException.NotValidException("Currency name already used");
         }
         Currency currency;

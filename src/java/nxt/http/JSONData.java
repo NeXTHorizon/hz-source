@@ -78,7 +78,7 @@ final class JSONData {
         json.put("nextLesseeRS", Convert.rsAccount(account.getNextLesseeId()));
         json.put("nextHeightFrom", String.valueOf(account.getNextLeasingHeightFrom()));
         json.put("nextHeightTo", String.valueOf(account.getNextLeasingHeightTo()));
-        json.put("effectiveBalanceNXT", String.valueOf(account.getGuaranteedBalanceNQT() / Constants.ONE_NXT));
+        json.put("effectiveBalanceNHZ", String.valueOf(account.getGuaranteedBalanceNQT() / Constants.ONE_NXT));
         return json;
     }
 

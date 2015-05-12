@@ -68,7 +68,7 @@ var NRS = (function(NRS, $, undefined) {
 			}
 		});
 
-		//convert NHZ to NQT...
+		//convert HZ to NQT...
 		try {
 			var nhzFields = ["feeNHZ", "amountNHZ", "priceNHZ", "refundNHZ", "discountNHZ"];
 

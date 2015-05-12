@@ -978,7 +978,7 @@ var NRS = (function(NRS, $, undefined) {
 					value = NRS.formatQuantity(value, 0);
 				}
 			} else if (key == "price" || key == "total" || key == "amount" || key == "fee" || key == "refund" || key == "discount") {
-				value = NRS.formatAmount(new BigInteger(String(value))) + " NHZ";
+				value = NRS.formatAmount(new BigInteger(String(value))) + " HZ";
 			} else if (key == "sender" || key == "recipient" || key == "account" || key == "seller" || key == "buyer") {
 				value = "<a href='#' data-user='" + String(value).escapeHTML() + "'>" + NRS.getAccountTitle(value) + "</a>";
 			} else if (key == "request_processing_time") { /* Skip from displaying request processing time */

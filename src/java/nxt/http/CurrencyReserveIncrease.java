@@ -10,7 +10,7 @@ import org.json.simple.JSONStreamAware;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Increase the value of currency units by paying NXT
+ * Increase the value of currency units by paying HZ
  * </p>
  * Parameters
  * <ul>

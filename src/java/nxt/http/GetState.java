@@ -37,8 +37,8 @@ public final class GetState extends APIServlet.APIRequestHandler {
         long totalEffectiveBalance = 0;
         try (DbIterator<Account> accounts = Account.getAllAccounts(0, -1)) {
             for (Account account : accounts) {
-                long effectiveBalanceNHZ = account.getEffectiveBalanceNHZ();
-                if (effectiveBalanceNHZ > 0) {
+                long effectiveBalanceNXT = account.getEffectiveBalanceNXT();
+                if (effectiveBalanceNXT > 0) {
                     totalEffectiveBalance += effectiveBalanceNXT;
                 }
             }

@@ -4,7 +4,7 @@
 #
 # 1. install docker, see docker.com
 # 2. clone the git repo including this Dockerfile
-# 3. build the container with ```docker build -t nxt .```
+# 3. build the container with ```docker build -t nhz .```
 # 4. run the created nhz container with ```docker run -d -p 127.0.0.1:7776:7776 -p 127.0.0.1:7774:7874 nhz```
 # 5. inspect with docker logs (image hash, find out with docker ps, or assign a name
 
@@ -28,6 +28,6 @@ ADD docker_start.sh /docker_start.sh
 RUN chmod +x /docker_start.sh
 
 RUN cd /nhz; ./compile.sh
-# both Nhz ports get exposed
+# both Horizon ports get exposed
 EXPOSE 7774 7776
 CMD ["/docker_start.sh"]

@@ -1068,8 +1068,8 @@ var NRS = (function(NRS, $, undefined) {
 		}
 
 		$("#asset_order_description").html(description);
-		$("#asset_order_total").html(totalNHZ + " NHZ");
-		$("#asset_order_fee_paid").html(NRS.formatAmount(feeNQT) + " NHZ");
+		$("#asset_order_total").html(totalNHZ + " HZ");
+		$("#asset_order_fee_paid").html(NRS.formatAmount(feeNQT) + " HZ");
 
 		if (quantity != "1") {
 			$("#asset_order_total_tooltip").show();

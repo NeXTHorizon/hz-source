@@ -11,9 +11,9 @@ import org.json.simple.JSONStreamAware;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Issue a currency on the NXT blockchain
+ * Issue a currency on the HZ blockchain
  * <p/>
- * A currency is the basic block of the NXT Monetary System it can be exchanged with NXT, transferred between accounts,
+ * A currency is the basic block of the HZ Monetary System it can be exchanged with HZ, transferred between accounts,
  * minted using proof of work methods, reserved and claimed as a crowd funding tool.
  * <p/>
  * Pass the following parameters in order to issue a currency
@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletRequest;
  * <li>decimals - currency units are divisible to this number of decimals
  * <li>issuanceHeight - the blockchain height at which the currency would become active
  * For {@link nxt.CurrencyType#RESERVABLE} currency
- * <li>minReservePerUnitNQT - the minimum NXT value per unit to allow the currency to become active
+ * <li>minReservePerUnitNQT - the minimum HZ value per unit to allow the currency to become active
  * For {@link nxt.CurrencyType#RESERVABLE} currency
  * <li>reserveSupply - the number of units that will be distributed to founders when currency becomes active (less initialSupply)
  * For {@link nxt.CurrencyType#RESERVABLE} currency
@@ -48,9 +48,9 @@ import javax.servlet.http.HttpServletRequest;
  * At this time, if the minReservePerUnitNQT has not been reached the currency issuance is cancelled and
  * funds are returned to the founders.<br>
  * Otherwise the currency becomes active and remains active until deleted, provided deletion is possible.
- * When a {@link nxt.CurrencyType#RESERVABLE} becomes active, in case it is {@link nxt.CurrencyType#CLAIMABLE} the NXT used for
+ * When a {@link nxt.CurrencyType#RESERVABLE} becomes active, in case it is {@link nxt.CurrencyType#CLAIMABLE} the HZ used for
  * reserving the currency are locked until they are claimed back.
- * When a {@link nxt.CurrencyType#RESERVABLE} becomes active, in case it is non {@link nxt.CurrencyType#CLAIMABLE} the NXT used for
+ * When a {@link nxt.CurrencyType#RESERVABLE} becomes active, in case it is non {@link nxt.CurrencyType#CLAIMABLE} the HZ used for
  * reserving the currency are sent to the issuer account as crowd funding.
  * <li>When issuing a {@link nxt.CurrencyType#MINTABLE} currency, the number of units per {@link nxt.http.CurrencyMint} cannot exceed 0.01% of the
  * total supply. Therefore make sure totalSupply > 10000 or otherwise the currency cannot be minted

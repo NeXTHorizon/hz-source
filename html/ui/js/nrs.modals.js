@@ -173,7 +173,7 @@ var NRS = (function(NRS, $, undefined) {
 				defaultFee = 1;
 			}
 
-			$(this).find(".advanced_fee").html(NRS.formatAmount(NRS.convertToNQT(defaultFee)) + " NHZ");
+			$(this).find(".advanced_fee").html(NRS.formatAmount(NRS.convertToNQT(defaultFee)) + " HZ");
 		}
 
 		NRS.showedFormWarning = false;
@@ -209,7 +209,7 @@ var NRS = (function(NRS, $, undefined) {
 		var $feeInfo = $modal.find(".advanced_fee");
 
 		if ($feeInfo.length) {
-			$feeInfo.html(NRS.formatAmount(NRS.convertToNQT($(this).val())) + " NHZ");
+			$feeInfo.html(NRS.formatAmount(NRS.convertToNQT($(this).val())) + " HZ");
 		}
 	});
 

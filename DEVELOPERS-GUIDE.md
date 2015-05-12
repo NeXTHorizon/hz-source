@@ -13,16 +13,16 @@
 ## Tools and Tips ##
 ### Usable URLs ###
 
-  - **API** - http://localhost:7876/test
-  - **DB Interface** - http://localhost:7876/dbshell
-  - **Java Class Browser** - http://localhost:7876/doc
-  - **Utilities** - http://localhost:7876/admin.html
+  - **API** - http://localhost:7776/test
+  - **DB Interface** - http://localhost:7776/dbshell
+  - **Java Class Browser** - http://localhost:7776/doc
+  - **Utilities** - http://localhost:7776/admin.html
 
 ### Database ###
   
   - H2 embedded database
-  - main database: `nxt_db/`
-  - test database: `nxt_test_db/`
+  - main database: `nhz_db/`
+  - test database: `nhz_test_db/`
   - the database directories do not contain user specific data and can be safely deleted
   - but no need to delete them on upgrade, the DbVersion code takes care of schema updates
   - use the nxt.db framework when accessing the database from your code
@@ -36,7 +36,7 @@
   - [Vincent Driessen's Branching Model](http://nvie.com/posts/a-successful-git-branching-model/)
   - **tl;dr:**
     - master is release branch
-    - develop is maintained by Jean-Luc
+    - develop is maintained by MaWo
     - feature/abc is yours
 
 ### Design ###
@@ -58,7 +58,7 @@
 ### Testing ###
 
   - [to be filled by Lior, kushti]
-  - all API calls can be tested manually from the auto-generated http://localhost:7876/test page
+  - all API calls can be tested manually from the auto-generated http://localhost:7776/test page
   - many tests need blocks to be generated, see the examples how to fake the forging process
   - write your tests against the http API or the public java API, which are relatively stable
   

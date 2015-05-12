@@ -9,12 +9,12 @@ import org.json.simple.JSONStreamAware;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Sell currency for NXT
+ * Sell currency for HZ
  * </p>
  * Parameters
  * <ul>
  * <li>currency - currency id
- * <li>rateNQT - exchange rate between NXT amount and currency units
+ * <li>rateNQT - exchange rate between HZ amount and currency units
  * <li>units - number of units to sell
  * </ul>
  *

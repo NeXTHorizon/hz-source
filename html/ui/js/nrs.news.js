@@ -35,7 +35,7 @@ var NRS = (function(NRS, $, undefined) {
             }
          },
          "filter": function(entry, tokens) {
-            return tokens.title.indexOf("Donations toward") == -1 && tokens.title.indexOf("NHZ tipping bot has arrived") == -1
+            return tokens.title.indexOf("Donations toward") == -1 && tokens.title.indexOf("HZ tipping bot has arrived") == -1
          },
          "ssl": ssl
       };

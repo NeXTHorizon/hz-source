@@ -87,7 +87,7 @@ public final class SendMoney extends UserServlet.UserRequestHandler {
 
             JSONObject response = new JSONObject();
             response.put("response", "notifyOfIncorrectTransaction");
-            response.put("message", "\"Fee\" must be at least 1 NHZ!");
+            response.put("message", "\"Fee\" must be at least 1 HZ!");
             response.put("recipient", recipientValue);
             response.put("amountNHZ", amountValue);
             response.put("feeNHZ", feeValue);

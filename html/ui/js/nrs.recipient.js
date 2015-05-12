@@ -56,7 +56,7 @@ var NRS = (function(NRS, $, undefined) {
 
 		$("#send_money_fee").val(fee);
 
-		$(this).closest(".modal").find(".advanced_fee").html(NRS.formatAmount(NRS.convertToNQT(fee)) + " NHZ");
+		$(this).closest(".modal").find(".advanced_fee").html(NRS.formatAmount(NRS.convertToNQT(fee)) + " HZ");
 	});
 	*/
 

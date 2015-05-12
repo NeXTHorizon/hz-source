@@ -1,4 +1,4 @@
-Running the Nhz software:
+Running the Horizon software:
 
 Dependencies: Java 7 or later needs to be installed first. Only the Oracle JVM
 has been tested and supported.

@@ -14,8 +14,8 @@ import javax.servlet.http.HttpServletRequest;
  * Parameters
  * <ul>
  * <li>currency - currency id of an active currency
- * <li>buyRateNQT - NXT amount for buying a currency unit specified in NQT
- * <li>sellRateNQT - NXT amount for selling a currency unit specified in NQT
+ * <li>buyRateNQT - HZ amount for buying a currency unit specified in NQT
+ * <li>sellRateNQT - HZ amount for selling a currency unit specified in NQT
  * <li>initialBuySupply - Initial number of currency units offered to buy by the publisher
  * <li>initialSellSupply - Initial number of currency units offered for sell by the publisher
  * <li>totalBuyLimit - Total number of currency units which can be bought from the offer
