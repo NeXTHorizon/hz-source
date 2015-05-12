@@ -3,8 +3,8 @@
  */
 var NRS = (function(NRS, $, undefined) {
 	NRS.pages.peers = function() {
-		NRS.sendRequest("getPeers+", {
-			"active": "true",
+		NRS.sendRequest("getPeers+", {			
+			"state": "CONNECTED",
 			"includePeerInfo": "true"
 		}, function(response) {
 			if (response.peers && response.peers.length) {
