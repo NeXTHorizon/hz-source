@@ -7,9 +7,9 @@ import nxt.util.Logger;
 import nxt.util.ThreadPool;
 import nxt.util.Time;
 
-import nxt.upnp.GatewayDevice;
-import nxt.upnp.GatewayDiscover;
-import nxt.upnp.PortMappingEntry;
+import org.bitlet.weupnp.GatewayDevice;
+import org.bitlet.weupnp.GatewayDiscover;
+import org.bitlet.weupnp.PortMappingEntry;
 
 import java.io.FileInputStream;
 import java.io.IOException;
