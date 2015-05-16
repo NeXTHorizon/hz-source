@@ -140,7 +140,8 @@ class NxtDbVersion extends DbVersion {
             case 51:
                 apply("ALTER TABLE transaction DROP COLUMN hash");
             case 52:
-                apply(null);
+                apply("CREATE TABLE IF NOT EXISTS public_key (db_id IDENTITY, account_id BIGINT NOT NULL, "
+                        + "public_key BINARY(32), height INT NOT NULL, FOREIGN KEY (height) REFERENCES block (height) ON DELETE CASCADE)");
                 BlockDb.deleteAll(); //kill forks
             case 53:
                 apply("DROP INDEX transaction_recipient_id_idx");
@@ -534,13 +535,15 @@ class NxtDbVersion extends DbVersion {
             	apply("CREATE TABLE IF NOT EXISTS public_key (db_id IDENTITY, account_id BIGINT NOT NULL, "
                         + "public_key BINARY(32), height INT NOT NULL, FOREIGN KEY (height) REFERENCES block (height) ON DELETE CASCADE)");
             case 189:
-            	apply("INSERT INTO public_key (account_id, public_key, height) SELECT Sender_ID, SENDER_PUBLIC_KEY, min(height) FROM "
-                		+ "transaction group by SENDER_PUBLIC_KEY, Sender_ID ");
+            	apply("INSERT INTO public_key (account_id, public_key, height) select sender_id, sender_public_key, a.height " +
+            			" from (SELECT Sender_ID, SENDER_PUBLIC_KEY, min(height) as height FROM transaction group by Sender_ID, SENDER_PUBLIC_KEY) a" +
+            			" left outer join public_key b on (a.sender_id=b.account_id and a.sender_public_key=b.public_key)" +
+            			" where b.public_key is null or b.height>a.height");
             case 190:
                 apply("MERGE INTO public_key (account_id, public_key, height) Key(account_id) select generator_ID, generator_PUBLIC_KEY, a.height" 
-                		+ "  from (SELECT generator_ID, generator_PUBLIC_KEY, min(height) as height FROM  block group by generator_PUBLIC_KEY, " 
-                		+ "generator_ID) a left outer join public_key b on (a.generator_id=b.account_id and a.generator_public_key=b.public_key) " 
-                		+ "where b.public_key is null or b.height>a.height");               
+                		+ " from (SELECT generator_ID, generator_PUBLIC_KEY, min(height) as height FROM  block group by generator_ID, generator_PUBLIC_KEY) a" 
+                		+ " left outer join public_key b on (a.generator_id=b.account_id and a.generator_public_key=b.public_key) " 
+                		+ " where b.public_key is null or b.height>a.height");               
                 
             case 191:
             	try (Connection con = Db.db.getConnection();
