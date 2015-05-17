@@ -478,7 +478,7 @@ public abstract class TransactionType {
                 } else if (alias.getAccountId() != transaction.getSenderId()) {
                     throw new NxtException.NotCurrentlyValidException("Alias doesn't belong to sender: " + aliasName);
                 }
-                if (transaction.getRecipientId() == Genesis.CREATOR_ID) {
+                if (transaction.getRecipientId() == Genesis.CREATOR_ID && Nxt.getBlockchain().getHeight() > Constants.MONETARY_SYSTEM_BLOCK) {
                     throw new NxtException.NotCurrentlyValidException("Selling alias to Genesis not allowed");
                 }
             }
@@ -1798,7 +1798,7 @@ public abstract class TransactionType {
                     throw new NxtException.NotCurrentlyValidException("Invalid effective balance leasing: "
                             + " recipient account " + transaction.getRecipientId() + " not found or no public key published");
                 }
-                if (transaction.getRecipientId() == Genesis.CREATOR_ID) {
+                if (transaction.getRecipientId() == Genesis.CREATOR_ID && Nxt.getBlockchain().getHeight() > Constants.MONETARY_SYSTEM_BLOCK) {
                     throw new NxtException.NotCurrentlyValidException("Leasing to Genesis account not allowed");
                 }
             }

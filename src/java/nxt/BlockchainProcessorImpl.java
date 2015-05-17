@@ -341,7 +341,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 return null;
             }
             // prevent overloading with blocks
-            if (blockchain.getHeight() > Constants.MONETARY_SYSTEM_BLOCK && nextBlocks.size() > 720) {
+            if (nextBlocks.size() > 1440 || (blockchain.getHeight() > Constants.MONETARY_SYSTEM_BLOCK && nextBlocks.size() > 720)) {
                 Logger.logDebugMessage("Obsolete or rogue peer " + peer.getPeerAddress() + " sends too many nextBlocks, blacklisting");
                 peer.blacklist("Too many nextBlocks");
                 return null;
@@ -411,7 +411,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
             public void notify(Block block) {
                 if (block.getHeight() % 5000 == 0) {
                     Logger.logMessage("processed block " + block.getHeight());
-                }
+                }                
             }
         }, Event.BLOCK_SCANNED);
 
@@ -458,7 +458,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
 	//                if (block.getHeight() == Constants.MONETARY_SYSTEM_BLOCK && ! verifyChecksum(CHECKSUM_MONETARY_SYSTEM_BLOCK)) {
 	//                    popOffTo(Constants.NQT_BLOCK);
 	//                }
-            	}
+            	}                
             }
         }, Event.BLOCK_PUSHED);
 
@@ -714,8 +714,17 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 long calculatedTotalFee = 0;
                 MessageDigest digest = Crypto.sha256();
 
+                long previousTransactionId = 0;
+
                 for (TransactionImpl transaction : block.getTransactions()) {
-                    	 //Logger.logDebugMessage("Transaction Id"+transaction.getStringId()+"\ntx json: "+  transaction.getJSONObject().toJSONString()  +"\ntx bytes: "+ Convert.toHexString(transaction.getBytes()));
+                    //Logger.logDebugMessage("Transaction Id"+transaction.getStringId()+"\ntx json: "+  transaction.getJSONObject().toJSONString()  +"\ntx bytes: "+ Convert.toHexString(transaction.getBytes()));
+                    if (previousLastBlock.getHeight() < Constants.MONETARY_SYSTEM_BLOCK) {
+                        if (transaction.getId() <= previousTransactionId && previousTransactionId != 0) {
+                            throw new BlockNotAcceptedException("Block transactions are not sorted!");
+                        }
+                        previousTransactionId = transaction.getId();
+                    }
+
                     if (transaction.getTimestamp() > curTime + Constants.MAX_TIMEDRIFT) {
                         throw new BlockOutOfOrderException("Invalid transaction timestamp: " + transaction.getTimestamp()
                                 + ", current time is " + curTime);
@@ -924,6 +933,13 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
         }
     }
 
+    private static final Comparator<UnconfirmedTransaction> transactionIdComparator = new Comparator<UnconfirmedTransaction>() {
+        @Override
+        public int compare(UnconfirmedTransaction o1, UnconfirmedTransaction o2) {
+            return Long.compare(o1.getId(), o2.getId());
+        }
+    };
+
     private static final Comparator<UnconfirmedTransaction> transactionArrivalComparator = new Comparator<UnconfirmedTransaction>() {
         @Override
         public int compare(UnconfirmedTransaction o1, UnconfirmedTransaction o2) {
@@ -957,7 +973,8 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
 
         BlockImpl previousBlock = blockchain.getLastBlock();
 
-        SortedSet<UnconfirmedTransaction> sortedTransactions = new TreeSet<>(transactionArrivalComparator);
+        SortedSet<UnconfirmedTransaction> sortedTransactions = new TreeSet<>(previousBlock.getHeight() < Constants.MONETARY_SYSTEM_BLOCK
+                ? transactionIdComparator : transactionArrivalComparator);
 
         Map<TransactionType, Map<String, Boolean>> duplicates = new HashMap<>();
 
@@ -1021,12 +1038,11 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
 
         MessageDigest digest = Crypto.sha256();
         for (UnconfirmedTransaction unconfirmedTransaction : sortedTransactions) {
-            blockTransactions.add(unconfirmedTransaction.getTransaction());
+            blockTransactions.add(unconfirmedTransaction.getTransaction());            
             digest.update(unconfirmedTransaction.getBytes());
         }
 
         byte[] payloadHash = digest.digest();
-
         digest.update(previousBlock.getGenerationSignature());
         final byte[] publicKey = Crypto.getPublicKey(secretPhrase);
         byte[] generationSignature = digest.digest(publicKey);
@@ -1216,7 +1232,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 throw new RuntimeException(e.toString(), e);
             } finally {
                 Db.db.endTransaction();
-                isScanning = false;
+                isScanning = false;                
             }
         } // synchronized
     }
