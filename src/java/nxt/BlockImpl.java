@@ -359,13 +359,6 @@ final class BlockImpl implements Block {
 
     }
 
-    private static final long[] badBlocks = new long[] {
-            5113090348579089956L, 8032405266942971936L, 7702042872885598917L, -407022268390237559L, -3320029330888410250L,
-            -6568770202903512165L, 4288642518741472722L, 5315076199486616536L, -6175599071600228543L};
-    static {
-        Arrays.sort(badBlocks);
-    }
-
     void apply() throws BlockchainProcessor.TransactionNotAcceptedException {
         Account generatorAccount = Account.addOrGetAccount(getGeneratorId());
         generatorAccount.apply(getGeneratorPublicKey(), this.height);
