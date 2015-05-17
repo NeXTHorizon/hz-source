@@ -1120,6 +1120,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
             if (validate) {
                 Logger.logDebugMessage("Also verifying signatures and validating transactions...");
             }
+            Integer popOffHeight=null;
             try (Connection con = Db.db.beginTransaction();
                  PreparedStatement pstmtSelect = con.prepareStatement("SELECT * FROM block WHERE height >= ? ORDER BY db_id ASC");
                  PreparedStatement pstmtDone = con.prepareStatement("UPDATE scan SET rescan = FALSE, height = 0, validate = FALSE")) {
@@ -1164,6 +1165,18 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                                 JSONObject blockJSON = (JSONObject) JSONValue.parse(currentBlock.getJSONObject().toJSONString());
                                 if (!Arrays.equals(blockBytes, BlockImpl.parseBlock(blockJSON).getBytes())) {
                                     throw new NxtException.NotValidException("Block JSON cannot be parsed back to the same block");
+                                }
+                                if (currentBlock.getHeight() % 720 == 0 && currentBlock.getHeight()<=(CheckPoints.previousBlockId.length-1)*720) {
+                                	int i = currentBlock.getHeight()/720;
+                                	if (! ((new BigInteger(CheckPoints.previousBlockId[i])).longValue() == currentBlock.getId())) {
+                            			if (i>0) {
+                            				// pop of until last known good 
+                            				popOffHeight=(i-1)*720;
+                            			}
+                            			throw new NxtException.NotValidException("Checkpoint not passed, blockId check failed at block height "+i*720+". Expected "+ CheckPoints.previousBlockId[i] +" but found "+Convert.toUnsignedLong(currentBlock.getId()));                			
+                            		} else {
+                            			Logger.logInfoMessage("Checkpoint passed at block height "+i*720);
+                            		}                                	
                                 }
                                 Map<TransactionType, Map<String, Boolean>> duplicates = new HashMap<>();
                                 for (TransactionImpl transaction : currentBlock.getTransactions()) {
@@ -1232,6 +1245,10 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 throw new RuntimeException(e.toString(), e);
             } finally {
                 Db.db.endTransaction();
+                if (popOffHeight!=null) {
+                	Logger.logMessage("Fork isssue detected, resolving.");
+                	popOffTo(popOffHeight);
+                }
                 isScanning = false;                
             }
         } // synchronized
