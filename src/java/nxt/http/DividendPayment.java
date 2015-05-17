@@ -32,7 +32,7 @@ public class DividendPayment extends CreateTransaction {
 
     private static int getHeight(final HttpServletRequest request) throws ParameterException {
         final int height = ParameterParser.getHeight(request);
-        if (height < Nxt.getBlockchain().getHeight() - Constants.MAX_ROLLBACK) {
+        if (height < Nxt.getBlockchain().getHeight() - 1440) {
             throw new ParameterException(JSONResponses.HEIGHT_NOT_AVAILABLE);
         }
         return height;
