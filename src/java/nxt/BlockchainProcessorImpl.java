@@ -1166,7 +1166,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                                 if (!Arrays.equals(blockBytes, BlockImpl.parseBlock(blockJSON).getBytes())) {
                                     throw new NxtException.NotValidException("Block JSON cannot be parsed back to the same block");
                                 }
-                                if (currentBlock.getHeight() % 720 == 0 && currentBlock.getHeight()<=(CheckPoints.previousBlockId.length-1)*720) {
+                                if (useCheckpoints && currentBlock.getHeight() % 720 == 0 && currentBlock.getHeight()<=(CheckPoints.previousBlockId.length-1)*720) {
                                 	int i = currentBlock.getHeight()/720;
                                 	if (! ((new BigInteger(CheckPoints.previousBlockId[i])).longValue() == currentBlock.getId())) {
                             			if (i>0) {
@@ -1245,7 +1245,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 throw new RuntimeException(e.toString(), e);
             } finally {
                 Db.db.endTransaction();
-                if (popOffHeight!=null) {
+                if (useCheckpoints && popOffHeight!=null) {
                 	Logger.logMessage("Fork isssue detected, resolving.");
                 	popOffTo(popOffHeight);
                 }
