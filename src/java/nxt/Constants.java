@@ -92,8 +92,8 @@ public final class Constants {
     public static final int REFERENCED_TRANSACTION_FULL_HASH_BLOCK_TIMESTAMP = Integer.MAX_VALUE;
     public static final int VOTING_SYSTEM_BLOCK = Integer.MAX_VALUE;
     public static final int TRANSACTIONS_VERSION_1_BLOCK =  (isTestnet ? 580 : 275000);
-    public static final int DIGITAL_GOODS_STORE_BLOCK =  (isTestnet ? 99000 : Integer.MAX_VALUE); // dgs transactions are disabled
-    public static final int MONETARY_SYSTEM_BLOCK = (isTestnet ? 99000 : Integer.MAX_VALUE);
+    public static final int DIGITAL_GOODS_STORE_BLOCK =  (isTestnet ? 105000 : Integer.MAX_VALUE); // dgs transactions are disabled
+    public static final int MONETARY_SYSTEM_BLOCK = (isTestnet ? 105000 : Integer.MAX_VALUE);
     public static final int LAST_KNOWN_BLOCK = CheckPoints.previousBlockId.length*720;
 
     public static final int[] MIN_VERSION = new int[] {3, 8};
