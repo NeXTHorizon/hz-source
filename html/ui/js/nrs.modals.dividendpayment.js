@@ -1,3 +1,19 @@
+/******************************************************************************
+ * Copyright © 2013-2015 The Nxt Core Developers.                             *
+ *                                                                            *
+ * See the AUTHORS.txt, DEVELOPER-AGREEMENT.txt and LICENSE.txt files at      *
+ * the top-level directory of this distribution for the individual copyright  *
+ * holder information and the developer policies on copyright and licensing.  *
+ *                                                                            *
+ * Unless otherwise agreed in a custom licensing agreement, no part of the    *
+ * Nxt software, including this file, may be copied, modified, propagated,    *
+ * or distributed except according to the terms contained in the LICENSE.txt  *
+ * file.                                                                      *
+ *                                                                            *
+ * Removal or modification of this copyright notice is prohibited.            *
+ *                                                                            *
+ ******************************************************************************/
+
 /**
  * @depends {nrs.js}
  * @depends {nrs.modals.js}
@@ -26,7 +42,7 @@ var NRS = (function(NRS, $, undefined) {
             }
         }
 
-        delete data.amountNHZPerShare;
+        delete data.amountNXTPerShare;
 
         return {
             "data": data
@@ -49,18 +65,18 @@ var NRS = (function(NRS, $, undefined) {
 
     $("#dividend_payment_amount_per_share, #dividend_payment_height").on("blur", function() {
         var $modal = $(this).closest(".modal");
-        var amountNHZPerShare = $modal.find("#dividend_payment_amount_per_share").val();
+        var amountNXTPerShare = $modal.find("#dividend_payment_amount_per_share").val();
         var height = $modal.find("#dividend_payment_height").val();
 
         var $callout = $modal.find(".dividend_payment_info").first();
 
-        showDividendPaymentInfoPreview($callout, amountNHZPerShare, height);
+        showDividendPaymentInfoPreview($callout, amountNXTPerShare, height);
     });
 
-    function showDividendPaymentInfoPreview($callout, amountNHZPerShare, height) {
+    function showDividendPaymentInfoPreview($callout, amountNXTPerShare, height) {
         var classes = "callout-info callout-danger callout-warning";
 
-        if (!amountNHZPerShare) {
+        if (!amountNXTPerShare) {
             $callout.html($.t("error_amount_per_share_required"));
             $callout.removeClass(classes).addClass("callout-warning").show();
         }
@@ -78,7 +94,7 @@ var NRS = (function(NRS, $, undefined) {
                     var qualifiedDividendRecipients = accountAssets.filter(
                         function(accountAsset) {
                             return accountAsset.accountRS !== NRS.currentAsset.accountRS
-                                && accountAsset.accountRS !== NRS.genesisRS
+                                && accountAsset.accountRS !== NRS.constants.GENESIS_RS;
                         });
 
                     var totalQuantityQNT = new BigInteger("0");
@@ -88,15 +104,15 @@ var NRS = (function(NRS, $, undefined) {
                         });
 
                     var priceNQT = new BigInteger(NRS.calculatePricePerWholeQNT(
-                        NRS.convertToNQT(amountNHZPerShare),
+                        NRS.convertToNQT(amountNXTPerShare),
                         NRS.currentAsset.decimals));
 
-                    var totalNHZ = NRS.calculateOrderTotal(totalQuantityQNT, priceNQT);
+                    var totalNXT = NRS.calculateOrderTotal(totalQuantityQNT, priceNQT);
 
                     $callout.html($.t(
                         "dividend_payment_info_preview_success",
                         {
-                            "amountNHZ": totalNHZ,
+                            "amountNHZ": totalNXT,
                             "totalQuantity": NRS.formatQuantity(totalQuantityQNT, NRS.currentAsset.decimals),
                             "recipientCount": qualifiedDividendRecipients.length
                         }));

@@ -41,7 +41,7 @@ public final class GetBlockIds extends APIServlet.APIRequestHandler {
             while (height<maxHeight-720) {
             	JSONObject block = new JSONObject();
             	block.put("height", height);
-            	block.put("block", Convert.toUnsignedLong(Nxt.getBlockchain().getBlockIdAtHeight(height)));
+            	block.put("block", Nxt.getBlockchain().getBlockAtHeight(height).getStringId());
             	blocks.add(block);
             	height+=step;
             }

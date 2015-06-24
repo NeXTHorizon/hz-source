@@ -2,7 +2,7 @@
 VERSION=$1
 PACKAGE=hz-client-${VERSION}.zip
 
-FILES="conf lib html MIT-license.txt run.sh run.bat run-tor.sh verify.sh changelogs README.txt README_win.txt NHZ_Wallet.url Dockerfile docker_start.sh classes nhz.jar src compile.sh win-compile.sh javadoc.sh package.sh mint.bat mint.sh"
+FILES="conf lib html LICENSE.txt 3RD-PARTY-LICENSES.txt AUTHORS.txt COPYING.txt DEVELOPER-AGREEMENT.txt DEVELOPERS-GUIDE.md OPERATORS-GUIDE.md USERS-GUIDE.md README.md run.sh run.bat run-tor.sh verify.sh changelogs README.txt README_win.txt HZ_Wallet.url Dockerfile docker_start.sh classes nhz.jar src compile.sh win-compile.sh javadoc.sh package.sh mint.bat mint.sh"
 
 ./compile.sh
 ./jar.sh
@@ -19,3 +19,4 @@ do
 done
 zip -X -r ${PACKAGE} nhz -x \*/.idea/\* \*/.gitignore \*/.git/\* \*.iml nhz/conf/nhz.properties nhz/conf/logging.properties
 rm -rf nhz
+

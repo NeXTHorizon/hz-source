@@ -1,3 +1,19 @@
+/******************************************************************************
+ * Copyright © 2013-2015 The Nxt Core Developers.                             *
+ *                                                                            *
+ * See the AUTHORS.txt, DEVELOPER-AGREEMENT.txt and LICENSE.txt files at      *
+ * the top-level directory of this distribution for the individual copyright  *
+ * holder information and the developer policies on copyright and licensing.  *
+ *                                                                            *
+ * Unless otherwise agreed in a custom licensing agreement, no part of the    *
+ * Nxt software, including this file, may be copied, modified, propagated,    *
+ * or distributed except according to the terms contained in the LICENSE.txt  *
+ * file.                                                                      *
+ *                                                                            *
+ * Removal or modification of this copyright notice is prohibited.            *
+ *                                                                            *
+ ******************************************************************************/
+
 package nxt;
 
 import nxt.NxtException.ValidationException;
@@ -10,10 +26,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 class NxtDbVersion extends DbVersion {
 
-    protected void update(int nextUpdate) throws SQLException {
+    protected void update(int nextUpdate) {
         switch (nextUpdate) {
             case 1:
                 apply("CREATE TABLE IF NOT EXISTS block (db_id IDENTITY, id BIGINT NOT NULL, version INT NOT NULL, "
@@ -100,15 +115,7 @@ class NxtDbVersion extends DbVersion {
             case 36:
                 apply("CREATE TABLE IF NOT EXISTS peer (address VARCHAR PRIMARY KEY)");
             case 37:
-                if (!Constants.isTestnet) {
-                    apply("INSERT INTO peer (address) VALUES " +
-                    		"('pool0.horizonplatform.io'), ('pool1.horizonplatform.io'), ('pool2.horizonplatform.io'), ('pool3.horizonplatform.io'), ('pool4.horizonplatform.io'), " +
-                            "('85.214.147.217'), ('192.227.139.228'), ('198.12.70.251'), ('109.73.172.229'), ('108.174.62.237'), " +
-                            "('107.161.158.52'), ('192.3.27.3'), ('85.214.147.237'), ('212.18.225.170'), ('162.221.184.6'), " +
-                            "('212.18.225.189'), ('85.214.238.143'), ('89.72.57.246'), ('107.161.179.25'), ('198.49.66.147'), ('192.3.177.242'), " +
-                            "('78.138.90.142'), ('192.227.163.207'), ('110.143.228.78'), ('88.12.55.125'), ('217.17.88.5'), ('212.18.225.173'), " +
-                            "('162.221.184.28'), ('162.221.184.126'), ('162.243.222.129'), ('95.60.149.149'), ('198.23.202.121')");
-                }
+                apply(null);
             case 38:
                 apply("ALTER TABLE transaction ADD COLUMN IF NOT EXISTS full_hash BINARY(32)");
             case 39:
@@ -209,7 +216,7 @@ class NxtDbVersion extends DbVersion {
                         + "account_id BIGINT NOT NULL, alias_name VARCHAR NOT NULL, "
                         + "alias_name_lower VARCHAR AS LOWER (alias_name) NOT NULL, "
                         + "alias_uri VARCHAR NOT NULL, timestamp INT NOT NULL, "
-                        + "height INT NOT NULL, latest BOOLEAN NOT NULL DEFAULT TRUE)");                
+                        + "height INT NOT NULL, latest BOOLEAN NOT NULL DEFAULT TRUE)");
             case 72:
                 apply("CREATE UNIQUE INDEX IF NOT EXISTS alias_id_height_idx ON alias (id, height DESC)");
             case 73:
@@ -503,7 +510,9 @@ class NxtDbVersion extends DbVersion {
                         }
                     }
                     stmt.executeUpdate("SET UNDO_LOG 1");
-                }
+				} catch (SQLException e) {
+                	throw new RuntimeException(e);
+				}
                 apply(null);    
             case 176:
                 apply("ALTER TABLE transaction ALTER COLUMN transaction_index SET NOT NULL");
@@ -661,10 +670,224 @@ class NxtDbVersion extends DbVersion {
             case 230:
                 apply("CREATE INDEX IF NOT EXISTS trade_height_idx ON trade(height)");
             case 231:
+                apply("DROP TABLE IF EXISTS poll");
+            case 232:
+                apply("DROP TABLE IF EXISTS vote");
+            case 233:
+                apply("CREATE TABLE IF NOT EXISTS vote (db_id IDENTITY, id BIGINT NOT NULL, " +
+                        "poll_id BIGINT NOT NULL, voter_id BIGINT NOT NULL, vote_bytes VARBINARY NOT NULL, height INT NOT NULL)");
+            case 234:
+                apply("CREATE UNIQUE INDEX IF NOT EXISTS vote_id_idx ON vote (id)");
+            case 235:
+                apply("CREATE UNIQUE INDEX IF NOT EXISTS vote_poll_id_idx ON vote (poll_id, voter_id)");
+            case 236:
+                apply("CREATE TABLE IF NOT EXISTS poll (db_id IDENTITY, id BIGINT NOT NULL, "
+                        + "account_id BIGINT NOT NULL, name VARCHAR NOT NULL, "
+                        + "description VARCHAR, options ARRAY NOT NULL, min_num_options TINYINT, max_num_options TINYINT, "
+                        + "min_range_value TINYINT, max_range_value TINYINT, "
+                        + "finish_height INT NOT NULL, voting_model TINYINT NOT NULL, min_balance BIGINT, "
+                        + "min_balance_model TINYINT, holding_id BIGINT, height INT NOT NULL)");
+            case 237:
+                apply("CREATE TABLE IF NOT EXISTS poll_result (db_id IDENTITY, poll_id BIGINT NOT NULL, "
+                        + "result BIGINT, weight BIGINT NOT NULL, height INT NOT NULL)");
+            case 238:
+                apply("ALTER TABLE transaction ADD COLUMN IF NOT EXISTS phased BOOLEAN NOT NULL DEFAULT FALSE");
+            case 239:
+                apply("CREATE TABLE IF NOT EXISTS phasing_poll (db_id IDENTITY, id BIGINT NOT NULL, "
+                        + "account_id BIGINT NOT NULL, whitelist_size TINYINT NOT NULL DEFAULT 0, "
+                        + "finish_height INT NOT NULL, voting_model TINYINT NOT NULL, quorum BIGINT, "
+                        + "min_balance BIGINT, holding_id BIGINT, min_balance_model TINYINT, "
+                        + "linked_full_hashes ARRAY, hashed_secret VARBINARY, algorithm TINYINT, height INT NOT NULL)");
+            case 240:
+                apply("CREATE TABLE IF NOT EXISTS phasing_vote (db_id IDENTITY, vote_id BIGINT NOT NULL, "
+                        + "transaction_id BIGINT NOT NULL, voter_id BIGINT NOT NULL, "
+                        + "height INT NOT NULL)");
+            case 241:
+                apply("CREATE TABLE IF NOT EXISTS phasing_poll_voter (db_id IDENTITY, "
+                        + "transaction_id BIGINT NOT NULL, voter_id BIGINT NOT NULL, "
+                        + "height INT NOT NULL)");
+            case 242:
+                apply("CREATE INDEX IF NOT EXISTS vote_height_idx ON vote(height)");
+            case 243:
+                apply("CREATE UNIQUE INDEX IF NOT EXISTS poll_id_idx ON poll(id)");
+            case 244:
+                apply("CREATE INDEX IF NOT EXISTS poll_height_idx ON poll(height)");
+            case 245:
+                apply("CREATE INDEX IF NOT EXISTS poll_account_idx ON poll(account_id)");
+            case 246:
+                apply("CREATE INDEX IF NOT EXISTS poll_finish_height_idx ON poll(finish_height DESC)");
+            case 247:
+                apply("CREATE INDEX IF NOT EXISTS poll_result_poll_id_idx ON poll_result(poll_id)");
+            case 248:
+                apply("CREATE INDEX IF NOT EXISTS poll_result_height_idx ON poll_result(height)");
+            case 249:
+                apply("CREATE UNIQUE INDEX IF NOT EXISTS phasing_poll_id_idx ON phasing_poll(id)");
+            case 250:
+                apply("CREATE INDEX IF NOT EXISTS phasing_poll_height_idx ON phasing_poll(height)");
+            case 251:
+                apply("CREATE INDEX IF NOT EXISTS phasing_poll_account_id_idx ON phasing_poll(account_id, height DESC)");
+            case 252:
+                apply("CREATE INDEX IF NOT EXISTS phasing_poll_holding_id_idx ON phasing_poll(holding_id, height DESC)");
+            case 253:
+                apply("CREATE UNIQUE INDEX IF NOT EXISTS phasing_vote_transaction_voter_idx ON phasing_vote(transaction_id, voter_id)");
+            case 254:
+                apply("CREATE UNIQUE INDEX IF NOT EXISTS phasing_poll_voter_transaction_voter_idx ON phasing_poll_voter(transaction_id, voter_id)");
+            case 255:
+                apply("CREATE TABLE IF NOT EXISTS phasing_poll_result (db_id IDENTITY, id BIGINT NOT NULL, "
+                        + "result BIGINT NOT NULL, approved BOOLEAN NOT NULL, height INT NOT NULL)");
+            case 256:
+                apply("CREATE UNIQUE INDEX IF NOT EXISTS phasing_poll_result_id_idx ON phasing_poll_result(id)");
+            case 257:
+                apply("CREATE INDEX IF NOT EXISTS phasing_poll_result_height_idx ON phasing_poll_result(height)");
+            case 258:
+                apply("CREATE INDEX IF NOT EXISTS currency_founder_account_id_idx ON currency_founder (account_id, height DESC)");
+            case 259:
+                apply("TRUNCATE TABLE trade");
+            case 260:
+                apply("ALTER TABLE trade ADD COLUMN IF NOT EXISTS is_buy BOOLEAN NOT NULL");
+            case 261:
+                apply("CREATE INDEX IF NOT EXISTS phasing_poll_voter_height_idx ON phasing_poll_voter(height)");
+            case 262:
+                apply("TRUNCATE TABLE ask_order");
+            case 263:
+                apply("ALTER TABLE ask_order ADD COLUMN IF NOT EXISTS transaction_height INT NOT NULL");
+            case 264:
+                apply("TRUNCATE TABLE bid_order");
+            case 265:
+                apply("ALTER TABLE bid_order ADD COLUMN IF NOT EXISTS transaction_height INT NOT NULL");
+            case 266:
+                apply("TRUNCATE TABLE buy_offer");
+            case 267:
+                apply("ALTER TABLE buy_offer ADD COLUMN IF NOT EXISTS transaction_height INT NOT NULL");
+            case 268:
+                apply("TRUNCATE TABLE sell_offer");
+            case 269:
+                apply("ALTER TABLE sell_offer ADD COLUMN IF NOT EXISTS transaction_height INT NOT NULL");
+            case 270:
+                apply("CREATE INDEX IF NOT EXISTS phasing_vote_height_idx ON phasing_vote(height)");
+            case 271:
+                apply("DROP INDEX IF EXISTS transaction_full_hash_idx");
+            case 272:
+                apply("DROP INDEX IF EXISTS trade_ask_bid_idx");
+            case 273:
+                apply("CREATE INDEX IF NOT EXISTS trade_ask_idx ON trade (ask_order_id, height DESC)");
+            case 274:
+                apply("CREATE INDEX IF NOT EXISTS trade_bid_idx ON trade (bid_order_id, height DESC)");
+            case 275:
+                apply("CREATE TABLE IF NOT EXISTS account_info (db_id IDENTITY, account_id BIGINT NOT NULL, "
+                        + "name VARCHAR, description VARCHAR, height INT NOT NULL, latest BOOLEAN NOT NULL DEFAULT TRUE)");
+            case 276:
+                apply("CREATE UNIQUE INDEX IF NOT EXISTS account_info_id_height_idx ON account_info (account_id, height DESC)");
+            case 277:
+                apply("CREATE INDEX IF NOT EXISTS account_info_height_idx ON account_info (height)");
+            case 278:
+                apply("ALTER TABLE account DROP COLUMN IF EXISTS name");
+            case 279:
+                apply("ALTER TABLE account DROP COLUMN IF EXISTS description");
+            case 280:
+                apply("ALTER TABLE account DROP COLUMN IF EXISTS message_pattern_regex");
+            case 281:
+                apply("ALTER TABLE account DROP COLUMN IF EXISTS message_pattern_flags");
+            case 282:
+                apply(null);
+            case 283:
+                apply("TRUNCATE TABLE poll");
+            case 284:
+                apply("ALTER TABLE poll ADD COLUMN IF NOT EXISTS timestamp INT NOT NULL");
+            case 285:
+                apply(null);
+            case 286:
+                apply("CREATE TABLE IF NOT EXISTS prunable_message (db_id IDENTITY, id BIGINT NOT NULL, sender_id BIGINT NOT NULL, "
+                        + "recipient_id BIGINT, message VARBINARY NOT NULL, is_text BOOLEAN NOT NULL, is_compressed BOOLEAN NOT NULL, "
+                        + "is_encrypted BOOLEAN NOT NULL, timestamp INT NOT NULL, expiration INT NOT NULL, height INT NOT NULL, "
+                        + "FOREIGN KEY (height) REFERENCES block (height) ON DELETE CASCADE)");
+            case 287:
+                apply("CREATE UNIQUE INDEX IF NOT EXISTS prunable_message_id_idx ON prunable_message (id)");
+            case 288:
+                apply("CREATE INDEX IF NOT EXISTS prunable_message_height_idx ON prunable_message (height)");
+            case 289:
+                apply("CREATE INDEX IF NOT EXISTS prunable_message_expiration_idx ON prunable_message (expiration DESC)");
+            case 290:
+                apply("ALTER TABLE transaction ADD COLUMN IF NOT EXISTS has_prunable_message BOOLEAN NOT NULL DEFAULT FALSE");
+            case 291:
+                apply("TRUNCATE TABLE unconfirmed_transaction");
+            case 292:
+                apply("ALTER TABLE unconfirmed_transaction ADD COLUMN IF NOT EXISTS prunable_json VARCHAR");
+            case 293:
+                apply("CREATE INDEX IF NOT EXISTS prunable_message_sender_idx ON prunable_message (sender_id)");
+            case 294:
+                apply("CREATE INDEX IF NOT EXISTS prunable_message_recipient_idx ON prunable_message (recipient_id)");
+            case 295:
+                apply("CREATE INDEX IF NOT EXISTS prunable_message_timestamp_idx ON prunable_message (timestamp DESC)");
+            case 296:
+                apply("ALTER TABLE transaction ADD COLUMN IF NOT EXISTS has_prunable_encrypted_message BOOLEAN NOT NULL DEFAULT FALSE");
+            case 297:
+                BlockchainProcessorImpl.getInstance().scheduleScan(0, false);
+                apply(null);
+            case 298:
+                apply("ALTER TABLE prunable_message ALTER COLUMN expiration RENAME TO transaction_timestamp");
+            case 299:
+                apply("UPDATE prunable_message SET transaction_timestamp = SELECT timestamp FROM transaction WHERE prunable_message.id = transaction.id");
+            case 300:
+                apply("ALTER INDEX prunable_message_expiration_idx RENAME TO prunable_message_transaction_timestamp_idx");
+            case 301:
+                apply("ALTER TABLE prunable_message ALTER COLUMN timestamp RENAME TO block_timestamp");
+            case 302:
+                apply("DROP INDEX IF EXISTS prunable_message_timestamp_idx");
+            case 303:
+                apply("CREATE INDEX IF NOT EXISTS prunable_message_block_timestamp_dbid_idx ON prunable_message (block_timestamp DESC, db_id DESC)");
+            case 304:
+                apply("DROP INDEX IF EXISTS prunable_message_height_idx");
+            case 305:
+                apply("DROP INDEX IF EXISTS public_key_height_idx");
+            case 306:
+                apply("CREATE TABLE IF NOT EXISTS tagged_data (db_id IDENTITY, id BIGINT NOT NULL, account_id BIGINT NOT NULL, "
+                        + "name VARCHAR NOT NULL, description VARCHAR, tags VARCHAR, parsed_tags ARRAY, type VARCHAR, data VARBINARY NOT NULL, "
+                        + "is_text BOOLEAN NOT NULL, filename VARCHAR, block_timestamp INT NOT NULL, transaction_timestamp INT NOT NULL, "
+                        + "height INT NOT NULL, FOREIGN KEY (height) REFERENCES block (height) ON DELETE CASCADE, latest BOOLEAN NOT NULL DEFAULT TRUE)");
+            case 307:
+                apply("CREATE UNIQUE INDEX IF NOT EXISTS tagged_data_id_height_idx ON tagged_data (id, height DESC)");
+            case 308:
+                apply("CREATE INDEX IF NOT EXISTS tagged_data_expiration_idx ON tagged_data (transaction_timestamp DESC)");
+            case 309:
+                apply("CREATE INDEX IF NOT EXISTS tagged_data_account__height_idx ON tagged_data (account_id, height DESC)");
+            case 310:
+                apply("CREATE INDEX IF NOT EXISTS tagged_data_block_timestamp_height_db_id_idx ON tagged_data (block_timestamp DESC, height DESC, db_id DESC)");
+            case 311:
+                apply("CALL FTL_CREATE_INDEX('PUBLIC', 'TAGGED_DATA', 'NAME,DESCRIPTION,TAGS')");
+            case 312:
+                apply("CREATE TABLE IF NOT EXISTS data_tag (db_id IDENTITY, tag VARCHAR NOT NULL, tag_count INT NOT NULL, "
+                        + "height INT NOT NULL, FOREIGN KEY (height) REFERENCES block (height) ON DELETE CASCADE, latest BOOLEAN NOT NULL DEFAULT TRUE)");
+            case 313:
+                apply("CREATE UNIQUE INDEX IF NOT EXISTS data_tag_tag_height_idx ON data_tag (tag, height DESC)");
+            case 314:
+                apply("CREATE INDEX IF NOT EXISTS data_tag_count_height_idx ON data_tag (tag_count DESC, height DESC)");
+            case 315:
+                apply("CREATE TABLE IF NOT EXISTS tagged_data_timestamp (db_id IDENTITY, id BIGINT NOT NULL, timestamp INT NOT NULL, "
+                        + "height INT NOT NULL, latest BOOLEAN NOT NULL DEFAULT TRUE)");
+            case 316:
+                apply("CREATE UNIQUE INDEX IF NOT EXISTS tagged_data_timestamp_id_height_idx ON tagged_data_timestamp (id, height DESC)");
+            case 317:
+                apply("CREATE INDEX IF NOT EXISTS tagged_data_timestamp_height_idx ON tagged_data_timestamp (height)");
+            case 318:
+                apply(null);
+            case 319:
+                apply(null);
+            case 320:
+                if (Constants.isTestnet) {
+                    BlockchainProcessorImpl.getInstance().scheduleScan(0, true);
+                }
+                apply(null);
+            case 321:
+                apply("ALTER TABLE tagged_data ADD COLUMN IF NOT EXISTS channel VARCHAR");
+            case 322:
+                apply("CREATE INDEX IF NOT EXISTS tagged_data_channel_idx ON tagged_data (channel, height DESC)");
+            case 323:
+                apply("ALTER TABLE peer ADD COLUMN IF NOT EXISTS last_updated INT");
+            case 324:
                 return;
             default:
                 throw new RuntimeException("Blockchain database inconsistent with code, probably trying to run older code on newer database");
         }
     }
-
 }

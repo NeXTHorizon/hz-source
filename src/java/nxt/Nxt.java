@@ -1,3 +1,19 @@
+/******************************************************************************
+ * Copyright © 2013-2015 The Nxt Core Developers.                             *
+ *                                                                            *
+ * See the AUTHORS.txt, DEVELOPER-AGREEMENT.txt and LICENSE.txt files at      *
+ * the top-level directory of this distribution for the individual copyright  *
+ * holder information and the developer policies on copyright and licensing.  *
+ *                                                                            *
+ * Unless otherwise agreed in a custom licensing agreement, no part of the    *
+ * Nxt software, including this file, may be copied, modified, propagated,    *
+ * or distributed except according to the terms contained in the LICENSE.txt  *
+ * file.                                                                      *
+ *                                                                            *
+ * Removal or modification of this copyright notice is prohibited.            *
+ *                                                                            *
+ ******************************************************************************/
+
 package nxt;
 
 import nxt.http.API;
@@ -6,6 +22,7 @@ import nxt.user.Users;
 import nxt.util.Logger;
 import nxt.util.ThreadPool;
 import nxt.util.Time;
+import org.json.simple.JSONObject;
 
 import org.bitlet.weupnp.GatewayDevice;
 import org.bitlet.weupnp.GatewayDiscover;
@@ -23,8 +40,8 @@ import java.net.InetAddress;
 
 public final class Nxt {
 
-	//be careful PeerImpl.java will only connect to versions starting with 'NHZ'
-    public static final String VERSION = "NHZ V4.0";
+    //be careful PeerImpl.java will only connect to versions starting with 'NHZ'
+    public static final String VERSION = "NHZ V5.0";
     public static final String APPLICATION = "NRS";
 
     private static volatile Time time = new Time.EpochTime();
@@ -72,14 +89,18 @@ public final class Nxt {
     }
     
     public static int getIntProperty(String name) {
-    	name=replaceNxtWithNhz(name);
+        return getIntProperty(name, 0);
+    }
+
+    public static int getIntProperty(String name, int defaultValue) {
+        name=replaceNxtWithNhz(name);
         try {
             int result = Integer.parseInt(properties.getProperty(name));
             Logger.logMessage(name + " = \"" + result + "\"");
             return result;
         } catch (NumberFormatException e) {
-            Logger.logMessage(name + " not defined, assuming 0");
-            return 0;
+            Logger.logMessage(name + " not defined or not numeric, using default value " + defaultValue);
+            return defaultValue;
         }
     }
 
@@ -149,6 +170,18 @@ public final class Nxt {
         return new TransactionImpl.BuilderImpl((byte)1, senderPublicKey, amountNQT, feeNQT, deadline, (Attachment.AbstractAttachment)attachment);
     }
 
+    public static Transaction.Builder newTransactionBuilder(byte[] transactionBytes) throws NxtException.NotValidException {
+        return TransactionImpl.newTransactionBuilder(transactionBytes);
+    }
+
+    public static Transaction.Builder newTransactionBuilder(JSONObject transactionJSON) throws NxtException.NotValidException {
+        return TransactionImpl.newTransactionBuilder(transactionJSON);
+    }
+
+    public static Transaction.Builder newTransactionBuilder(byte[] transactionBytes, JSONObject prunableAttachments) throws NxtException.NotValidException {
+        return TransactionImpl.newTransactionBuilder(transactionBytes, prunableAttachments);
+    }
+
     public static int getEpochTime() {
         return time.getTime();
     }
@@ -159,15 +192,11 @@ public final class Nxt {
 
     public static void main(String[] args) {
         try {
-            Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Nxt.shutdown();
-                }
-            }));
+            Runtime.getRuntime().addShutdownHook(new Thread(Nxt::shutdown));
             init();
         } catch (Throwable t) {
             System.out.println("Fatal error: " + t.toString());
+            t.printStackTrace();
         }
     }
 
@@ -211,14 +240,16 @@ public final class Nxt {
         Logger.logShutdownMessage("Shutting down...");
         API.shutdown();
         Users.shutdown();
-        Peers.shutdown();
         ThreadPool.shutdown();
+        Peers.shutdown();
         Db.shutdown();
         Logger.logShutdownMessage("Horizon server " + VERSION + " stopped.");
         Logger.shutdown();
     }
 
     private static class Init {
+
+        private static volatile boolean initialized = false;
 
         static {
             try {
@@ -242,9 +273,11 @@ public final class Nxt {
                 Hub.init();
                 Order.init();
                 Poll.init();
+                PhasingPoll.init();
                 Trade.init();
                 AssetTransfer.init();
                 Vote.init();
+                PhasingVote.init();
                 Currency.init();
                 CurrencyBuyOffer.init();
                 CurrencySellOffer.init();
@@ -252,6 +285,8 @@ public final class Nxt {
                 CurrencyMint.init();
                 CurrencyTransfer.init();
                 Exchange.init();
+                PrunableMessage.init();
+                TaggedData.init();
                 Peers.init();
                 Generator.init();
                 API.init();
@@ -276,7 +311,12 @@ public final class Nxt {
             }
         }
 
-        private static void init() {}
+        private static void init() {
+            if (initialized) {
+                throw new RuntimeException("Nxt.init has already been called");
+            }
+            initialized = true;
+        }
 
         private Init() {} // never
 
