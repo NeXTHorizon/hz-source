@@ -1991,6 +1991,7 @@ body > .header .logo .icon {
   text-decoration: none;
 }
 
+#login_panel { background: rgba(75,75,75,0.75); width: 405px; margin: auto; }
 #login_panel #remember_password_container label{ opacity: 0.53; }
 #login_panel #remember_password_container label:hover { opacity: 1.0; }
 
