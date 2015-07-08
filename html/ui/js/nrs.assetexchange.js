@@ -2041,18 +2041,18 @@ var NRS = (function(NRS, $, undefined) {
 		$("#open_orders_page tr[data-order=" + String(data.order).escapeHTML() + "]").addClass("tentative tentative-crossed").find("td.cancel").html("/");
 	}
 
+	var assetsidebar = true;
+	$("#toggle_asset_exchange_sidebar").click(function(e){
+		e.preventDefault();
+		$("#content-spliter-sidebar_asset_exchange").toggle();
+		if(assetsidebar === true) {
+			$("#content-spliter-right_asset_exchange").css('left','0px');
+			assetsidebar = false;
+		} else if(assetsidebar === false) {
+			$("#content-spliter-right_asset_exchange").css('left','200px');
+			assetsidebar = true;
+		}
+	});
+
 	return NRS;
 }(NRS || {}, jQuery));
-
-var assetsidebar = true;
-$("#toggle_asset_exchange_sidebar").click(function(e){
-	e.preventDefault();
-	$("#content-spliter-sidebar_asset_exchange").toggle();
-	if(assetsidebar === true) {
-		$("#content-spliter-right_asset_exchange").css('left','0px');
-		assetsidebar = false;
-	} else if(assetsidebar === false) {
-		$("#content-spliter-right_asset_exchange").css('left','200px');
-		assetsidebar = true;
-	}
-});

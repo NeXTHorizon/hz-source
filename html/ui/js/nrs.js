@@ -217,6 +217,8 @@ var NRS = (function(NRS, $, undefined) {
 			"unmask": false
 		});
 
+		NRS.newDefaultStyle();
+
 		/*
 		$("#asset_exchange_search input[name=q]").addClear({
 			right: 0,
