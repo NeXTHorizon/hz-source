@@ -602,6 +602,12 @@ var NRS = (function(NRS, $, undefined) {
 		NRS.applySettings(key);
 	}
 
+	NRS.newDefaultStyle = function() {
+		NRS.updateStyle('header',userStyles.header['dark-blue']);
+		NRS.updateStyle('sidebar',userStyles.sidebar['dark-blue']);
+		NRS.updateStyle('boxes',userStyles.boxes['dark-blue']);
+	}
+
 	$("#settings_box select, #welcome_panel select[name='language']").on("change", function(e) {
 		e.preventDefault();
 
