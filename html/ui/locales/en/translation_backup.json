@@ -240,6 +240,7 @@
     "success_cast_vote": "Your vote has been cast!",
     "x_lessor_plural": "__count__ lessors",
     "error_send_money": "An unknown error occured! HZ may or may not be sent.",
+    "remember_device": "Keep me logged in on this device",
     "remember_passphrase_by_default_help": "On the login screen.",
     "no_completed_orders_found": "No completed orders found.",
     "is_scanning": "Is Scanning",
