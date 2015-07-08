@@ -740,6 +740,7 @@
   "register":"Registrieren",
   "register_alias":"Alias registrieren",
   "register_q":"Registrieren?",
+  "remember_device": "Auf diesem Gerät angemeldet bĺeiben",
   "remember_decryption_passphrase":"Passphrase für die Entschlüsselung merken",
   "remember_passphrase_by_default":"Passphrase standardmäßig merken",
   "remember_passphrase_by_default_help":"Auf der Loginseite.",

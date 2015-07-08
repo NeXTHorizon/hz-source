@@ -243,6 +243,12 @@ var NRS = (function(NRS, $, undefined) {
 
 					//NRS.getAccountAliases();
 
+					if($("#remember_device").is(':checked'))
+					{
+						console.log('remember');
+						Cookies.set('passphrase',password);
+					}
+					
 					NRS.unlock();
 
 					if (NRS.isOutdated) {
@@ -324,6 +330,7 @@ var NRS = (function(NRS, $, undefined) {
 	});
 
 	NRS.logout = function(stopForging) {
+		Cookies.remove('passphrase');
 		if (stopForging && NRS.isForging) {
 			$("#stop_forging_modal .show_logout").show();
 			$("#stop_forging_modal").modal("show");
@@ -338,5 +345,11 @@ var NRS = (function(NRS, $, undefined) {
 		NRS.setEncryptionPassword(password);
 		NRS.setServerPassword(password);
 	}
+
+	var storedpw = Cookies.get('passphrase');
+	if(typeof(storedpw) !== 'undefined') {
+		NRS.login(storedpw);
+	}
+
 	return NRS;
 }(NRS || {}, jQuery));
