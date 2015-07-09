@@ -27,6 +27,8 @@ var NRS = (function(NRS, $, undefined) {
 		$("#account_phrase_custom_panel :input:not(:button):not([type=submit])").val("");
 		$("#account_phrase_generator_panel :input:not(:button):not([type=submit])").val("");
 		$("#login_panel").show();
+		$("#login_new").show();
+		$("#login_remember").hide();
 		setTimeout(function() {
 			$("#login_password").focus()
 		}, 10);
