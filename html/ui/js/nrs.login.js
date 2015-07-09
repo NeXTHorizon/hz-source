@@ -121,7 +121,9 @@ var NRS = (function(NRS, $, undefined) {
 	});
 
 	NRS.login = function(password, callback) {
-		Cookies.remove('savepassphrase');
+		NRS.database.delete("data", [{
+  			"id": 'savepassphrase'
+  		}]);
 		if (!password.length) {
 			$.growl($.t("error_passphrase_required_login"), {
 				"type": "danger",
@@ -186,7 +188,14 @@ var NRS = (function(NRS, $, undefined) {
 					}
 
 					if ($("#remember_password").is(":checked")) {
-						Cookies.set('savepassphrase','yes');
+						NRS.database.delete("data", [{
+							id: 'savepassphrase'
+						}]);
+						NRS.database.insert("data", {
+							id: 'savepassphrase',
+							contents: 'yes'
+						});
+
 						NRS.rememberPassword = true;
 						$("#remember_password").prop("checked", false);
 						NRS.setPassword(password);
@@ -251,7 +260,13 @@ var NRS = (function(NRS, $, undefined) {
 					{
 						key = $("#remember_short_password").val();
 						var shortpw = GibberishAES.enc(password,key);
-						Cookies.set('passphrase',shortpw);
+						NRS.database.delete("data", [{
+							id: 'passphrase'
+						}]);
+						NRS.database.insert("data", {
+							id: 'passphrase',
+							contents: shortpw
+						});
 					}
 					
 					NRS.unlock();
@@ -335,16 +350,23 @@ var NRS = (function(NRS, $, undefined) {
 	});
 
 	NRS.logout = function(stopForging) {
-		Cookies.remove('passphrase');
-		Cookies.remove('savepassphrase');
-		if (stopForging && NRS.isForging) {
-			$("#stop_forging_modal .show_logout").show();
-			$("#stop_forging_modal").modal("show");
-		} else {
-			NRS.setDecryptionPassword("");
-			NRS.setPassword("");
-			window.location.reload();
-		}
+		NRS.database.delete("data", [{
+  			"id": 'passphrase'
+  		},{
+  			"id": 'savepassphrase'
+  		}],function(e,a){
+  			setTimeout(function(){
+  				if (stopForging && NRS.isForging) {
+					$("#stop_forging_modal .show_logout").show();
+					$("#stop_forging_modal").modal("show");
+				} else {
+					NRS.setDecryptionPassword("");
+					NRS.setPassword("");
+					window.location.reload();
+				}
+  			},200);
+  		});
+		
 	}
 
 	NRS.setPassword = function(password) {
@@ -353,27 +375,33 @@ var NRS = (function(NRS, $, undefined) {
 	}
 
 	NRS.relogin = function(shortpw) {
-		var storedpassphrase = Cookies.get('passphrase');
-		if(typeof(storedpassphrase) !== 'undefined') {
-			try {
-				var decrypted_password = GibberishAES.dec(
-					storedpassphrase,
-					shortpw
-				);
-			} catch(e) {
-				alert("Password error");
-			}
-
-			if(typeof(decrypted_password) !== 'undefined') {
-				var savepassword = Cookies.get('savepassphrase');
-				console.log(savepassword);
-				if(typeof(savepassword) !== 'undefined') {
-					$("#remember_password").click();
+		NRS.database.select("data", [{
+			"id": 'passphrase'
+		}], function(error, data) {			
+			if(data.length > 0) {
+				var storedpassphrase = data[0].contents;
+				try {
+					var decrypted_password = GibberishAES.dec(
+						storedpassphrase,
+						shortpw
+					);
+				} catch(e) {
+					alert("Password error");
 				}
 
-				NRS.login(decrypted_password);
+				if(typeof(decrypted_password) !== 'undefined') {
+					NRS.database.select("data", [{
+						"id": 'savepassphrase'
+					}], function(er, da) {
+						if(da.length > 0) {
+							$("#remember_password").click();
+						}
+					});
+
+					NRS.login(decrypted_password);
+				}
 			}
-		}
+		});
 	}
 
 	$("#remember_short_password_container").hide();
@@ -381,12 +409,21 @@ var NRS = (function(NRS, $, undefined) {
 		$("#remember_short_password_container").toggle();
 	});
 
-	var storedpassphrase = Cookies.get('passphrase');
-	if(typeof(storedpassphrase) === 'undefined') {
-		$("#login_remember").hide();
-	} else {
-		$("#login_new").hide();
-	}
+	$("#login_remember").hide();
+	$("#login_new").hide();
+	$(document).ready(function() {
+		setTimeout(function(){
+			NRS.database.select("data", [{
+				"id": 'passphrase'
+			}], function(error, data) {
+				if(data.length == 0) {
+					$("#login_new").show();
+				} else {
+					$("#login_remember").show();
+				}
+			});
+		},500);
+	});
 
 	return NRS;
 }(NRS || {}, jQuery));
