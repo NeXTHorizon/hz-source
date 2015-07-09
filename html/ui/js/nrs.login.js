@@ -121,6 +121,7 @@ var NRS = (function(NRS, $, undefined) {
 	});
 
 	NRS.login = function(password, callback) {
+		Cookies.remove('savepassphrase');
 		if (!password.length) {
 			$.growl($.t("error_passphrase_required_login"), {
 				"type": "danger",
@@ -185,6 +186,7 @@ var NRS = (function(NRS, $, undefined) {
 					}
 
 					if ($("#remember_password").is(":checked")) {
+						Cookies.set('savepassphrase','yes');
 						NRS.rememberPassword = true;
 						$("#remember_password").prop("checked", false);
 						NRS.setPassword(password);
@@ -334,6 +336,7 @@ var NRS = (function(NRS, $, undefined) {
 
 	NRS.logout = function(stopForging) {
 		Cookies.remove('passphrase');
+		Cookies.remove('savepassphrase');
 		if (stopForging && NRS.isForging) {
 			$("#stop_forging_modal .show_logout").show();
 			$("#stop_forging_modal").modal("show");
@@ -362,6 +365,12 @@ var NRS = (function(NRS, $, undefined) {
 			}
 
 			if(typeof(decrypted_password) !== 'undefined') {
+				var savepassword = Cookies.get('savepassphrase');
+				console.log(savepassword);
+				if(typeof(savepassword) !== 'undefined') {
+					$("#remember_password").click();
+				}
+
 				NRS.login(decrypted_password);
 			}
 		}
