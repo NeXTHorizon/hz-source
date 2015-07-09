@@ -245,8 +245,9 @@ var NRS = (function(NRS, $, undefined) {
 
 					if($("#remember_device").is(':checked'))
 					{
-						console.log('remember');
-						Cookies.set('passphrase',password);
+						key = $("#remember_short_password").val();
+						var shortpw = GibberishAES.enc(password,key);
+						Cookies.set('passphrase',shortpw);
 					}
 					
 					NRS.unlock();
@@ -346,9 +347,34 @@ var NRS = (function(NRS, $, undefined) {
 		NRS.setServerPassword(password);
 	}
 
-	var storedpw = Cookies.get('passphrase');
-	if(typeof(storedpw) !== 'undefined') {
-		NRS.login(storedpw);
+	NRS.relogin = function(shortpw) {
+		var storedpassphrase = Cookies.get('passphrase');
+		if(typeof(storedpassphrase) !== 'undefined') {
+			try {
+				var decrypted_password = GibberishAES.dec(
+					storedpassphrase,
+					shortpw
+				);
+			} catch(e) {
+				alert("Password error");
+			}
+
+			if(typeof(decrypted_password) !== 'undefined') {
+				NRS.login(decrypted_password);
+			}
+		}
+	}
+
+	$("#remember_short_password_container").hide();
+	$("#remember_device").change(function(){
+		$("#remember_short_password_container").toggle();
+	});
+
+	var storedpassphrase = Cookies.get('passphrase');
+	if(typeof(storedpassphrase) === 'undefined') {
+		$("#login_remember").hide();
+	} else {
+		$("#login_new").hide();
 	}
 
 	return NRS;
