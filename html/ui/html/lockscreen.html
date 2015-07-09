@@ -20,31 +20,50 @@
         	<center><img src="img/hz_logo.png" alt="Horizon" width="320" height="320" style="margin-bottom:40px;" /></center>
 
             <div id="login_panel">   
-                <div class="callout callout-danger" id="testnet_login" style="max-width:400px;min-width:400px;display:none;" data-i18n="[html]testnet_login_warning">Log in with your <strong>TestNet</strong> account - not your real one!</div><div id="login_error" style="max-width:400px;min-width:400px;display:none">                        
-                    <div class="callout callout-danger"></div>
-                </div>
+            	<div id="login_new">
+	                <div class="callout callout-danger" id="testnet_login" style="max-width:400px;min-width:400px;display:none;" data-i18n="[html]testnet_login_warning">Log in with your <strong>TestNet</strong> account - not your real one!</div><div id="login_error" style="max-width:400px;min-width:400px;display:none">                        
+	                    <div class="callout callout-danger"></div>
+	                </div>
 
-                <div class="lockscreen-item">
-                    <div class="lockscreen-credentials">   
-                        <div class="input-group">
-                            <input type="password" class="form-control" id="login_password" name="login_password" placeholder="Your Passphrase" data-i18n="[placeholder]your_passphrase" autofocus />
-                            <div class="input-group-btn" style="border:1px solid #fff;">
-                                <button class="btn btn-flat" onclick="NRS.login($('#login_password').val())"><i class="fa fa-arrow-right text-muted"></i></button>
-                            </div>
-                            <input type="hidden" name="check_password_length" id="login_check_password_length" value="1" />
-                        </div>
-                    </div>
-                </div>  
-                
-                <div id="remember_password_container">
-                    <input type="checkbox" name="remember_password" id="remember_password" value="1" /> <span></span><label for="remember_password" data-i18n="remember_passphrase_during_session">Remember passphrase during session</label>
-                    <br />
-                    <input type="checkbox" name="remember_device" id="remember_device" value="1" /> <span></span><label for="remember_device" data-i18n="remember_device">Remember me on this device (do not forget to log out!)</label>
-                </div>
-                
-                <div id="registration_link">
-                    <a href="#" onclick="NRS.registerAccount();" data-i18n="no_account_q_create_account">Don't have an account? Click here to create one!</a>
-                </div> 
+	                <div class="lockscreen-item">
+	                    <div class="lockscreen-credentials">   
+	                        <div class="input-group">
+	                            <input type="password" class="form-control" id="login_password" name="login_password" placeholder="Your Passphrase" data-i18n="[placeholder]your_passphrase" autofocus />
+	                            <div class="input-group-btn" style="border:1px solid #fff;">
+	                                <button class="btn btn-flat" onclick="NRS.login($('#login_password').val())"><i class="fa fa-arrow-right text-muted"></i></button>
+	                            </div>
+	                            <input type="hidden" name="check_password_length" id="login_check_password_length" value="1" />
+	                        </div>
+	                    </div>
+	                </div>  
+	                
+	                <div id="remember_password_container">
+	                    <input type="checkbox" name="remember_password" id="remember_password" value="1" /> <span></span><label for="remember_password" data-i18n="remember_passphrase_during_session">Remember passphrase during session</label>
+	                    <br />
+	                    <input type="checkbox" name="remember_device" id="remember_device" value="1" /> <span></span><label for="remember_device" data-i18n="remember_device">Remember me on this device (do not forget to log out!)</label>
+	                    <div id="remember_short_password_container" style="width: 200px; margin: auto;">
+	                    	<input type="password" class="form-control" name="remember_short_password" id="remember_short_password" placeholder="short password" data-i18n="[placeholder]short_password" />
+	                    </div>
+	                </div>
+	                
+	                <div id="registration_link">
+	                    <a href="#" onclick="NRS.registerAccount();" data-i18n="no_account_q_create_account">Don't have an account? Click here to create one!</a>
+	                </div> 
+	            </div>
+
+	            <div id="login_remember">
+					<div class="lockscreen-item">
+	                    <div class="lockscreen-credentials">   
+	                        <div class="input-group">
+	                            <input type="password" class="form-control" id="relogin_password" name="relogin_password" placeholder="Password to relogin" data-i18n="[placeholder]your_passphrase" autofocus />
+	                            <div class="input-group-btn" style="border:1px solid #fff;">
+	                                <button class="btn btn-flat" onclick="NRS.relogin($('#relogin_password').val())"><i class="fa fa-arrow-right text-muted"></i></button>
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+	                <a href="#" onclick="NRS.showLoginScreen();" data-i18n="login with other account">Log in with another account</a>
+	            </div>
             </div>
             
             <div class="panel panel-default" id="welcome_panel" style="display:none;max-width:500px;">
