@@ -1,6 +1,9 @@
 <div id="messages_page" class="page">
     <section class="content-header">
         <h1 data-i18n="messages">Messages</h1>
+        <div style="position:absolute;top:9px;right:9px;">
+        	<button type="button" class="btn btn-sm btn-default" id="toggle_messages_sidebar">Toggle Sidebar</button>
+        </div>
         <!--
         <div style="position:absolute;top:9px;right:9px;">
             <div class="btn-group">
@@ -29,7 +32,7 @@
                         
                         <div id="message_details">
                         </div>
-                        <form role="form" id="inline_message_form" method="post" style="display:none;position:fixed;bottom:0;right:20px;left:485px;" autocomplete="off">
+                        <div><form role="form" id="inline_message_form" method="post" style="display:none;" autocomplete="off">
                             <div class="form-group">
                                 <textarea class="form-control" name="inline_message_text" id="inline_message_text" rows="3" placeholder="Message" data-i18n="[placeholder]message"></textarea>
                             </div>
@@ -47,7 +50,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </form>
+                        </form></div>
                     </div>
                 </div>
             </div>

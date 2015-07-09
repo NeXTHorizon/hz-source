@@ -561,5 +561,18 @@ var NRS = (function(NRS, $, undefined) {
 		};
 	}
 
+	var messagessidebar = true;
+	$("#toggle_messages_sidebar").click(function(e){
+		e.preventDefault();
+		$("#message_sidebar").toggle();
+		if(messagessidebar === true) {
+			$("#message_content").css('left','0px');
+			messagessidebar = false;
+		} else if(messagessidebar === false) {
+			$("#message_content").css('left','250px');
+			messagessidebar = true;
+		}
+	});
+
 	return NRS;
 }(NRS || {}, jQuery));
