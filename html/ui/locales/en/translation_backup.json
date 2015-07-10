@@ -582,6 +582,7 @@
     "old_browser_warning": "You are using an old browser which this application does not support.",
     "open_orders": "Open Orders",
     "toggle_navigation": "Toggle navigation",
+    "toggle_sidebar": "Toggle sidebar",
     "nr_transactions": "# Transactions",
     "bid_order_cancellation": "Bid Order Cancellation",
     "recent_transactions": "Recent Transactions",
