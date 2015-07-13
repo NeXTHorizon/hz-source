@@ -1503,7 +1503,7 @@ text-transform:uppercase;
 	right: 0;
 	bottom: 0;
 	padding:20px;
-	height:450px;
+	height:750px;
 	border: 1px solid #ccc;
 }
 [type=radio]:checked ~ label {
@@ -1571,7 +1571,7 @@ text-transform:uppercase;
 }
 
 .boxbody {
-  max-height:350px;
+  max-height:550px;
   overflow-x: hidden;
   overflow-y: auto;
 }
