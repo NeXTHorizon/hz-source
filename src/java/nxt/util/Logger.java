@@ -76,6 +76,9 @@ public final class Logger {
                     }
                 }
                 if (foundProperties) {
+                	if (loggingProperties.containsKey("nhz.level")) {
+                		loggingProperties.setProperty("nxt.level", loggingProperties.getProperty("nhz.level"));
+                	}
                     ByteArrayOutputStream outStream = new ByteArrayOutputStream();
                     loggingProperties.store(outStream, "logging properties");
                     ByteArrayInputStream inStream = new ByteArrayInputStream(outStream.toByteArray());
