@@ -246,7 +246,7 @@ var NRS = (function(NRS, $, undefined) {
 			$("#nrs_modal").modal("hide");
 		} else {
 			var versionNumber = NRS.downloadedVersion.versionNr.toLowerCase();
-            $("#nrs_update_iframe").attr("src", "https://github.com/NeXTHorizon/hz-source/releases/download/" + versionNumber + "/" + versionNumber + ".zip");
+            $("#nrs_update_iframe").attr("src", "https://github.com/NeXTHorizon/hz-source/releases/download/hz-v" + versionNumber.substr(5) + "/hz-v" + versionNumber.substr(5) + ".zip");
 			$("#nrs_update_explanation").hide();
 			$("#nrs_update_drop_zone").show();
 
