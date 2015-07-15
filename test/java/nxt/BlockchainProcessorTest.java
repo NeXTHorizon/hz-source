@@ -18,6 +18,7 @@ package nxt;
 
 import nxt.db.DbIterator;
 import nxt.util.Logger;
+
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -150,7 +151,7 @@ public class BlockchainProcessorTest extends AbstractBlockchainTest {
         if (numBlocks > Constants.MAX_ROLLBACK) {
             return;
         }
-        int endHeight = blockchain.getHeight();
+        int endHeight = blockchain.getHeight();        
         List<List<Long>> allLessorsBefore = new ArrayList<>();
         List<List<Long>> allLessorBalancesBefore = new ArrayList<>();
         for (long accountId : testLesseeAccounts) {
@@ -164,8 +165,9 @@ public class BlockchainProcessorTest extends AbstractBlockchainTest {
             }
             try (DbIterator<Account> iter = account.getLessors(endHeight - numBlocks)) {
                 for (Account lessor : iter) {
+                	final int EFFECTIVE_BLOCKS = (endHeight - numBlocks < Constants.MONETARY_SYSTEM_BLOCK ? 40 : Constants.GUARANTEED_BALANCE_CONFIRMATIONS );
                     lessors.add(lessor.getId());
-                    balances.add(lessor.getGuaranteedBalanceNQT(Constants.GUARANTEED_BALANCE_CONFIRMATIONS, endHeight - numBlocks));
+                    balances.add(lessor.getGuaranteedBalanceNQT(EFFECTIVE_BLOCKS, endHeight - numBlocks));
                 }
             }
         }

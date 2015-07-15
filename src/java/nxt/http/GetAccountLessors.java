@@ -43,7 +43,7 @@ public final class GetAccountLessors extends APIServlet.APIRequestHandler {
         if (height < 0) {
             height = Nxt.getBlockchain().getHeight();
         }
-
+        final int EFFECTIVE_BLOCKS = (height < Constants.MONETARY_SYSTEM_BLOCK ? 40 : Constants.GUARANTEED_BALANCE_CONFIRMATIONS );
         JSONObject response = new JSONObject();
         JSONData.putAccount(response, "account", account.getId());
         response.put("height", height);
@@ -55,7 +55,7 @@ public final class GetAccountLessors extends APIServlet.APIRequestHandler {
                     Account lessor = lessors.next();
                     JSONObject lessorJSON = new JSONObject();
                     JSONData.putAccount(lessorJSON, "lessor", lessor.getId());                    
-                    lessorJSON.put("guaranteedBalanceNQT", String.valueOf(lessor.getGuaranteedBalanceNQT(Constants.GUARANTEED_BALANCE_CONFIRMATIONS, height)));
+                    lessorJSON.put("guaranteedBalanceNQT", String.valueOf(lessor.getGuaranteedBalanceNQT(EFFECTIVE_BLOCKS, height)));
                     lessorsJSON.add(lessorJSON);
                 }
             }

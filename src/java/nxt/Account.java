@@ -420,7 +420,7 @@ public final class Account {
     private static final DerivedDbTable accountGuaranteedBalanceTable = new DerivedDbTable("account_guaranteed_balance") {
 
         @Override
-        public void trim(int height) {
+        public void trim(int height) {        	
             try (Connection con = Db.db.getConnection();
                  PreparedStatement pstmtDelete = con.prepareStatement("DELETE FROM account_guaranteed_balance "
                          + "WHERE height < ? AND height >= 0")) {
@@ -824,11 +824,10 @@ public final class Account {
         	return getBalanceNQT() / Constants.ONE_NXT;
         }
 
-        Block lastBlock = Nxt.getBlockchain().getLastBlock();
-        final int EFFECTIVE_BLOCKS = (height < Constants.MONETARY_SYSTEM_BLOCK ? 40 : 1440 );
+        final int EFFECTIVE_BLOCKS = (height < Constants.MONETARY_SYSTEM_BLOCK ? 40 : Constants.GUARANTEED_BALANCE_CONFIRMATIONS );
         
         if (height >= Constants.TRANSPARENT_FORGING_BLOCK_6 
-        && (keyHeight == 0 || height - keyHeight <= EFFECTIVE_BLOCKS)) {
+                && (keyHeight == 0 || height - keyHeight <= EFFECTIVE_BLOCKS)) {
             return 0; // Accounts with the public key revealed less than EFFECTIVE_BLOCKS blocks ago are not allowed to generate blocks
         }
         if (height < Constants.TRANSPARENT_FORGING_BLOCK_3
@@ -848,7 +847,7 @@ public final class Account {
             return (balanceNQT - receivedInLastBlock) / Constants.ONE_NXT;
         }
         if (height < currentLeasingHeightFrom) {
-            return (getGuaranteedBalanceNQT(Constants.GUARANTEED_BALANCE_CONFIRMATIONS, height) + getLessorsGuaranteedBalanceNQT(height)) / Constants.ONE_NXT;
+            return (getGuaranteedBalanceNQT(EFFECTIVE_BLOCKS, height) + getLessorsGuaranteedBalanceNQT(height)) / Constants.ONE_NXT;
         }
         return getLessorsGuaranteedBalanceNQT(height) / Constants.ONE_NXT;
     }
@@ -866,13 +865,16 @@ public final class Account {
             lessorIds[i] = lessors.get(i).getId();
             guaranteedBalances[i] = lessors.get(i).getBalanceNQT();
         }
+        
+        final int EFFECTIVE_BLOCKS = (height < Constants.MONETARY_SYSTEM_BLOCK ? 40 : Constants.GUARANTEED_BALANCE_CONFIRMATIONS );
+        
         try (Connection con = Db.db.getConnection();
              PreparedStatement pstmt = con.prepareStatement("SELECT account_id, SUM (additions) AS additions "
                      + "FROM account_guaranteed_balance, TABLE (id BIGINT=?) T WHERE account_id = T.id AND height > ? "
                              + (height < Nxt.getBlockchain().getHeight() ? " AND height <= ? " : "")
                      + " GROUP BY account_id ORDER BY account_id")) {
             pstmt.setObject(1, lessorIds);
-            pstmt.setInt(2, height - Constants.GUARANTEED_BALANCE_CONFIRMATIONS);
+            pstmt.setInt(2, height - EFFECTIVE_BLOCKS);
             if (height < Nxt.getBlockchain().getHeight()) {
                 pstmt.setInt(3, height);
             }
@@ -914,13 +916,14 @@ public final class Account {
     	
     public long getGuaranteedBalanceNQT(){
     	final int height=Nxt.getBlockchain().getHeight();
-    	final int EFFECTIVE_BLOCKS = (height < Constants.MONETARY_SYSTEM_BLOCK ? 40 : 1440 );
+    	final int EFFECTIVE_BLOCKS = (height < Constants.MONETARY_SYSTEM_BLOCK ? 40 : Constants.GUARANTEED_BALANCE_CONFIRMATIONS );
     	return getGuaranteedBalanceNQT(EFFECTIVE_BLOCKS, height);
     }
 
     public long getGuaranteedBalanceNQT(final int numberOfConfirmations, final int currentHeight) {
         int height = currentHeight - numberOfConfirmations;
-        if (height + Constants.GUARANTEED_BALANCE_CONFIRMATIONS < Nxt.getBlockchainProcessor().getMinRollbackHeight()
+        final int EFFECTIVE_BLOCKS = (height < Constants.MONETARY_SYSTEM_BLOCK ? 40 : Constants.GUARANTEED_BALANCE_CONFIRMATIONS );
+        if (height + EFFECTIVE_BLOCKS < Nxt.getBlockchainProcessor().getMinRollbackHeight()
                 || height > Nxt.getBlockchain().getHeight()) {
             throw new IllegalArgumentException("Height " + height + " not available for guaranteed balance calculation");
         }
