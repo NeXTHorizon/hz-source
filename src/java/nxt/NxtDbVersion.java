@@ -179,8 +179,8 @@ class NxtDbVersion extends DbVersion {
                 apply("CREATE INDEX IF NOT EXISTS transaction_block_timestamp_idx ON transaction (block_timestamp DESC)");
             case 70:
                 apply("DROP INDEX transaction_timestamp_idx");
-            case 71:            
-                try (Connection con = Db.db.getConnection();
+            case 71:
+            	try (Connection con = Db.db.getConnection();
                         Statement stmt = con.createStatement();
                         PreparedStatement pstmt = con.prepareStatement("UPDATE transaction SET recipient_id = null WHERE type = ? AND subtype = ?")) {
                        try {
@@ -196,7 +196,8 @@ class NxtDbVersion extends DbVersion {
                                        pstmt.executeUpdate();
                                    }
                                }
-                           }                           
+                           }
+                           stmt.executeUpdate("UPDATE version SET next_update = next_update + 1");
                            con.commit();
                        } catch (SQLException e) {
                            con.rollback();
@@ -205,12 +206,24 @@ class NxtDbVersion extends DbVersion {
                    } catch (SQLException e) {
                        throw new RuntimeException(e);
                    }
-                apply("CREATE TABLE IF NOT EXISTS alias (db_id IDENTITY, id BIGINT NOT NULL, "
-                        + "account_id BIGINT NOT NULL, alias_name VARCHAR NOT NULL, "
-                        + "alias_name_lower VARCHAR AS LOWER (alias_name) NOT NULL, "
-                        + "alias_uri VARCHAR NOT NULL, timestamp INT NOT NULL, "
-                        + "height INT NOT NULL, latest BOOLEAN NOT NULL DEFAULT TRUE)");                
             case 72:
+            	try (Connection con = Db.db.getConnection();
+                        Statement stmt = con.createStatement();
+                        PreparedStatement pstmt = con.prepareStatement("CREATE TABLE IF NOT EXISTS alias (db_id IDENTITY, id BIGINT NOT NULL, "
+                        		+ "account_id BIGINT NOT NULL, alias_name VARCHAR NOT NULL, "
+                        		+ "alias_name_lower VARCHAR AS LOWER (alias_name) NOT NULL, "
+                        		+ "alias_uri VARCHAR NOT NULL, timestamp INT NOT NULL, "
+                        		+ "height INT NOT NULL, latest BOOLEAN NOT NULL DEFAULT TRUE)")) {
+            			try {	
+            					pstmt.execute();
+            					con.commit();
+            			} catch (SQLException e) {
+                            con.rollback();
+                            throw e;
+                        }                       	                        	
+                     } catch (SQLException e) {                    	 	
+                            throw new RuntimeException(e);
+                     }            			
                 apply("CREATE UNIQUE INDEX IF NOT EXISTS alias_id_height_idx ON alias (id, height DESC)");
             case 73:
                 apply("CREATE INDEX IF NOT EXISTS alias_account_id_idx ON alias (account_id, height DESC)");
