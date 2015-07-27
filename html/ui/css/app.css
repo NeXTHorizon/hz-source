@@ -1250,7 +1250,7 @@ body > .header .logo .icon {
 }
 .small-box h3,
 .small-box p {
-  z-index: 5;
+  z-index: 5px;
 }
 .small-box .icon {
   position: absolute;
