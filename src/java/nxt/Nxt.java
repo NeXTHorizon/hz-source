@@ -24,7 +24,7 @@ import java.net.InetAddress;
 public final class Nxt {
 
 	//be careful PeerImpl.java will only connect to versions starting with 'NHZ'
-    public static final String VERSION = "NHZ V4.0";
+    public static final String VERSION = "NHZ V4.0e";
     public static final String APPLICATION = "NRS";
 
     private static volatile Time time = new Time.EpochTime();
