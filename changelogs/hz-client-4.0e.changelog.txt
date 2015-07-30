@@ -162,9 +162,9 @@ current time if not supplied.
 New debug API requests:
 
 The following requests are used for debugging purposes only and should not
-normally be needed. They are disabled by default, set nhz.enableDebugAPI=true in
-the properties to enable them. Do not enable on a public node where the API is
-accessible to anyone.
+normally be needed. They are protected with a password, which needs
+to be set in the nhz.adminPassword property. Do not enable on a public node 
+where the API is accessible to anyone.
 
 fullReset - delete and redownload the whole blockchain.
 
@@ -240,5 +240,7 @@ run.bat scripts have been modified to include this directory on the classpath
 instead of the nhz.jar file. Those who still prefer to build a nhz.jar file, can
 easily do that with the included jar.sh script, and modify the classpath to use
 it. A pre-built nhz.jar file will still be included for a few releases.
+
+Checkpoints updated.
 
 Please see source code for more details. 
