@@ -781,7 +781,7 @@ var NRS = (function(NRS, $, undefined) {
 		if (/^NHZ\-/i.test(account)) {
 			return String(account).escapeHTML();
 		} else {
-			var address = new NhzAddress();
+			var address = new NxtAddress();
 
 			if (address.set(account)) {
 				return address.toString().escapeHTML();

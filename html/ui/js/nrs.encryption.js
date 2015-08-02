@@ -80,7 +80,7 @@ var NRS = (function (NRS, $) {
 		var accountId = byteArrayToBigInteger(slice).toString();
 
 		if (RSFormat) {
-			var address = new NhzAddress();
+			var address = new NxtAddress();
 
 			if (address.set(accountId)) {
 				return address.toString();
@@ -121,7 +121,7 @@ var NRS = (function (NRS, $) {
 					try {
 						options.publicKey = converters.hexStringToByteArray(NRS.getPublicKey(options.account, true));
 					} catch (err) {
-						var nhzAddress = new NhzAddress();
+						var nhzAddress = new NxtAddress();
 
 						if (!nhzAddress.set(options.account)) {
 							throw {

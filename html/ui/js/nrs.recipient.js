@@ -216,7 +216,7 @@ var NRS = (function(NRS, $, undefined) {
 
 		//solomon reed. Btw, this regex can be shortened..
 		if (/^(NHZ\-)?[A-Z0-9]+\-[A-Z0-9]+\-[A-Z0-9]+\-[A-Z0-9]+/i.test(account)) {
-			var address = new NhzAddress();
+			var address = new NxtAddress();
 
 			if (address.set(account)) {
 				NRS.getAccountError(account, function(response) {
@@ -330,7 +330,7 @@ var NRS = (function(NRS, $, undefined) {
 						match[1] = String(match[1]).toUpperCase();
 
 						if (/^\d+$/.test(match[1])) {
-							var address = new NhzAddress();
+							var address = new NxtAddress();
 
 							if (address.set(match[1])) {
 								match[1] = address.toString();

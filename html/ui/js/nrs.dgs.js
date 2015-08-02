@@ -1036,7 +1036,7 @@ var NRS = (function(NRS, $) {
 		if (seller == "") {
 			NRS.pages.dgs_search();
 		} else if (/^(NHZ\-)/i.test(seller)) {
-			var address = new NhzAddress();
+			var address = new NxtAddress();
 
 			if (!address.set(seller)) {
 				$.growl($.t("error_invalid_seller"), {

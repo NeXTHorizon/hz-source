@@ -115,7 +115,7 @@ var NRS = (function(NRS, $, undefined) {
 		if (/^NHZ\-/i.test(data.account_id)) {
 			data.account_rs = data.account_id;
 
-			var address = new NhzAddress();
+			var address = new NxtAddress();
 
 			if (address.set(data.account_rs)) {
 				data.account = address.account_id();
@@ -125,7 +125,7 @@ var NRS = (function(NRS, $, undefined) {
 				};
 			}
 		} else {
-			var address = new NhzAddress();
+			var address = new NxtAddress();
 
 			if (address.set(data.account_id)) {
 				data.account_rs = address.toString();
@@ -277,7 +277,7 @@ var NRS = (function(NRS, $, undefined) {
 		if (/^NHZ\-/i.test(data.account_id)) {
 			data.account_rs = data.account_id;
 
-			var address = new NhzAddress();
+			var address = new NxtAddress();
 
 			if (address.set(data.account_rs)) {
 				data.account = address.account_id();
@@ -287,7 +287,7 @@ var NRS = (function(NRS, $, undefined) {
 				};
 			}
 		} else {
-			var address = new NhzAddress();
+			var address = new NxtAddress();
 
 			if (address.set(data.account_id)) {
 				data.account_rs = address.toString();

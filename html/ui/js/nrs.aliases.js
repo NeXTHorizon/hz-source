@@ -398,7 +398,7 @@ var NRS = (function(NRS, $, undefined) {
 		if (data.type == "account") {
 			if (!(/acct:(.*)@nhz/.test(data.aliasURI)) && !(/nacc:(.*)/.test(data.aliasURI))) {
 				if (/^(NHZ\-)/i.test(data.aliasURI)) {
-					var address = new NhzAddress();
+					var address = new NxtAddress();
 
 					if (!address.set(data.aliasURI)) {
 						return {
@@ -462,7 +462,7 @@ var NRS = (function(NRS, $, undefined) {
 				}
 
 				if (/^\d+$/.test(uri)) {
-					var address = new NhzAddress();
+					var address = new NxtAddress();
 
 					if (address.set(uri)) {
 						uri = address.toString();
