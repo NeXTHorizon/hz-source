@@ -1,0 +1,246 @@
+This is a experimental release. An upgrade is not mandatory, but recommended.
+
+This is the first release which stores all derived objects in the database,
+instead of keeping all of them in memory only.
+
+Derived objects are those that are constructed based on the information already
+available in the blockchain blocks and transactions - i.e, Accounts, Aliases, 
+Assets, Goods, Purchases, Orders, Trades. Storing them in the database instead of
+in memory means the Asset Exchange and the Digital Goods Store can scale to much
+higher number of assets, orders, and goods, without requiring an ever growing
+amount of memory for each node.
+
+Using a standard SQL database tables to store those records also allows for
+much more sophisticated queries, and allows third parties to write and execute
+custom queries against those tables directly, without being dependent on the NRS
+http API only.
+
+By storing the state of all derived objects as of the current height, plus their
+state at previous heights up to 1440 blocks back, it is possible to completely
+eliminate the need for blockchain rescans on startup, and on fork resolution.
+
+On upgrade from, this version will perform an initial
+build of the derived objects tables, which on a fast machine takes about 7 minutes,
+but may take longer depending on your hardware. The database size will grow
+during this rescan, but after shutdown should shrink back to around 1 GB.
+
+There will be no rescans on subsequent restarts, and the startup time is now
+reduced to a few seconds only. There will also be no rescans at runtime on block
+pop offs.
+
+Derived object tables are kept small by trimming them, only records needed to
+allow rollback of up to 1440 blocks back are kept. If you need to preserve and
+query historical information going back all the way to height 0, this trimming
+can be disabled by setting nhz.trimDerivedTables=false (default is true) in
+nhz.properties. After changing this property, a rebuild of the derived tables
+can be triggered using the new scan API request, see below.
+
+The default number of rollback records kept can be increased while still keeping
+trimming enabled, by setting nhz.maxRollback to a higher value (default and
+lowest possible is 1441). This should provide a compromise for those who want to
+keep history of more than the default 1441 blocks, yet want to avoid the
+performance penalty of never trimming the derived objects tables.
+
+To allow for the increased use of database, default max number of database 
+connection has been increased to nhz.maxDbConnections=30, lock timeout
+increased to nhz.dbDefaultLockTimeout=60 and MVCC is enabled by default 
+in nhz-default.properties.
+
+H2 cache size allocation is improved. If nhz.dbCacheKB is not set,
+the H2 cache will vary linearly from 16MB for JVM heap size 160MB, to
+256MB for heap size 640MB or higher. This should allow low end devices
+to run without needing a custom setting for the nhz.dbCacheKB parameter,
+and prevent excessive memory use on machines with plenty of memory too.
+
+To prevent overloading a node with invalid peer addresses, the maximum total
+number of known peers is limited to nhz.maxNumberOfKnownPeers (default 3000).
+Once this number has been reached, new peer addresses are not added, and peers
+that have been last connected to more than a week ago are removed from the known
+peer list, provided the node has enough connected public peers, until the number
+of known peers is again reduced to below nhz.minNumberOfKnownPeers (default
+1000).
+
+Enforce that the nhz-default.properties file used matches the version of the
+current release.
+
+Updated jetty to version 9.2.10.
+
+UPnP refactored.
+
+DbShell servlet:
+A command line access to the H2 database at runtime is now possible at:
+http://localhost:7776/dbshell
+This page uses the H2 shell tool to allow querying the database at runtime,
+directly from the browser, without having to enable auto server mode in the jdbc
+url. The debug APIs which allow direct manipulation of the blockchain
+database are always enabled, but are protected with a password, which needs
+to be set in the nhz.adminPassword property. Password is not required when the
+API server is listening on the localhost interface only (the default).
+The password protection can be disabled by setting nhz.disableAdminPassword=true 
+in nhz.properties.
+
+Test servlet:
+The usability of the http://localhost:7776/test API access page has been improved.
+
+Enhanced nhz.allowedBotHosts property to also accepts a range of addresses
+using CIDR notation.
+
+New API requests:
+
+Monetary System/Currencies (feature not yet enabled):
+currencyBuy, currencySell, currencyReserveIncrease, currencyReserveClaim, currencyMint,
+getAllCurrencies, getAccountCurrencies, getAccountCurrencyCount, getCurrency, getCurrencies,
+getCurrencyFounders, getCurrencyIds, getCurrenciesByIssuer, getCurrencyAccounts, 
+getCurrencyAccountCount, getExchanges, getExchangesByExchangeRequest, getExchangesByOffer,
+getAllExchanges, getCurrencyTransfers, getBuyOffers, getSellOffers, getOffer, 
+getAccountExchangeRequests, getMintingTarget, issueCurrency, publishExchangeOffer, 
+transferCurrency, canDeleteCurrency, deleteCurrency, searchCurrencies
+
+Accounts:
+getAccountBlockCount, getAccountBlocks, getAccountLessors
+
+Aliases:
+getAliasCount, deleteAlias
+
+Asset Exchange:
+getAssetAccounts, getAssetAccountCount, getAssetTransfers, getAccountCurrentAskOrders, 
+getAccountCurrentBidOrders, getAllOpenAskOrders, getAllOpenBidOrders, searchAssets,
+dividendPayment (not yet enabled) 
+
+Blocks:
+getBlocks, getECBlock
+
+DGS (feature not yet enabled):
+getDGSGoodsCount, getDGSGoodsPurchases, getDGSGoodsPurchaseCount, getDGSPurchaseCount,
+getDGSTags, getDGSTagCount, searchDGSGoods
+
+Util:
+longConvert
+
+Debug:
+clearUnconfirmedTransactions, fullReset, popOff, scan, luceneReindex
+
+Network:
+addPeer, blacklistPeer
+
+getAccountBlocks - like getAccountBlockIds, but returning full block JSON.
+If includeTransactions parameter is true, also includes the transaction JSON.
+
+getAccountCurrentAskOrders and getAccountCurrentBidOrders - 
+like getAccountCurrentAskOrderIds and getAccountCurrentBidOrderIds, but returning
+full order JSON.
+
+getAllOpenAskOrders and getAllOpenBidOrders now replace getAllOpenOrders, but
+only returning ask or bid orders respectively, and allow firstIndex/lastIndex
+pagination.
+
+getAssetTransfers - retrieves the asset transfers for an asset, account, or both,
+sorted by height descending.
+
+getAssetAccounts - accepts an asset parameter and returns all accounts holding
+this asset as of the current height, and the asset quantity each one owns, sorted
+by asset quantity descending.
+Takes an optional height parameter to allow retrieving asset holders as of a
+previous blockchain height.
+
+getAccountLessors - retrieves the accounts that have leased their balance to the
+specified account, takes an optional height parameter to allow querying previous
+blockchain heights.
+
+The historical height query feature in getAssetAccounts and getAccountLessors
+depends on the specified height records still being available, i.e. either table
+trimming disabled, or maxRollback set high enough to cover that height.
+
+longConvert - an utility API to convert between signed long ids as used in the
+database and unsigned long ids represented as strings. Accepts an id in either
+form and returns both the signed and unsigned versions.
+
+getECBlock - returns the ecBlockId and ecBlockHeight given an optional timestamp,
+current time if not supplied.
+
+
+New debug API requests:
+
+The following requests are used for debugging purposes only and should not
+normally be needed. They are protected with a password, which needs
+to be set in the nhz.adminPassword property. Do not enable on a public node 
+where the API is accessible to anyone.
+
+fullReset - delete and redownload the whole blockchain.
+
+popOff - accepts a numBlocks or height parameters, and pops off that many blocks
+or back to that height. If table trimming is enabled (default), at most 1440
+blocks can be popped off. Derived object tables are rolled back to the specified
+height and blocks and transactions after that height are deleted.
+
+scan - accepts a numBlocks or height parameters, rolls back the derived object
+tables to that height and rebuilds them by rescanning the existing blockchain
+from that height up again. Does not delete blocks or transactions from the
+blockchain, unlike the popOff request. A request to rescan more than 1440 blocks
+when table trimming is enabled will do a full rescan starting from height 0.
+Setting validate parameter to true will also re-verify signatures and re-valudate
+blocks and transactions during the rescan.
+
+Added clearUnconfirmedTransactions debug API to force clearing of the
+unconfirmed transactions pool.
+
+API changes:
+The limit parameter is no longer accepted by the getAskOrderIds, getBidOrderIds,
+getAskOrders and getBidOrders APIs, as firstIndex/lastIndex parameters are now
+used instead for pagination.
+
+New API calls for peer management: addPeer and blacklistPeer. AddPeer will add
+a peer address or IP, optionally with port number, to the list of known peers
+and will try to connect to it. BlacklistPeer (password protected) will
+blacklist a peer, for the default blacklisting period.
+
+The following existing APIs now allow optional pagination using firstIndex,
+lastIndex parameters:
+
+getAccountBlockIds, getAccountCurrentAskOrderIds, getAccountCurrentBidOrderIds, 
+getAccountTransactionIds, getAccountTransactions, getAliases, getAllAssets,
+getAllTrades, getAskOrderIds, getAskOrders, getAssetIds, getAssetsByIssuer,
+getBidOrderIds, getBidOrders, getDGSGoods, getDGSPendingPurchases, getDGSPurchases,
+getTrades
+
+The limit parameter is no longer accepted by the getAskOrderIds, getBidOrderIds,
+getAskOrders and getBidOrders APIs, as firstIndex/lastIndex parameters are now
+used instead for pagination.
+
+getAccountBlockIds in addition to allowing pagination now returns the blocks
+in descending order, as this is more useful when showing the newest blocks
+on top in the client.
+
+getTrades now accepts an optional account parameter, in addition to asset, to
+allow retrieving trade history for a specific account, for either all assets or
+a specific asset only.
+
+getUnconfirmedTransactions and getUnconfirmedTransactionIds now also accept
+the RS account number format.
+
+The Trade JSON now includes buyer and seller account ids, the height at which
+the trade occurred, the asset name, and the heights at which the ask and bid
+orders were accepted in the blockchain.
+
+The Asset JSON now includes total number of transfers, and number of accounts
+holding the asset.
+
+parseTransaction does not just return an error when trying to parse an invalid
+transaction bytes or JSON, but adds a validate=false field, plus the actual error 
+message, in addition to the parsed transaction JSON.
+
+getState no longer includes total effective balance.
+
+Packaging changes:
+
+To prevent intentional misunderstanding of why jar files hashes are never
+reproducible, the class files are now left unpacked in a classes subdirectory
+after compilation, instead of being packaged in a nhz.jar file. The run.sh and
+run.bat scripts have been modified to include this directory on the classpath
+instead of the nhz.jar file. Those who still prefer to build a nhz.jar file, can
+easily do that with the included jar.sh script, and modify the classpath to use
+it. A pre-built nhz.jar file will still be included for a few releases.
+
+Checkpoints updated.
+
+Please see source code for more details. 

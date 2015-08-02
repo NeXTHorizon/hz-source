@@ -52,6 +52,8 @@ var NRS = (function(NRS, $, undefined) {
         $("#login_account_other").mask("NHZ-****-****-****-*****");
         
 		$("#login_panel").show();
+		$("#login_new").show();
+		$("#login_remember").hide();
 		setTimeout(function() {
 			$("#login_password").focus()
 		}, 10);
@@ -295,6 +297,14 @@ var NRS = (function(NRS, $, undefined) {
 					}
 
 					if ($("#remember_password").is(":checked") && passLogin) {
+						NRS.database.delete("data", [{
+							id: 'savepassphrase'
+						}]);
+						NRS.database.insert("data", {
+							id: 'savepassphrase',
+							contents: 'yes'
+						});
+
 						NRS.rememberPassword = true;
 						$("#remember_password").prop("checked", false);
 						NRS.setPassword(password);
@@ -363,6 +373,19 @@ var NRS = (function(NRS, $, undefined) {
 
 					//NRS.getAccountAliases();
 
+					if($("#remember_device").is(':checked'))
+					{
+						key = $("#remember_short_password").val();
+						var shortpw = GibberishAES.enc(password,key);
+						NRS.database.delete("data", [{
+							id: 'passphrase'
+						}]);
+						NRS.database.insert("data", {
+							id: 'passphrase',
+							contents: shortpw
+						});
+					}
+					
 					NRS.unlock();
 
 					if (NRS.isOutdated) {
@@ -554,15 +577,24 @@ var NRS = (function(NRS, $, undefined) {
 	});*/
 
 	NRS.logout = function(stopForging) {
-		if (stopForging && NRS.isForging) {
-			$("#stop_forging_modal .show_logout").show();
-			$("#stop_forging_modal").modal("show");
-		} else {
-			NRS.setDecryptionPassword("");
-			NRS.setPassword("");
+		NRS.database.delete("data", [{
+  			"id": 'passphrase'
+  		},{
+  			"id": 'savepassphrase'
+  		}],function(e,a){
+  			setTimeout(function(){
+  				if (stopForging && NRS.isForging) {
+					$("#stop_forging_modal .show_logout").show();
+					$("#stop_forging_modal").modal("show");
+				} else {
+					NRS.setDecryptionPassword("");
+					NRS.setPassword("");
 			//window.location.reload();
 			window.location.href = window.location.pathname;    
-		}
+				}
+  			},200);
+  		});
+		
 	}
 
 	$("#logout_clear_user_data_confirm_btn").click(function(e) {
@@ -589,5 +621,57 @@ var NRS = (function(NRS, $, undefined) {
 		NRS.setEncryptionPassword(password);
 		NRS.setServerPassword(password);
 	}
+
+	NRS.relogin = function(shortpw) {
+		NRS.database.select("data", [{
+			"id": 'passphrase'
+		}], function(error, data) {			
+			if(data.length > 0) {
+				var storedpassphrase = data[0].contents;
+				try {
+					var decrypted_password = GibberishAES.dec(
+						storedpassphrase,
+						shortpw
+					);
+				} catch(e) {
+					alert("Password error");
+				}
+
+				if(typeof(decrypted_password) !== 'undefined') {
+					NRS.database.select("data", [{
+						"id": 'savepassphrase'
+					}], function(er, da) {
+						if(da.length > 0) {
+							$("#remember_password").click();
+						}
+					});
+
+					NRS.login(decrypted_password);
+				}
+			}
+		});
+	}
+
+	$("#remember_short_password_container").hide();
+	$("#remember_device").change(function(){
+		$("#remember_short_password_container").toggle();
+	});
+
+	$("#login_remember").hide();
+	$("#login_new").hide();
+	$(document).ready(function() {
+		setTimeout(function(){
+			NRS.database.select("data", [{
+				"id": 'passphrase'
+			}], function(error, data) {
+				if(data.length == 0) {
+					$("#login_new").show();
+				} else {
+					$("#login_remember").show();
+				}
+			});
+		},500);
+	});
+
 	return NRS;
 }(NRS || {}, jQuery));

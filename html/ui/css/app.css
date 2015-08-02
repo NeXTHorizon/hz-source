@@ -33,7 +33,7 @@ html.lockscreen, html.lockscreen body {
   overflow-x:auto;
 }
 a {
-  color: #3c8dbc;
+  color: #3e5369;
 }
 a:hover,
 a:active,
@@ -1251,7 +1251,7 @@ body > .header .logo .icon {
 }
 .small-box h3,
 .small-box p {
-  z-index: 5;
+  z-index: 5px;
 }
 .small-box .icon {
   position: absolute;
@@ -1896,7 +1896,7 @@ body > .header .logo .icon {
 /* ADD THIS CLASS TO THE <HTML> TAG */
 .lockscreen {
   background-color: #002e43;
-  background: url(../img/nhz-background.jpg) repeat center center fixed;
+  background: url(../img/hz-background.jpg) repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -3323,4 +3323,19 @@ input.masked {
 	position: absolute; 
 	left: 105px; 
 	top: 17px;
+	}
+
+	.navbar .navbar-right>.nav {
+	  margin-right: 8px;
+	}
+}
+
+@media (max-width: 560px){
+	#logo {
+	  display: none;
+	}
+}
+
+body {
+  word-break: break-all;
 }

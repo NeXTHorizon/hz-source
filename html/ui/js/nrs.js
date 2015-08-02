@@ -249,6 +249,8 @@ var NRS = (function(NRS, $, undefined) {
 			NRS.login(false,NRS.getUrlParameter("account"));
 		}
 
+		NRS.newDefaultStyle();
+
 		/*
 		$("#asset_exchange_search input[name=q]").addClear({
 			right: 0,

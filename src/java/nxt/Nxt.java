@@ -302,6 +302,9 @@ public final class Nxt {
                 long currentTime = System.currentTimeMillis();
                 Logger.logMessage("Initialization took " + (currentTime - startTime) / 1000 + " seconds");
                 Logger.logMessage("Horizon server " + VERSION + " started successfully.");
+                if (System.getProperty ("os.name").startsWith("Windows")) {
+                	Logger.logMessage("You must keep this window open if you want to forge with your Horizon balance, or use your local Horizon node to access your wallet!");
+                };
                 if (Constants.isTestnet) {
                     Logger.logMessage("RUNNING ON TESTNET - DO NOT USE REAL ACCOUNTS!");
                 }

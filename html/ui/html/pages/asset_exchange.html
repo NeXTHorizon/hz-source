@@ -22,7 +22,7 @@
                 <div class="box box-primary">
                     <div class="box-header"><h3 class="box-title" data-i18n="sell_orders">Sell Orders</h3></div>
                     <div class="box-body no-padding">
-                        <div class="data-container data-loading" data-no-padding="true">
+                        <div class="data-container data-loading table-responsive" data-no-padding="true">
                             <table class="table table-striped" id="open_ask_orders_table">
                                 <thead>
                                 <tr>
@@ -47,7 +47,7 @@
                 <div class="box box-primary">
                     <div class="box-header"><h3 class="box-title" data-i18n="buy_orders">Buy Orders</h3></div>
                     <div class="box-body no-padding">
-                        <div class="data-container data-loading" data-no-padding="true">
+                        <div class="data-container data-loading table-responsive" data-no-padding="true">
                             <table class="table table-striped" id="open_bid_orders_table">
                                 <thead>
                                 <tr>
@@ -75,7 +75,7 @@
 <div id="trade_history_page" class="paginated page">
     <section class="content-header"><h1 data-i18n="trade_history">Trade History</h1></section>
     <section class="content">
-        <div class="data-container data-loading">
+        <div class="data-container data-loading table-responsive">
             <table class="table table-striped" id="trade_history_table">
                 <thead>
                 <tr>
@@ -103,7 +103,7 @@
 <div id="transfer_history_page" class="paginated page">
     <section class="content-header"><h1 data-i18n="transfer_history">Transfer History</h1></section>
     <section class="content">
-        <div class="data-container data-loading">
+        <div class="data-container data-loading table-responsive">
             <table class="table table-striped" id="transfer_history_table">
                 <thead>
                 <tr>
@@ -129,7 +129,7 @@
 <div id="my_assets_page" class="page">
     <section class="content-header"><h1 data-i18n="my_assets">My Assets</h1></section>
     <section class="content">
-        <div class="data-container data-loading">
+        <div class="data-container data-loading table-responsive">
             <table class="table table-striped" id="my_assets_table">
                 <thead>
                 <tr>
@@ -157,15 +157,16 @@
     <section class="content-header">
         <h1 data-i18n="asset_exchange">Asset Exchange</h1>
         <div style="position:absolute;top:9px;right:9px;">
+        	<button type="button" class="btn btn-sm btn-default" id="toggle_asset_exchange_sidebar" data-i18n="toggle_sidebar">Toggle Sidebar</button>
             <button type="button" class="btn btn-sm btn-default" id="asset_exchange_add_asset_bookmark" data-toggle="modal" data-target="#add_asset_bookmark_modal" data-i18n="add_asset">Add Asset</button>
             <button type="button" class="btn btn-sm btn-default" id="asset_exchange_bookmark_this_asset" style="display:none" data-i18n="bookmark_asset">Bookmark This Asset</button>
             <button type="button" class="btn btn-sm btn-default" id="asset_exchange_clear_search" style="display:none" data-i18n="clear_search_results">Clear Search Results</button>
         </div>
     </section>
     <section class="content content-stretch" style="position:fixed;margin-top:3px;padding:0; width:100%; height:100%; height: calc(100% - 101px);overflow:hidden;">
-        <div class="content-spliter">
+        <div class="content-splitter">
             <div class="content-splitter-inner">
-                <div class="content-splitter-sidebar" style="width:200px">
+                <div class="content-splitter-sidebar" id="content-spliter-sidebar_asset_exchange" style="width:200px">
                     <div class="content-splitter-sidebar-inner">
                         <div class="list-group unselectable sidebar_context" id="asset_exchange_sidebar">
                             <div id="asset_exchange_sidebar_search">
@@ -184,7 +185,7 @@
                         </div>
                      </div>
                  </div>
-                 <div class="content-splitter-right">
+                 <div class="content-splitter-right" id="content-spliter-right_asset_exchange">
                     <div class="content-splitter-right-inner">
                         <div id="no_assets_available" style="padding-top: 150px;text-align:center;display:none;" data-i18n="no_assets_available">You don't have any assets in your bookmark list yet. Click on "Add Asset" in the top right corner to add one.</div>
                         <div id="no_asset_search_results" style="padding-top: 150px;text-align:center;display:none;" data-i18n="no_asset_search_results">No assets found that match search query.</div>
@@ -282,7 +283,7 @@
                                             <h3 class="box-title"><span data-i18n="sell_orders">Sell Orders</span> <span id="sell_orders_count"></span></h3>
                                         </div>
                                         <div class="box-body no-padding">
-                                            <div class="data-container data-loading" data-no-padding="true">
+                                            <div class="data-container data-loading table-responsive" data-no-padding="true">
                                                 <table class="table table-striped" id="asset_exchange_ask_orders_table">
                                                     <thead>
                                                     <tr>
@@ -366,7 +367,7 @@
                                             <h3 class="box-title"><span data-i18n="buy_orders">Buy Orders</span> <span id="buy_orders_count"></span></h3>
                                         </div>
                                         <div class="box-body no-padding">
-                                            <div class="data-container data-loading" data-no-padding="true">
+                                            <div class="data-container data-loading table-responsive" data-no-padding="true">
                                                 <table class="table table-striped" id="asset_exchange_bid_orders_table">
                                                     <thead>
                                                     <tr>
@@ -403,7 +404,7 @@
                                     </div>
                                 </div>
                                 <div class="box-body no-padding">
-                                    <div class="data-container data-loading" data-no-padding="true">
+                                    <div class="data-container data-loading table-responsive" data-no-padding="true">
                                         <table class="table table-striped" id="asset_exchange_trade_history_table">
                                             <thead>
                                             <tr>

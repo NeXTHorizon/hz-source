@@ -83,12 +83,13 @@
                             <div id="transaction_info_callout" class="callout callout-info" style="display:none;"></div>
 
                             <div id="transaction_info_output_top" style="display: none;"></div> 
-                            
-                            <table class="table table-striped" id="transaction_info_table" style="display:none;margin-bottom: 0;">
-                                <tbody>
-                                    
-                                </tbody>
-                            </table>
+                            <div class="table-responsive">
+	                            <table class="table table-striped" id="transaction_info_table" style="display:none;margin-bottom: 0;">
+	                                <tbody>
+	                                    
+	                                </tbody>
+	                            </table>
+	                        </div>
 
                             <div id="transaction_info_output_bottom" style="display: none;margin-top:10px;"></div>
                             <div id="transaction_info_bottom" style="display: none;"></div>
@@ -105,7 +106,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane" id="transaction_info_details_tab" style="max-height:350px;overflow:auto;">
+                        <div class="tab-pane table-responsive" id="transaction_info_details_tab" style="max-height:350px;overflow:auto;">
                             <table class="table table-striped" id="transaction_info_details_table" style="margin-bottom:0;table-layout:fixed;">
                                 <tbody>
                                     
@@ -198,7 +199,7 @@
                             <textarea class="form-control" name="transactionBytes" id="parse_transaction_transaction_bytes" rows="4" placeholder="Transaction Bytes" data-i18n="[placeholder]transaction_bytes"></textarea>
                         </div>
                         <input type="hidden" name="request_type" value="parseTransaction" />
-                        <div id="parse_transaction_output" class="output" style="max-height:350px;overflow:auto">
+                        <div id="parse_transaction_output" class="output table-responsive" style="max-height:350px;overflow:auto">
                             <table class="table table-striped output_table" id="parse_transaction_output_table" style="margin-bottom:0;table-layout:fixed">
                                 <tbody></tbody>
                             </table>
@@ -218,7 +219,7 @@
                             <textarea class="form-control" name="signatureHash" id="calculate_full_hash_signature_hash" rows="1" placeholder="Signature Hash" data-i18n="[placeholder]signature_hash"></textarea>
                         </div>
                         <input type="hidden" name="request_type" value="calculateFullHash" />
-                        <div id="calculate_full_hash_output" class="output" style="max-height:350px;overflow:auto">
+                        <div id="calculate_full_hash_output" class="output table-responsive" style="max-height:350px;overflow:auto">
                             <table class="table table-striped output_table" id="calculate_full_hash_output_table" style="margin-bottom:0;table-layout:fixed">
                                 <tbody></tbody>
                             </table>
