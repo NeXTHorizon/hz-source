@@ -1,5 +1,8 @@
 #!/bin/sh
-/bin/rm -f nhz.jar 
-jar cf nhz.jar -C classes . || exit 1
+java -cp classes nxt.tools.ManifestGenerator
+/bin/rm -f nhz.jar
+jar cfm nhz.jar resource/nxt.manifest.mf -C classes . || exit 1
+/bin/rm -f nhzservice.jar
+jar cfm nhzservice.jar resource/nxtservice.manifest.mf -C classes . || exit 1
 
-echo "nhz.jar generated successfully"
+echo "Horizon jar files generated successfully"

@@ -897,9 +897,155 @@ class NxtDbVersion extends DbVersion {
             case 323:
                 apply("ALTER TABLE peer ADD COLUMN IF NOT EXISTS last_updated INT");
             case 324:
+                apply("DROP INDEX IF EXISTS account_current_lessee_id_leasing_height_idx");
+            case 325:
+                apply("TRUNCATE TABLE account");
+            case 326:
+                apply("ALTER TABLE account ADD COLUMN IF NOT EXISTS active_lessee_id BIGINT");
+            case 327:
+                apply("ALTER TABLE account DROP COLUMN IF EXISTS current_leasing_height_from");
+            case 328:
+                apply("ALTER TABLE account DROP COLUMN IF EXISTS current_leasing_height_to");
+            case 329:
+                apply("ALTER TABLE account DROP COLUMN IF EXISTS current_lessee_id");
+            case 330:
+                apply("ALTER TABLE account DROP COLUMN IF EXISTS next_leasing_height_from");
+            case 331:
+                apply("ALTER TABLE account DROP COLUMN IF EXISTS next_leasing_height_to");
+            case 332:
+                apply("ALTER TABLE account DROP COLUMN IF EXISTS next_lessee_id");
+            case 333:
+                apply("CREATE INDEX IF NOT EXISTS account_active_lessee_id_idx ON account (active_lessee_id)");
+            case 334:
+                apply("CREATE TABLE IF NOT EXISTS account_lease (db_id IDENTITY, lessor_id BIGINT NOT NULL, "
+                        + "current_leasing_height_from INT, current_leasing_height_to INT, current_lessee_id BIGINT, "
+                        + "next_leasing_height_from INT, next_leasing_height_to INT, next_lessee_id BIGINT, "
+                        + "height INT NOT NULL, latest BOOLEAN NOT NULL DEFAULT TRUE)");
+            case 335:
+                apply("CREATE UNIQUE INDEX IF NOT EXISTS account_lease_lessor_id_height_idx ON account_lease (lessor_id, height DESC)");
+            case 336:
+                apply("CREATE INDEX IF NOT EXISTS account_lease_current_leasing_height_from_idx ON account_lease (current_leasing_height_from)");
+            case 337:
+                apply("CREATE INDEX IF NOT EXISTS account_lease_current_leasing_height_to_idx ON account_lease (current_leasing_height_to)");
+            case 338:
+                apply("CREATE INDEX IF NOT EXISTS account_lease_height_id_idx ON account_lease (height, lessor_id)");
+            case 339:
+                apply("CREATE INDEX IF NOT EXISTS account_asset_asset_id_idx ON account_asset (asset_id)");
+            case 340:
+                apply("CREATE INDEX IF NOT EXISTS account_currency_currency_id_idx ON account_currency (currency_id)");
+            case 341:
+                apply("CREATE INDEX IF NOT EXISTS currency_issuance_height_idx ON currency (issuance_height)");
+            case 342:
+                apply("CREATE INDEX IF NOT EXISTS unconfirmed_transaction_expiration_idx ON unconfirmed_transaction (expiration DESC)");
+            case 343:
+                apply("DROP INDEX IF EXISTS account_height_idx");
+            case 344:
+                apply("CREATE INDEX IF NOT EXISTS account_height_id_idx ON account (height, id)");
+            case 345:
+                apply("DROP INDEX IF EXISTS account_asset_height_idx");
+            case 346:
+                apply("CREATE INDEX IF NOT EXISTS account_asset_height_id_idx ON account_asset (height, account_id, asset_id)");
+            case 347:
+                apply("DROP INDEX IF EXISTS account_currency_height_idx");
+            case 348:
+                apply("CREATE INDEX IF NOT EXISTS account_currency_height_id_idx ON account_currency (height, account_id, currency_id)");
+            case 349:
+                apply("DROP INDEX IF EXISTS alias_height_idx");
+            case 350:
+                apply("CREATE INDEX IF NOT EXISTS alias_height_id_idx ON alias (height, id)");
+            case 351:
+                apply("DROP INDEX IF EXISTS alias_offer_height_idx");
+            case 352:
+                apply("CREATE INDEX IF NOT EXISTS alias_offer_height_id_idx ON alias_offer (height, id)");
+            case 353:
+                apply("DROP INDEX IF EXISTS ask_order_height_idx");
+            case 354:
+                apply("CREATE INDEX IF NOT EXISTS ask_order_height_id_idx ON ask_order (height, id)");
+            case 355:
+                apply("DROP INDEX IF EXISTS bid_order_height_idx");
+            case 356:
+                apply("CREATE INDEX IF NOT EXISTS bid_order_height_id_idx ON bid_order (height, id)");
+            case 357:
+                apply("DROP INDEX IF EXISTS buy_offer_height_idx");
+            case 358:
+                apply("CREATE INDEX IF NOT EXISTS buy_offer_height_id_idx ON buy_offer (height, id)");
+            case 359:
+                apply("DROP INDEX IF EXISTS currency_height_idx");
+            case 360:
+                apply("CREATE INDEX IF NOT EXISTS currency_height_id_idx ON currency (height, id)");
+            case 361:
+                apply("DROP INDEX IF EXISTS currency_founder_height_idx");
+            case 362:
+                apply("CREATE INDEX IF NOT EXISTS currency_founder_height_id_idx ON currency_founder (height, currency_id, account_id)");
+            case 363:
+                apply("DROP INDEX IF EXISTS currency_mint_height_idx");
+            case 364:
+                apply("CREATE INDEX IF NOT EXISTS currency_mint_height_id_idx ON currency_mint (height, currency_id, account_id)");
+            case 365:
+                apply("DROP INDEX IF EXISTS currency_supply_height_idx");
+            case 366:
+                apply("CREATE INDEX IF NOT EXISTS currency_supply_height_id_idx ON currency_supply (height, id)");
+            case 367:
+                apply("DROP INDEX IF EXISTS goods_height_idx");
+            case 368:
+                apply("CREATE INDEX IF NOT EXISTS goods_height_id_idx ON goods (height, id)");
+            case 369:
+                apply("DROP INDEX IF EXISTS purchase_height_idx");
+            case 370:
+                apply("CREATE INDEX IF NOT EXISTS purchase_height_id_idx ON purchase (height, id)");
+            case 371:
+                apply("DROP INDEX IF EXISTS purchase_feedback_height_idx");
+            case 372:
+                apply("CREATE INDEX IF NOT EXISTS purchase_feedback_height_id_idx ON purchase_feedback (height, id)");
+            case 373:
+                apply("DROP INDEX IF EXISTS purchase_public_feedback_height_idx");
+            case 374:
+                apply("CREATE INDEX IF NOT EXISTS purchase_public_feedback_height_id_idx ON purchase_public_feedback (height, id)");
+            case 375:
+                apply("DROP INDEX IF EXISTS sell_offer_height_idx");
+            case 376:
+                apply("CREATE INDEX IF NOT EXISTS sell_offer_height_id_idx ON sell_offer (height, id)");
+            case 377:
+                apply("DROP INDEX IF EXISTS tag_height_idx");
+            case 378:
+                apply("CREATE INDEX IF NOT EXISTS tag_height_tag_idx ON tag (height, tag)");
+            case 379:
+                apply("DROP INDEX IF EXISTS account_info_height_idx");
+            case 380:
+                apply("CREATE INDEX IF NOT EXISTS account_info_height_id_idx ON account_info (height, account_id)");
+            case 381:
+                apply("DROP INDEX IF EXISTS tagged_data_timestamp_height_idx");
+            case 382:
+                apply("CREATE INDEX IF NOT EXISTS tagged_data_timestamp_height_id_idx ON tagged_data_timestamp (height, id)");
+            case 383:
+                apply("CREATE INDEX IF NOT EXISTS trade_height_db_id_idx ON trade (height DESC, db_id DESC)");
+            case 384:
+                apply("CREATE INDEX IF NOT EXISTS asset_height_db_id_idx ON asset (height DESC, db_id DESC)");
+            case 385:
+                apply("CREATE INDEX IF NOT EXISTS exchange_height_db_id_idx ON exchange (height DESC, db_id DESC)");
+            case 386:
+                apply(null);
+            case 387:
+                apply("CREATE TABLE IF NOT EXISTS exchange_request (db_id IDENTITY, id BIGINT NOT NULL, account_id BIGINT NOT NULL, "
+                        + "currency_id BIGINT NOT NULL, units BIGINT NOT NULL, rate BIGINT NOT NULL, is_buy BOOLEAN NOT NULL, "
+                        + "timestamp INT NOT NULL, height INT NOT NULL)");
+            case 388:
+                apply("CREATE UNIQUE INDEX IF NOT EXISTS exchange_request_id_idx ON exchange_request (id)");
+            case 389:
+                apply("CREATE INDEX IF NOT EXISTS exchange_request_account_currency_idx ON exchange_request (account_id, currency_id, height DESC)");
+            case 390:
+                apply("CREATE INDEX IF NOT EXISTS exchange_request_currency_idx ON exchange_request (currency_id, height DESC)");
+            case 391:
+                apply("CREATE INDEX IF NOT EXISTS exchange_request_height_db_id_idx ON exchange_request (height DESC, db_id DESC)");
+            case 392:
+                apply("CREATE INDEX IF NOT EXISTS exchange_request_height_idx ON exchange_request (height)");
+            case 393:
+                BlockchainProcessorImpl.getInstance().scheduleScan(0, false);
+                apply(null);
+            case 394:
                 return;
             default:
-                throw new RuntimeException("Blockchain database inconsistent with code, probably trying to run older code on newer database");
+                throw new RuntimeException("Blockchain database inconsistent with code, at update " + nextUpdate + ", probably trying to run older code on newer database");
         }
     }
 }

@@ -18,9 +18,11 @@ package nxt.http;
 
 import nxt.Block;
 import nxt.BlockchainProcessor;
+import nxt.Db;
 import nxt.Nxt;
 import nxt.Transaction;
 import nxt.TransactionProcessor;
+import nxt.db.TransactionalDb;
 import nxt.peer.Peer;
 import nxt.peer.Peers;
 import nxt.util.Listener;
@@ -42,9 +44,8 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -58,7 +59,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * The maximum number of event users is specified by nxt.apiMaxEventUsers.
  */
-class EventListener implements Runnable, AsyncListener {
+class EventListener implements Runnable, AsyncListener, TransactionalDb.TransactionCallback {
 
     /** Maximum event users */
     static final int maxEventUsers = Nxt.getIntProperty("nxt.apiMaxEventUsers");
@@ -76,19 +77,17 @@ class EventListener implements Runnable, AsyncListener {
             @Override
             public void run() {
                 long oldestTime = System.currentTimeMillis() - eventTimeout*1000;
-                //TODO: why not directly do eventListeners().values().stream(), or parallelStream() ?
-                List<EventListener>listeners = new ArrayList<>();
-                listeners.addAll(eventListeners.values());
-                listeners.stream()
-                         .filter(listener -> listener.getTimestamp() < oldestTime)
-                         .forEach(EventListener::deactivateListener);
+                eventListeners.values().forEach(listener -> {
+                    if (listener.getTimestamp() < oldestTime) {
+                        listener.deactivateListener();
+                    }
+                });
             }
         }, eventTimeout*500, eventTimeout*500);
     }
 
     /** Thread pool for asynchronous completions */
-    private static final ThreadPoolExecutor threadPool =
-            new ThreadPoolExecutor(0, 4, 2, TimeUnit.MINUTES, new LinkedBlockingQueue<>());
+    private static final ExecutorService threadPool = Executors.newCachedThreadPool();
 
     /** Peer events - update API comments for EventRegister and EventWait if changed */
     static final List<Peers.Event> peerEvents = new ArrayList<>();
@@ -151,6 +150,9 @@ class EventListener implements Runnable, AsyncListener {
 
     /** Pending events */
     private final List<PendingEvent> pendingEvents = new ArrayList<>();
+
+    /** Database events */
+    private final List<PendingEvent> dbEvents = new ArrayList<>();
 
     /** Pending waits */
     private final List<AsyncContext> pendingWaits = new ArrayList<>();
@@ -487,6 +489,53 @@ class EventListener implements Runnable, AsyncListener {
     }
 
     /**
+     * Transaction has been committed
+     *
+     * Dispatch the pending events for this database transaction
+     */
+    @Override
+    public void commit() {
+        Thread thread = Thread.currentThread();
+        lock.lock();
+        try {
+            Iterator<PendingEvent> it = dbEvents.iterator();
+            while (it.hasNext()) {
+                PendingEvent pendingEvent = it.next();
+                if (pendingEvent.getThread() == thread) {
+                    it.remove();
+                    pendingEvents.add(pendingEvent);
+                    if (!pendingWaits.isEmpty() && !dispatched) {
+                        dispatched = true;
+                        threadPool.submit(EventListener.this);
+                    }
+                }
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * Transaction has been rolled back
+     *
+     * Discard the pending events for this database transaction
+     */
+    @Override
+    public void rollback() {
+        Thread thread = Thread.currentThread();
+        lock.lock();
+        try {
+            Iterator<PendingEvent> it = dbEvents.iterator();
+            while (it.hasNext()) {
+                if (it.next().getThread() == thread)
+                    it.remove();
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
      * Pending event
      */
     class PendingEvent {
@@ -496,6 +545,9 @@ class EventListener implements Runnable, AsyncListener {
 
         /** Event identifier */
         private final List<String> idList;
+
+        /** Database thread */
+        private Thread thread;
 
         /**
          * Create a pending event
@@ -536,6 +588,24 @@ class EventListener implements Runnable, AsyncListener {
          */
         public List<String> getIdList() {
             return idList;
+        }
+
+        /**
+         * Return the database thread
+         *
+         * @return                  Database thread
+         */
+        public Thread getThread() {
+            return thread;
+        }
+
+        /**
+         * Set the database thread
+         *
+         * @param   thread          Database thread
+         */
+        public void setThread(Thread thread) {
+            this.thread = thread;
         }
     }
 
@@ -651,10 +721,17 @@ class EventListener implements Runnable, AsyncListener {
         public void notify(Block block) {
             lock.lock();
             try {
-                pendingEvents.add(new PendingEvent("Block."+event.name(), block.getStringId()));
-                if (!pendingWaits.isEmpty() && !dispatched) {
-                    dispatched = true;
-                    threadPool.submit(EventListener.this);
+                PendingEvent pendingEvent = new PendingEvent("Block."+event.name(), block.getStringId());
+                if (Db.db.isInTransaction()) {
+                    pendingEvent.setThread(Thread.currentThread());
+                    dbEvents.add(pendingEvent);
+                    Db.db.registerCallback(EventListener.this);
+                } else {
+                    pendingEvents.add(pendingEvent);
+                    if (!pendingWaits.isEmpty() && !dispatched) {
+                        dispatched = true;
+                        threadPool.submit(EventListener.this);
+                    }
                 }
             } finally {
                 lock.unlock();
@@ -726,10 +803,17 @@ class EventListener implements Runnable, AsyncListener {
             txList.forEach((tx) -> idList.add(tx.getStringId()));
             lock.lock();
             try {
-                pendingEvents.add(new PendingEvent("Transaction."+event.name(), idList));
-                if (!pendingWaits.isEmpty() && !dispatched) {
-                    dispatched = true;
-                    threadPool.submit(EventListener.this);
+                PendingEvent pendingEvent = new PendingEvent("Transaction."+event.name(), idList);
+                if (Db.db.isInTransaction()) {
+                    pendingEvent.setThread(Thread.currentThread());
+                    dbEvents.add(pendingEvent);
+                    Db.db.registerCallback(EventListener.this);
+                } else {
+                    pendingEvents.add(pendingEvent);
+                    if (!pendingWaits.isEmpty() && !dispatched) {
+                        dispatched = true;
+                        threadPool.submit(EventListener.this);
+                    }
                 }
             } finally {
                 lock.unlock();

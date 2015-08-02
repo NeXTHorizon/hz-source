@@ -1,22 +1,42 @@
 #!/bin/sh
 VERSION=$1
+if [ -x ${VERSION} ];
+then
+	echo VERSION not defined
+	exit 1
+fi
 PACKAGE=hz-client-${VERSION}.zip
+echo PACKAGE="${PACKAGE}"
 
-FILES="conf lib html LICENSE.txt 3RD-PARTY-LICENSES.txt AUTHORS.txt COPYING.txt DEVELOPER-AGREEMENT.txt DEVELOPERS-GUIDE.md OPERATORS-GUIDE.md USERS-GUIDE.md README.md run.sh run.bat run-tor.sh verify.sh changelogs README.txt README_win.txt HZ_Wallet.url Dockerfile docker_start.sh classes nhz.jar src compile.sh win-compile.sh javadoc.sh package.sh mint.bat mint.sh"
+FILES="changelogs classes conf html lib src"
+FILES="${FILES} nhz.jar nhzservice.jar"
+FILES="${FILES} 3RD-PARTY-LICENSES.txt AUTHORS.txt COPYING.txt DEVELOPER-AGREEMENT.txt LICENSE.txt"
+FILES="${FILES} DEVELOPERS-GUIDE.md README.md README.txt USERS-GUIDE.md"
+FILES="${FILES} mint.bat mint.sh run.bat run.sh run-tor.sh run-desktop.sh compact.sh compact.bat"
+FILES="${FILES} HZ_Wallet.url"
+FILES="${FILES} compile.sh javadoc.sh jar.sh package.sh"
+FILES="${FILES} win-compile.sh win-javadoc.sh win-package.sh"
 
+echo compile
 ./compile.sh
+echo jar
 ./jar.sh
+echo javadoc
 rm -rf html/doc/*
 ./javadoc.sh
 
-rm -rf nhz
+rm -rf horizon
 rm -rf ${PACKAGE}
-mkdir -p nhz/
-cp -a ${FILES} nhz
-for f in `find nxt/html -name *.html -o -name *.js -o -name *.css -o -name *.json -o -name *.ttf -o -name *.svg -o -name *.otf`
+mkdir -p horizon/
+mkdir -p horizon/logs
+echo copy resources
+cp -a ${FILES} horizon
+echo gzip
+for f in `find horizon/html -name *.html -o -name *.js -o -name *.css -o -name *.json -o -name *.ttf -o -name *.svg -o -name *.otf`
 do
-	gzip -9vc "$f" > "$f".gz
+	gzip -9c "$f" > "$f".gz
 done
-zip -X -r ${PACKAGE} nhz -x \*/.idea/\* \*/.gitignore \*/.git/\* \*.iml nhz/conf/nhz.properties nhz/conf/logging.properties
-rm -rf nhz
-
+echo zip
+zip -q -X -r ${PACKAGE} horizon -x \*/.idea/\* \*/.gitignore \*/.git/\* \*/\*.log \*.iml horizon/conf/nhz.properties nhz/conf/logging.properties
+rm -rf horizon
+echo done

@@ -16,6 +16,7 @@
 
 package nxt.http;
 
+import nxt.Constants;
 import nxt.peer.Peer;
 import nxt.peer.Peers;
 import nxt.util.Convert;
@@ -23,33 +24,54 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public final class DumpPeers extends APIServlet.APIRequestHandler {
 
     static final DumpPeers instance = new DumpPeers();
 
     private DumpPeers() {
-        super(new APITag[] {APITag.DEBUG}, "version");
+        super(new APITag[] {APITag.DEBUG}, "version", "weight", "connect", "adminPassword");
     }
 
     @Override
-    JSONStreamAware processRequest(HttpServletRequest req) {
+    JSONStreamAware processRequest(HttpServletRequest req) throws ParameterException {
 
         String version = Convert.nullToEmpty(req.getParameter("version"));
-        Set<String> addresses = Peers.getAllPeers().parallelStream().unordered()
-                .filter(peer -> peer.getState() == Peer.State.CONNECTED && peer.shareAddress() && !peer.isBlacklisted()
-                        && peer.getVersion() != null && peer.getVersion().startsWith(version))
-                .map(Peer::getAnnouncedAddress)
-                .collect(Collectors.toSet());
+        int weight = ParameterParser.getInt(req, "weight", 0, (int)Constants.MAX_BALANCE_NXT, false);
+        boolean connect = "true".equalsIgnoreCase(req.getParameter("connect")) && API.checkPassword(req);
+        if (connect) {
+            Peers.getAllPeers().parallelStream().unordered().forEach(Peers::connectPeer);
+        }
+        Set<String> addresses = new HashSet<>();
+        Peers.getAllPeers().forEach(peer -> {
+                    if (peer.getState() == Peer.State.CONNECTED
+                            && peer.shareAddress()
+                            && !peer.isBlacklisted()
+                            && peer.getVersion() != null && peer.getVersion().startsWith(version)
+                            && (weight == 0 || peer.getWeight() > weight)) {
+                        addresses.add(peer.getAnnouncedAddress());
+                    }
+                });
         StringBuilder buf = new StringBuilder();
         for (String address : addresses) {
             buf.append(address).append("; ");
         }
         JSONObject response = new JSONObject();
         response.put("peers", buf.toString());
+        response.put("count", addresses.size());
         return response;
+    }
+
+    @Override
+    final boolean requirePost() {
+        return true;
+    }
+
+    @Override
+    boolean allowRequiredBlockParameters() {
+        return false;
     }
 
 }

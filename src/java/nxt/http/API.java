@@ -20,6 +20,8 @@ import nxt.Constants;
 import nxt.Nxt;
 import nxt.util.Logger;
 import nxt.util.ThreadPool;
+import nxt.util.UPnP;
+import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
@@ -43,6 +45,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
 import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,8 +67,10 @@ public final class API {
     static final String adminPassword = Nxt.getStringProperty("nxt.adminPassword", "", true);
     static final boolean disableAdminPassword;
     static final int maxRecords = Nxt.getIntProperty("nxt.maxAPIRecords");
+    static final boolean enableAPIUPnP = Nxt.getBooleanProperty("nxt.enableAPIUPnP");
 
     private static final Server apiServer;
+    private static URI browserUri;
 
     static {
         List<String> allowedBotHostsList = Nxt.getStringListProperty("nxt.allowedBotHosts");
@@ -136,6 +142,11 @@ public final class API {
                 apiServer.addConnector(connector);
                 Logger.logMessage("API server using HTTPS port " + sslPort);
             }
+            try {
+                browserUri = new URI(enableSSL ? "https" : "http", null, "localhost", enableSSL ? sslPort : port, "/index.html", null, null);
+            } catch (URISyntaxException e) {
+                Logger.logInfoMessage("Cannot resolve browser URI", e);
+            }
 
             HandlerList apiHandlers = new HandlerList();
 
@@ -148,6 +159,7 @@ public final class API {
                 defaultServletHolder.setInitParameter("welcomeServlets", "true");
                 defaultServletHolder.setInitParameter("redirectWelcome", "true");
                 defaultServletHolder.setInitParameter("gzip", "true");
+                defaultServletHolder.setInitParameter("etags", "true");
                 apiHandler.addServlet(defaultServletHolder, "/*");
                 apiHandler.setWelcomeFiles(new String[]{Nxt.getStringProperty("nxt.apiWelcomeFile")});
             }
@@ -164,7 +176,8 @@ public final class API {
             }
 
             ServletHolder servletHolder = apiHandler.addServlet(APIServlet.class, "/nhz");
-            servletHolder.getRegistration().setMultipartConfig(new MultipartConfigElement(null, Constants.MAX_TAGGED_DATA_DATA_LENGTH, -1L, 0));
+            servletHolder.getRegistration().setMultipartConfig(new MultipartConfigElement(
+                    null, Math.max(Nxt.getIntProperty("nxt.maxUploadFileSize"), Constants.MAX_TAGGED_DATA_DATA_LENGTH), -1L, 0));
             if (Nxt.getBooleanProperty("nxt.enableAPIServerGZIPFilter")) {
                 FilterHolder gzipFilterHolder = apiHandler.addFilter(GzipFilter.class, "/nhz", null);
                 gzipFilterHolder.setInitParameter("methods", "GET,POST");
@@ -189,6 +202,13 @@ public final class API {
 
             ThreadPool.runBeforeStart(() -> {
                 try {
+                    if (enableAPIUPnP) {
+                        Connector[] apiConnectors = apiServer.getConnectors();
+                        for (Connector apiConnector : apiConnectors) {
+                            if (apiConnector instanceof ServerConnector)
+                                UPnP.addPort(((ServerConnector)apiConnector).getPort());
+                        }
+                    }
                     apiServer.start();
                     Logger.logMessage("Started API server at " + host + ":" + port + (enableSSL && port != sslPort ? ", " + host + ":" + sslPort : ""));
                 } catch (Exception e) {
@@ -212,6 +232,13 @@ public final class API {
         if (apiServer != null) {
             try {
                 apiServer.stop();
+                if (enableAPIUPnP) {
+                    Connector[] apiConnectors = apiServer.getConnectors();
+                    for (Connector apiConnector : apiConnectors) {
+                        if (apiConnector instanceof ServerConnector)
+                            UPnP.deletePort(((ServerConnector)apiConnector).getPort());
+                    }
+                }
             } catch (Exception e) {
                 Logger.logShutdownMessage("Failed to stop API server", e);
             }
@@ -279,6 +306,10 @@ public final class API {
             return hostAddressToCheck.and(netMask).equals(netAddress);
         }
 
+    }
+
+    public static URI getBrowserUri() {
+        return browserUri;
     }
 
     private API() {} // never

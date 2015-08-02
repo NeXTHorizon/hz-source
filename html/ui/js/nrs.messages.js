@@ -489,7 +489,7 @@ var NRS = (function(NRS, $) {
         NRS.sendRequest("getTransaction", {
             "transaction": transaction
         }, function (response) {
-            var fee = NRS.convertToNHZ(String(response.feeNQT).escapeHTML());
+            var fee = NRS.convertToNXT(String(response.feeNQT).escapeHTML());
             $('#extend_data_fee').val(fee);
             $('#extend_data_fee_label').html(String(fee) + " HZ");
         })

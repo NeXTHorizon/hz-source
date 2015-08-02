@@ -26,6 +26,7 @@ import nxt.CurrencyBuyOffer;
 import nxt.CurrencyTransfer;
 import nxt.DigitalGoodsStore;
 import nxt.Exchange;
+import nxt.ExchangeRequest;
 import nxt.Generator;
 import nxt.Nxt;
 import nxt.Order;
@@ -46,7 +47,7 @@ public final class GetState extends APIServlet.APIRequestHandler {
     static final GetState instance = new GetState();
 
     private GetState() {
-        super(new APITag[] {APITag.INFO}, "includeCounts");
+        super(new APITag[] {APITag.INFO}, "includeCounts", "adminPassword");
     }
 
     @Override
@@ -54,19 +55,7 @@ public final class GetState extends APIServlet.APIRequestHandler {
 
         JSONObject response = GetBlockchainStatus.instance.processRequest(req);
 
-        /*
-        long totalEffectiveBalance = 0;
-        try (DbIterator<Account> accounts = Account.getAllAccounts(0, -1)) {
-            for (Account account : accounts) {
-                long effectiveBalanceNXT = account.getEffectiveBalanceNXT();
-                if (effectiveBalanceNXT > 0) {
-                    totalEffectiveBalance += effectiveBalanceNXT;
-                }
-            }
-        }
-        */
-
-        if (!"false".equalsIgnoreCase(req.getParameter("includeCounts"))) {
+        if (!"false".equalsIgnoreCase(req.getParameter("includeCounts")) && API.checkPassword(req)) {
             response.put("numberOfTransactions", Nxt.getBlockchain().getTransactionCount());
             response.put("numberOfAccounts", Account.getCount());
             response.put("numberOfAssets", Asset.getCount());
@@ -79,6 +68,7 @@ public final class GetState extends APIServlet.APIRequestHandler {
             response.put("numberOfTransfers", AssetTransfer.getCount());
 	        response.put("numberOfCurrencies", Currency.getCount());
     	    response.put("numberOfOffers", CurrencyBuyOffer.getCount());
+            response.put("numberOfExchangeRequests", ExchangeRequest.getCount());
         	response.put("numberOfExchanges", Exchange.getCount());
         	response.put("numberOfCurrencyTransfers", CurrencyTransfer.getCount());
             response.put("numberOfAliases", Alias.getCount());
@@ -91,6 +81,8 @@ public final class GetState extends APIServlet.APIRequestHandler {
             response.put("numberOfPrunableMessages", PrunableMessage.getCount());
             response.put("numberOfTaggedData", TaggedData.getCount());
             response.put("numberOfDataTags", TaggedData.Tag.getTagCount());
+            response.put("numberOfAccountLeases", Account.getAccountLeaseCount());
+            response.put("numberOfActiveAccountLeases", Account.getActiveLeaseCount());
         }
         response.put("numberOfPeers", Peers.getAllPeers().size());
         response.put("numberOfActivePeers", Peers.getActivePeers().size());
@@ -103,6 +95,11 @@ public final class GetState extends APIServlet.APIRequestHandler {
         response.put("isOffline", Constants.isOffline);
         response.put("needsAdminPassword", !API.disableAdminPassword);
         return response;
+    }
+
+    @Override
+    boolean allowRequiredBlockParameters() {
+        return false;
     }
 
 }

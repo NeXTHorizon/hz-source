@@ -29,6 +29,8 @@ import nxt.util.Listener;
 import nxt.util.Listeners;
 import nxt.util.Logger;
 import nxt.util.ThreadPool;
+import nxt.util.UPnP;
+import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.FilterHolder;
@@ -42,12 +44,16 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
 import java.net.InetAddress;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -63,7 +69,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
 
 public final class Peers {
 
@@ -90,6 +95,7 @@ public final class Peers {
     static final int MAX_RESPONSE_SIZE = 1024 * 1024;
     static final boolean useWebSockets;
     static final int webSocketIdleTimeout;
+    static final boolean useProxy = System.getProperty("socksProxyHost") != null || System.getProperty("http.proxyHost") != null;
 
     private static final int DEFAULT_PEER_PORT = 7774;
     private static final int TESTNET_PEER_PORT = 6974;
@@ -98,9 +104,10 @@ public final class Peers {
     private static final int myPeerServerPort;
     private static final String myHallmark;
     private static final boolean shareMyAddress;
+    private static final boolean enablePeerUPnP;
     private static final int maxNumberOfInboundConnections;
     private static final int maxNumberOfOutboundConnections;
-    private static final int maxNumberOfConnectedPublicPeers;
+    public static final int maxNumberOfConnectedPublicPeers;
     private static final int maxNumberOfKnownPeers;
     private static final int minNumberOfKnownPeers;
     private static final boolean enableHallmarkProtection;
@@ -111,6 +118,10 @@ public final class Peers {
     private static final boolean savePeers;
     static final boolean ignorePeerAnnouncedAddress;
     static final boolean cjdnsOnly;
+    static final int MAX_VERSION_LENGTH = 10;
+    static final int MAX_APPLICATION_LENGTH = 20;
+    static final int MAX_PLATFORM_LENGTH = 30;
+    static final int MAX_ANNOUNCED_ADDRESS_LENGTH = 100;
 
 
     static final JSONStreamAware myPeerInfoRequest;
@@ -129,35 +140,79 @@ public final class Peers {
     static {
 
         myPlatform = Nxt.getStringProperty("nxt.myPlatform");
+        if (myPlatform.length() > MAX_PLATFORM_LENGTH) {
+            throw new RuntimeException("nxt.myPlatform length exceeds " + MAX_PLATFORM_LENGTH);
+        }
         myAddress = Convert.emptyToNull(Nxt.getStringProperty("nxt.myAddress", "").trim());
         if (myAddress != null && myAddress.endsWith(":" + TESTNET_PEER_PORT) && !Constants.isTestnet) {
             throw new RuntimeException("Port " + TESTNET_PEER_PORT + " should only be used for testnet!!!");
+        }
+        String myHost = null;
+        int myPort = -1;
+        if (myAddress != null) {
+            try {
+                URI uri = new URI("http://" + myAddress);
+                myHost = uri.getHost();
+                myPort = (uri.getPort() == -1 ? Peers.getDefaultPeerPort() : uri.getPort());
+                InetAddress[] myAddrs = InetAddress.getAllByName(myHost);
+                boolean addrValid = false;
+                Enumeration<NetworkInterface> intfs = NetworkInterface.getNetworkInterfaces();
+                chkAddr: while (intfs.hasMoreElements()) {
+                    NetworkInterface intf = intfs.nextElement();
+                    List<InterfaceAddress> intfAddrs = intf.getInterfaceAddresses();
+                    for (InterfaceAddress intfAddr: intfAddrs) {
+                        InetAddress extAddr = intfAddr.getAddress();
+                        for (InetAddress myAddr : myAddrs) {
+                            if (extAddr.equals(myAddr)) {
+                                addrValid = true;
+                                break chkAddr;
+                            }
+                        }
+                    }
+                }
+                if (!addrValid) {
+                    InetAddress extAddr = UPnP.getExternalAddress();
+                    if (extAddr != null) {
+                        for (InetAddress myAddr : myAddrs) {
+                            if (extAddr.equals(myAddr)) {
+                                addrValid = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (!addrValid) {
+                    Logger.logWarningMessage("Your announced address does not match your external address");
+                }
+            } catch (SocketException e) {
+                Logger.logErrorMessage("Unable to enumerate the network interfaces :" + e.toString());
+            } catch (URISyntaxException | UnknownHostException e) {
+                Logger.logWarningMessage("Your announced address is not valid: " + e.toString());
+            }
         }
         myPeerServerPort = Nxt.getIntProperty("nxt.peerServerPort");
         if (myPeerServerPort == TESTNET_PEER_PORT && !Constants.isTestnet) {
             throw new RuntimeException("Port " + TESTNET_PEER_PORT + " should only be used for testnet!!!");
         }
         shareMyAddress = Nxt.getBooleanProperty("nxt.shareMyAddress") && ! Constants.isOffline;
+        enablePeerUPnP = Nxt.getBooleanProperty("nxt.enablePeerUPnP");
         myHallmark = Nxt.getStringProperty("nxt.myHallmark");
         if (Peers.myHallmark != null && Peers.myHallmark.length() > 0) {
             try {
                 Hallmark hallmark = Hallmark.parseHallmark(Peers.myHallmark);
                 if (!hallmark.isValid()) {
-                    throw new RuntimeException();
+                    throw new RuntimeException("Hallmark is not valid");
                 }
                 if (myAddress != null) {
-                    URI uri = new URI("http://" + myAddress);
-                    String host = uri.getHost();
-                    if (!hallmark.getHost().equals(host)) {
+                    if (!hallmark.getHost().equals(myHost)) {
                         throw new RuntimeException("Invalid hallmark host");
                     }
-                    int myPort = uri.getPort() == -1 ? Peers.getDefaultPeerPort() : uri.getPort();
                     if (myPort != hallmark.getPort()) {
                         throw new RuntimeException("Invalid hallmark port");
                     }
                 }
-            } catch (RuntimeException | URISyntaxException e) {
-                Logger.logMessage("Your hallmark is invalid: " + Peers.myHallmark + " for your address: " + myAddress);
+            } catch (RuntimeException e) {
+                Logger.logErrorMessage("Your hallmark is invalid: " + Peers.myHallmark + " for your address: " + myAddress);
                 throw new RuntimeException(e.toString(), e);
             }
         }
@@ -168,14 +223,19 @@ public final class Peers {
                 URI uri = new URI("http://" + myAddress);
                 String host = uri.getHost();
                 int port = uri.getPort();
+                String announcedAddress;
                 if (!Constants.isTestnet) {
                     if (port >= 0)
-                        json.put("announcedAddress", myAddress);
+                        announcedAddress = myAddress;
                     else
-                        json.put("announcedAddress", host + (myPeerServerPort != DEFAULT_PEER_PORT ? ":" + myPeerServerPort : ""));
+                        announcedAddress = host + (myPeerServerPort != DEFAULT_PEER_PORT ? ":" + myPeerServerPort : "");
                 } else {
-                    json.put("announcedAddress", host);
+                    announcedAddress = host;
                 }
+                if (announcedAddress == null || announcedAddress.length() > MAX_ANNOUNCED_ADDRESS_LENGTH) {
+                    throw new RuntimeException("Invalid announced address length: " + announcedAddress);
+                }
+                json.put("announcedAddress", announcedAddress);
             } catch (URISyntaxException e) {
                 Logger.logMessage("Your announce address is invalid: " + myAddress);
                 throw new RuntimeException(e.toString(), e);
@@ -218,7 +278,7 @@ public final class Peers {
         pullThreshold = Nxt.getIntProperty("nxt.pullThreshold");
         useWebSockets = Nxt.getBooleanProperty("nxt.useWebSockets");
         webSocketIdleTimeout = Nxt.getIntProperty("nxt.webSocketIdleTimeout");
-        blacklistingPeriod = Nxt.getIntProperty("nxt.blacklistingPeriod");
+        blacklistingPeriod = Nxt.getIntProperty("nxt.blacklistingPeriod") / 1000;
         communicationLoggingMask = Nxt.getIntProperty("nxt.communicationLoggingMask");
         sendToPeersLimit = Nxt.getIntProperty("nxt.sendToPeersLimit");
         usePeersDb = Nxt.getBooleanProperty("nxt.usePeersDb") && ! Constants.isOffline;
@@ -226,6 +286,9 @@ public final class Peers {
         getMorePeers = Nxt.getBooleanProperty("nxt.getMorePeers");
         cjdnsOnly = Nxt.getBooleanProperty("nxt.cjdnsOnly");
         ignorePeerAnnouncedAddress = Nxt.getBooleanProperty("nxt.ignorePeerAnnouncedAddress");
+        if (useWebSockets && useProxy) {
+            Logger.logMessage("Using a proxy, will not create outbound websockets.");
+        }
 
         final List<Future<String>> unresolvedPeers = Collections.synchronizedList(new ArrayList<>());
 
@@ -333,6 +396,13 @@ public final class Peers {
                 peerServer.setStopAtShutdown(true);
                 ThreadPool.runBeforeStart(() -> {
                     try {
+                        if (enablePeerUPnP) {
+                            Connector[] peerConnectors = peerServer.getConnectors();
+                            for (Connector peerConnector : peerConnectors) {
+                                if (peerConnector instanceof ServerConnector)
+                                    UPnP.addPort(((ServerConnector)peerConnector).getPort());
+                            }
+                        }
                         peerServer.start();
                         Logger.logMessage("Started peer networking server at " + host + ":" + port);
                     } catch (Exception e) {
@@ -357,7 +427,7 @@ public final class Peers {
         try {
             try {
 
-                long curTime = System.currentTimeMillis();
+                int curTime = Nxt.getEpochTime();
                 for (PeerImpl peer : peers.values()) {
                     peer.updateBlacklistedStatus(curTime);
                 }
@@ -394,7 +464,7 @@ public final class Peers {
                                     if (peer.getState() == Peer.State.CONNECTED &&
                                             enableHallmarkProtection && peer.getWeight() == 0 &&
                                             hasTooManyOutboundConnections()) {
-                                        Logger.logDebugMessage("Too many outbound connections, deactivating peer "+peer.getHost());
+                                        Logger.logDebugMessage("Too many outbound connections, deactivating peer " + peer.getHost());
                                         peer.deactivate();
                                     }
                                 }
@@ -405,11 +475,13 @@ public final class Peers {
                         }
                     }
 
-                    peers.values().parallelStream().unordered()
-                            .filter(peer -> peer.getState() == Peer.State.CONNECTED
-                                    && now - peer.getLastUpdated() > 3600
-                                    && now - peer.getLastConnectAttempt() > 600)
-                            .forEach(PeerImpl::connect);
+                    peers.values().forEach(peer -> {
+                        if (peer.getState() == Peer.State.CONNECTED
+                                && now - peer.getLastUpdated() > 3600
+                                && now - peer.getLastConnectAttempt() > 600) {
+                            peersService.submit(peer::connect);
+                        }
+                    });
 
                     if (hasTooManyKnownPeers() && hasEnoughConnectedPublicPeers(Peers.maxNumberOfConnectedPublicPeers)) {
                         int initialSize = peers.size();
@@ -447,12 +519,12 @@ public final class Peers {
                         }
                     }
 
-                    peers.values().parallelStream().unordered()
-                            .filter(peer -> peer.getLastInboundRequest() != 0 && now - peer.getLastInboundRequest() > 1800)
-                            .forEach(peer -> {
-                                peer.setLastInboundRequest(0);
-                                notifyListeners(peer, Event.REMOVE_INBOUND);
-                            });
+                    peers.values().forEach(peer -> {
+                        if (peer.getLastInboundRequest() != 0 && now - peer.getLastInboundRequest() > Peers.webSocketIdleTimeout / 1000) {
+                            peer.setLastInboundRequest(0);
+                            notifyListeners(peer, Event.REMOVE_INBOUND);
+                        }
+                    });
 
                 } catch (Exception e) {
                     Logger.logDebugMessage("Error connecting to peer", e);
@@ -518,13 +590,15 @@ public final class Peers {
                         }
                     }
 
-                    JSONArray myPeers = Peers.getAllPeers().parallelStream().unordered()
-                            .filter(myPeer -> !myPeer.isBlacklisted() && myPeer.getAnnouncedAddress() != null
-                                    && myPeer.getState() == Peer.State.CONNECTED && myPeer.shareAddress()
-                                    && !addedAddresses.contains(myPeer.getAnnouncedAddress())
-                                    && !myPeer.getAnnouncedAddress().equals(peer.getAnnouncedAddress()))
-                            .map(Peer::getAnnouncedAddress)
-                            .collect(Collectors.toCollection(JSONArray::new));
+                    JSONArray myPeers = new JSONArray();
+                    Peers.getAllPeers().forEach(myPeer -> {
+                        if (!myPeer.isBlacklisted() && myPeer.getAnnouncedAddress() != null
+                                && myPeer.getState() == Peer.State.CONNECTED && myPeer.shareAddress()
+                                && !addedAddresses.contains(myPeer.getAnnouncedAddress())
+                                && !myPeer.getAnnouncedAddress().equals(peer.getAnnouncedAddress())) {
+                            myPeers.add(myPeer.getAnnouncedAddress());
+                        }
+                    });
                     if (myPeers.size() > 0) {
                         JSONObject request = new JSONObject();
                         request.put("requestType", "addPeers");
@@ -602,9 +676,11 @@ public final class Peers {
     };
 
     static {
-        Account.addListener(account -> peers.values().parallelStream().unordered()
-                .filter(peer -> peer.getHallmark() != null && peer.getHallmark().getAccountId() == account.getId())
-                .forEach(peer -> Peers.listeners.notify(peer, Event.WEIGHT)), Account.Event.BALANCE);
+        Account.addListener(account -> peers.values().forEach(peer -> {
+            if (peer.getHallmark() != null && peer.getHallmark().getAccountId() == account.getId()) {
+                Peers.listeners.notify(peer, Event.WEIGHT);
+            }
+        }), Account.Event.BALANCE);
     }
 
     static {
@@ -625,6 +701,13 @@ public final class Peers {
         if (Init.peerServer != null) {
             try {
                 Init.peerServer.stop();
+                if (enablePeerUPnP) {
+                    Connector[] peerConnectors = Init.peerServer.getConnectors();
+                    for (Connector peerConnector : peerConnectors) {
+                        if (peerConnector instanceof ServerConnector)
+                            UPnP.deletePort(((ServerConnector)peerConnector).getPort());
+                    }
+                }
             } catch (Exception e) {
                 Logger.logShutdownMessage("Failed to stop peer server", e);
             }
@@ -666,10 +749,16 @@ public final class Peers {
     }
 
     public static List<Peer> getPeers(Filter<Peer> filter, int limit) {
-        return peers.values().parallelStream().unordered()
-                .filter(filter::ok)
-                .limit(limit)
-                .collect(Collectors.toList());
+        List<Peer> result = new ArrayList<>();
+        for (Peer peer : peers.values()) {
+            if (filter.ok(peer)) {
+                result.add(peer);
+                if (result.size() >= limit) {
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
     public static Peer getPeer(String host) {
@@ -758,7 +847,9 @@ public final class Peers {
         if (Peers.myAddress != null && Peers.myAddress.equalsIgnoreCase(announcedAddress)) {
             return null;
         }
-
+        if (announcedAddress != null && announcedAddress.length() > MAX_ANNOUNCED_ADDRESS_LENGTH) {
+            return null;
+        }
         peer = new PeerImpl(host, announcedAddress);
         if (Constants.isTestnet && peer.getPort() != TESTNET_PEER_PORT) {
             Logger.logDebugMessage("Peer " + host + " on testnet is not using port " + TESTNET_PEER_PORT + ", ignoring");

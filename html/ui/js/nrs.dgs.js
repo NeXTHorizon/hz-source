@@ -73,8 +73,7 @@ var NRS = (function(NRS, $) {
 			status = $.t("refunded");
 			modal = "#dgs_view_refund_modal";
 		} else if (!purchase.goodsData) {
-			var currentTime = (new Date() - Date.UTC(2014, 2, 22, 22, 22, 22, 0)) / 1000;
-			if (purchase.deliveryDeadlineTimestamp < currentTime) {
+            if (purchase.deliveryDeadlineTimestamp < NRS.toEpochTime()) {
 				status = $.t("not_delivered_in_time");
 			} else {
 				status = $.t("failed");
@@ -287,6 +286,23 @@ var NRS = (function(NRS, $) {
 
 
 	NRS.pages.dgs_search = function(callback) {
+        var dgsDisabled = $("#dgs_disabled");
+        var topSection = $("#dgs_top");
+        var searchCenter = $("#dgs_search_center");
+        var pagination = $("#dgs_pagination");
+        if (NRS.settings.marketplace != "1") {
+			dgsDisabled.show();
+			topSection.hide();
+			searchCenter.hide();
+			pagination.hide();
+            $("#dgs_search_results").hide();
+            return;
+		}
+		dgsDisabled.hide();
+		topSection.show();
+		searchCenter.show();
+		pagination.show();
+
 		if (_currentSearch["page"] == "seller") {
 			NRS.dgs_search_seller();
 		} else if (_currentSearch["page"] == "fulltext") {
@@ -577,7 +593,7 @@ var NRS = (function(NRS, $) {
 			}
 		}, false);
 
-		data.deliveryDeadlineTimestamp = String(Math.floor((new Date() - Date.UTC(2014, 2, 22, 22, 22, 22, 0)) / 1000) + (60 * 60 * data.deliveryDeadlineTimestamp));
+		data.deliveryDeadlineTimestamp = String(NRS.toEpochTime() + 60 * 60 * data.deliveryDeadlineTimestamp);
 
 		delete data.seller;
 
@@ -839,7 +855,7 @@ var NRS = (function(NRS, $) {
 							var refund = orderTotalBeforeDiscount.subtract(new BigInteger(String(response.discountNQT)));
 
 							$("#dgs_refund_purchase").val(response.purchase);
-							$("#dgs_refund_refund").val(NRS.convertToNHZ(refund));
+							$("#dgs_refund_refund").val(NRS.convertToNXT(refund));
 						} else if (type == "dgs_view_purchase_modal") {
 							var primaryButton = $modal.find("button.btn-primary");
 							primaryButton.data("purchase", response.purchase);
@@ -882,8 +898,7 @@ var NRS = (function(NRS, $) {
 
 							if (type == "dgs_view_delivery_modal") {
 								if (!response.pending && !response.goodsData) {
-									var currentTime = (new Date() - Date.UTC(2014, 2, 22, 22, 22, 22, 0)) / 1000;
-									if (response.deliveryDeadlineTimestamp < currentTime) {
+                                    if (response.deliveryDeadlineTimestamp < NRS.toEpochTime()) {
 										$("#dgs_view_delivery_output").append("<div class='callout callout-danger' style='margin-bottom:0'>" + $.t("purchase_not_delivered_in_time") + "</div>");
 									} else {
 										$("#dgs_view_delivery_output").append("<div class='callout callout-danger' style='margin-bottom:0'>" + $.t("purchase_failed") + "</div>");
@@ -979,7 +994,7 @@ var NRS = (function(NRS, $) {
 			if (type == "dgs_quantity_change_modal") {
 				$("#dgs_quantity_change_current_quantity, #dgs_quantity_change_quantity").val(String(response.quantity).escapeHTML());
 			} else if (type == "dgs_price_change_modal") {
-				$("#dgs_price_change_current_price, #dgs_price_change_price").val(NRS.convertToNHZ(response.priceNQT).escapeHTML());
+				$("#dgs_price_change_current_price, #dgs_price_change_price").val(NRS.convertToNXT(response.priceNQT).escapeHTML());
 			} else if (type == "dgs_purchase_modal") {
 				$modal.find("input[name=recipient]").val(response.sellerRS);
 
@@ -1065,6 +1080,12 @@ var NRS = (function(NRS, $) {
 	$("#dgs_clear_results").on("click", function(e) {
 		e.preventDefault();
 		NRS.dgs_search_main();
+	});
+
+	$("#accept_dgs_link").on("click", function(e) {
+		e.preventDefault();
+		NRS.updateSettings("marketplace", "1");
+		NRS.pages.dgs_search();
 	});
 
 	$("#user_info_modal").on("click", "a[data-goto-goods]", function(e) {

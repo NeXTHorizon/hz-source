@@ -35,7 +35,7 @@ var NRS = (function(NRS, $, undefined) {
 				NRS.login(true,password);
 			}
 		});
-	}
+	};
 
 	NRS.showLoginOrWelcomeScreen = function() {
 		if (NRS.hasLocalStorage && localStorage.getItem("logged_in")) {
@@ -43,7 +43,7 @@ var NRS = (function(NRS, $, undefined) {
 		} else {
 			NRS.showWelcomeScreen();
 		}
-	}
+	};
 
 	NRS.showLoginScreen = function() {
 		$("#account_phrase_custom_panel, #account_phrase_generator_panel, #welcome_panel, #custom_passphrase_link").hide();
@@ -57,12 +57,12 @@ var NRS = (function(NRS, $, undefined) {
 		setTimeout(function() {
 			$("#login_password").focus()
 		}, 10);
-	}
+	};
 
 	NRS.showWelcomeScreen = function() {
 		$("#login_panel, #account_phrase_generator_panel, #account_phrase_custom_panel, #welcome_panel, #custom_passphrase_link").hide();
 		$("#welcome_panel").show();
-	}
+	};
 
 	NRS.registerUserDefinedAccount = function() {
 		$("#account_phrase_generator_panel, #login_panel, #welcome_panel, #custom_passphrase_link").hide();
@@ -70,7 +70,7 @@ var NRS = (function(NRS, $, undefined) {
 		$("#account_phrase_generator_panel :input:not(:button):not([type=submit])").val("");
 		$("#account_phrase_custom_panel").show();
 		$("#registration_password").focus();
-	}
+	};
 
 	NRS.registerAccount = function() {
 		$("#login_panel, #welcome_panel").hide();
@@ -105,7 +105,7 @@ var NRS = (function(NRS, $, undefined) {
 
 			PassPhraseGenerator.generatePassPhrase("#account_phrase_generator_panel");
 		}
-	}
+	};
 
 	NRS.verifyGeneratedPassphrase = function() {
 		var password = $.trim($("#account_phrase_generator_panel .step_3 textarea").val());
@@ -119,10 +119,10 @@ var NRS = (function(NRS, $, undefined) {
 			$("#account_phrase_generator_panel textarea").val("");
 			$("#account_phrase_generator_panel .step_3 .callout").hide();
 		}
-	}
+	};
 
 	$("#account_phrase_custom_panel form").submit(function(event) {
-		event.preventDefault()
+		event.preventDefault();
 
 		var password = $("#registration_password").val();
 		var repeat = $("#registration_password_repeat").val();
@@ -179,7 +179,7 @@ var NRS = (function(NRS, $, undefined) {
 			$('#login_account_container').hide();
 			$('#login_account_container_other').show();
 		}
-	}
+	};
 	
 	NRS.switchAccount = function(account) {
 		NRS.setDecryptionPassword("");
@@ -187,7 +187,7 @@ var NRS = (function(NRS, $, undefined) {
 		var url = window.location.pathname;    
 		url += '?account='+account;
 		window.location.href = url;
-	}
+	};
 	
 	$("#loginButtons").on('click',function(e) {
 		e.preventDefault();
@@ -215,7 +215,7 @@ var NRS = (function(NRS, $, undefined) {
 		else 
 			NRS.setCookie("savedNxtAccounts",accounts,30);
 		NRS.listAccounts();
-	}
+	};
 
 	NRS.login = function(passLogin, password, callback) {
 		if (passLogin){
@@ -312,10 +312,10 @@ var NRS = (function(NRS, $, undefined) {
 						$(".hide_secret_phrase").show();
 					}
 					if ($("#disable_all_plugins").length == 1 && !($("#disable_all_plugins").is(":checked"))) {
-						NRS.disablePluginsDuringSession = false;
-					} else {
-						NRS.disablePluginsDuringSession = true;
-					}
+                        NRS.disablePluginsDuringSession = false;
+                    } else {
+                        NRS.disablePluginsDuringSession = true;
+                    }
 
 					$("#account_id").html(String(NRS.accountRS).escapeHTML()).css("font-size", "12px");
 
@@ -343,32 +343,27 @@ var NRS = (function(NRS, $, undefined) {
 						} else {
 							NRS.isLeased = false;
 						}
-
-						//forging requires password to be sent to the server, so we don't do it automatically if not localhost
-                        var forgingIndicator = $("#forging_indicator");
-                        if (!NRS.accountInfo.publicKey || NRS.accountInfo.effectiveBalanceNHZ == 0 ||
-                            !NRS.isLocalHost || !passLogin ||
-                            NRS.downloadingBlockchain || NRS.isLeased) {
-                            forgingIndicator.removeClass("forging");
-							forgingIndicator.find("span").html($.t("not_forging")).attr("data-i18n", "not_forging");
-							forgingIndicator.show();
-							NRS.isForging = false;
-                            return;
+						NRS.updateForgingTooltip($.t("forging_unknown_tooltip"));
+						NRS.updateForgingStatus(passLogin ? password : null);
+						if (NRS.isLocalHost && passLogin) {
+							var forgingIndicator = $("#forging_indicator");
+							NRS.sendRequest("startForging", {
+								"secretPhrase": password
+							}, function (response) {
+								if ("deadline" in response) {
+									forgingIndicator.addClass("forging");
+									forgingIndicator.find("span").html($.t("forging")).attr("data-i18n", "forging");
+									NRS.forgingStatus = NRS.constants.FORGING;
+									NRS.updateForgingTooltip(NRS.getForgingTooltip);
+								} else {
+									forgingIndicator.removeClass("forging");
+									forgingIndicator.find("span").html($.t("not_forging")).attr("data-i18n", "not_forging");
+									NRS.forgingStatus = NRS.constants.NOT_FORGING;
+									NRS.updateForgingTooltip(response.errorDescription);
+								}
+								forgingIndicator.show();
+							});
 						}
-                        NRS.sendRequest("startForging", {
-                            "secretPhrase": password
-                        }, function(response) {
-                            if ("deadline" in response) {
-                                forgingIndicator.addClass("forging");
-                                forgingIndicator.find("span").html($.t("forging")).attr("data-i18n", "forging");
-                                NRS.isForging = true;
-                            } else {
-                                forgingIndicator.removeClass("forging");
-                                forgingIndicator.find("span").html($.t("not_forging")).attr("data-i18n", "not_forging");
-                                NRS.isForging = false;
-                            }
-                            forgingIndicator.show();
-                        });
 					});
 
 					//NRS.getAccountAliases();
@@ -429,22 +424,23 @@ var NRS = (function(NRS, $, undefined) {
 					$(".sidebar .treeview").tree();
 					$('#dashboard_link a').addClass("ignore").click();
 
-					if ($("#remember_account").is(":checked")) {
+					if ($("#remember_account").is(":checked") || NRS.newlyCreatedAccount) {
 						var accountExists = 0;
-						if (NRS.getCookie("savedNxtAccounts")){
+						if (NRS.getCookie("savedNxtAccounts")) {
 							var accounts = NRS.getCookie("savedNxtAccounts").split(";");
 							$.each(accounts, function(index, account) {
-								if (account == NRS.accountRS)
-									accountExists = 1;
+								if (account == NRS.accountRS) {
+                                    accountExists = 1;
+                                }
 							});
 						}
 						if (!accountExists){
-							if (NRS.getCookie("savedNxtAccounts") && NRS.getCookie("savedNxtAccounts")!=""){
-								var accounts=NRS.getCookie("savedNxtAccounts") + NRS.accountRS + ";";
+							if (NRS.getCookie("savedNxtAccounts") && NRS.getCookie("savedNxtAccounts") != ""){
+								var accounts = NRS.getCookie("savedNxtAccounts") + NRS.accountRS + ";";
 								NRS.setCookie("savedNxtAccounts",accounts,30);
-							}
-							else
-								NRS.setCookie("savedNxtAccounts",NRS.accountRS + ";",30);
+							} else {
+                                NRS.setCookie("savedNxtAccounts", NRS.accountRS + ";", 30);
+                            }
 						}
 					}
 
@@ -453,7 +449,7 @@ var NRS = (function(NRS, $, undefined) {
 					/* Add accounts to dropdown for quick switching */
 					$("#account_id_dropdown .dropdown-menu .switchAccount").remove();
 					if (NRS.getCookie("savedNxtAccounts") && NRS.getCookie("savedNxtAccounts")!=""){
-						$("#account_id_dropdown .dropdown-menu").append("<li class='switchAccount' style='padding-left:2px;'><b>Switch Account to</b></li>")
+						$("#account_id_dropdown .dropdown-menu").append("<li class='switchAccount' style='padding-left:2px;'><b>Switch Account to</b></li>");
 						var accounts = NRS.getCookie("savedNxtAccounts").split(";");
 						$.each(accounts, function(index, account) {
 							if (account != ''){
@@ -474,11 +470,11 @@ var NRS = (function(NRS, $, undefined) {
 				});
 			});
 		});
-	}
+	};
 
 	$("#logout_button_container").on("show.bs.dropdown", function(e) {
 		
-		if (!NRS.isForging) {
+		if (NRS.forgingStatus != NRS.constants.FORGING) {
 			//e.preventDefault();
 			$(this).find("[data-i18n='logout_stop_forging']").hide();
 		}
@@ -529,7 +525,7 @@ var NRS = (function(NRS, $, undefined) {
 		} else {
 			$("#lockscreen_active_plugins_warning").hide();
 		}
-	}
+	};
 
 	NRS.showLockscreen = function() {
 		NRS.listAccounts();
@@ -540,7 +536,7 @@ var NRS = (function(NRS, $, undefined) {
 		}
 
 		$("#center").show();
-	}
+	};
 
 	NRS.unlock = function() {
 		if (NRS.hasLocalStorage && !localStorage.getItem("logged_in")) {
@@ -567,14 +563,7 @@ var NRS = (function(NRS, $, undefined) {
 		$("#login_error").html("").hide();
 
 		$(document.documentElement).scrollTop(0);
-	}
-
-	/*$("#logout_button").click(function(e) {
-		if (!NRS.isForging) {
-			e.preventDefault();
-			NRS.logout();
-		}
-	});*/
+	};
 
 	NRS.logout = function(stopForging) {
 		NRS.database.delete("data", [{
@@ -583,19 +572,19 @@ var NRS = (function(NRS, $, undefined) {
   			"id": 'savepassphrase'
   		}],function(e,a){
   			setTimeout(function(){
-  				if (stopForging && NRS.isForging) {
+				if (stopForging && NRS.forgingStatus == NRS.constants.FORGING) {
 					$("#stop_forging_modal .show_logout").show();
 					$("#stop_forging_modal").modal("show");
 				} else {
 					NRS.setDecryptionPassword("");
 					NRS.setPassword("");
-			//window.location.reload();
-			window.location.href = window.location.pathname;    
+					//window.location.reload();
+					window.location.href = window.location.pathname;    
 				}
   			},200);
   		});
 		
-	}
+	};
 
 	$("#logout_clear_user_data_confirm_btn").click(function(e) {
 		e.preventDefault();
@@ -615,12 +604,12 @@ var NRS = (function(NRS, $, undefined) {
 		}
 
 		NRS.logout();
-	})
+	});
 
 	NRS.setPassword = function(password) {
 		NRS.setEncryptionPassword(password);
 		NRS.setServerPassword(password);
-	}
+	};
 
 	NRS.relogin = function(shortpw) {
 		NRS.database.select("data", [{

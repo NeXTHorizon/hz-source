@@ -232,7 +232,7 @@ var NRS = (function (NRS, $, undefined) {
             currentSubPage = NRS.currentSubPage;
         }
 
-        var type = ("secretPhrase" in data ? "POST" : "GET");
+        var type = ("secretPhrase" in data || "adminPassword" in data || requestType == "getForging" ? "POST" : "GET");
         var url = NRS.server + "/nhz?requestType=" + requestType;
 
         if (type == "GET") {
@@ -264,7 +264,8 @@ var NRS = (function (NRS, $, undefined) {
             }
         }
 
-        if (!NRS.isLocalHost && type == "POST" && requestType != "startForging" && requestType != "stopForging") {
+        if (!NRS.isLocalHost && type == "POST" &&
+            requestType != "startForging" && requestType != "stopForging" && requestType != "getForging") {
             if (NRS.rememberPassword) {
                 secretPhrase = _password;
             } else {
@@ -696,6 +697,16 @@ var NRS = (function (NRS, $, undefined) {
                 if (transaction.transactionFullHash !== data.transactionFullHash) {
                     return false;
                 }
+                transaction.revealedSecretLength = converters.byteArrayToSignedInt32(byteArray, pos);
+                pos += 4;
+                if (transaction.revealedSecretLength > 0) {
+                    transaction.revealedSecret = converters.byteArrayToHexString(byteArray.slice(pos, pos + transaction.revealedSecretLength));
+                    pos += transaction.revealedSecretLength;
+                }
+                if (transaction.revealedSecret !== data.revealedSecret &&
+                    transaction.revealedSecret !== converters.byteArrayToHexString(NRS.getUtf8Bytes(data.revealedSecretText))) {
+                    return false;
+                }
                 break;
             case "issueAsset":
                 if (transaction.type !== 2 || transaction.subtype !== 0) {
@@ -1091,28 +1102,28 @@ var NRS = (function (NRS, $, undefined) {
                 pos += 32;
                 var sha256 = CryptoJS.algo.SHA256.create();
                 var utfBytes = NRS.getUtf8Bytes(data.name);
-                sha256.update(converters.byteArrayToWordArray(utfBytes));
+                sha256.update(converters.byteArrayToWordArrayEx(utfBytes));
                 utfBytes = NRS.getUtf8Bytes(data.description);
-                sha256.update(converters.byteArrayToWordArray(utfBytes));
+                sha256.update(converters.byteArrayToWordArrayEx(utfBytes));
                 utfBytes = NRS.getUtf8Bytes(data.tags);
-                sha256.update(converters.byteArrayToWordArray(utfBytes));
+                sha256.update(converters.byteArrayToWordArrayEx(utfBytes));
                 utfBytes = NRS.getUtf8Bytes(data.type);
-                sha256.update(converters.byteArrayToWordArray(utfBytes));
+                sha256.update(converters.byteArrayToWordArrayEx(utfBytes));
                 utfBytes = NRS.getUtf8Bytes(data.channel);
-                sha256.update(converters.byteArrayToWordArray(utfBytes));
+                sha256.update(converters.byteArrayToWordArrayEx(utfBytes));
                 var isText = [];
                 if (data.isText == "true") {
                     isText.push(1);
                 } else {
                     isText.push(0);
                 }
-                sha256.update(converters.byteArrayToWordArray(isText));
+                sha256.update(converters.byteArrayToWordArrayEx(isText));
                 var utfBytes = NRS.getUtf8Bytes(data.filename);
-                sha256.update(converters.byteArrayToWordArray(utfBytes));
+                sha256.update(converters.byteArrayToWordArrayEx(utfBytes));
                 var dataBytes = new Int8Array(data.filebytes);
-                sha256.update(converters.byteArrayToWordArray(dataBytes));
+                sha256.update(converters.byteArrayToWordArrayEx(dataBytes));
                 var hashWords = sha256.finalize();
-                var calculatedHash = converters.wordArrayToByteArrayImpl(hashWords, true);
+                var calculatedHash = converters.wordArrayToByteArrayEx(hashWords);
                 if (serverHash !== converters.byteArrayToHexString(calculatedHash)) {
                     return false;
                 }
@@ -1239,7 +1250,7 @@ var NRS = (function (NRS, $, undefined) {
                 return false;
             }
             pos += 4;
-            if (String(byteArray[pos]) !== data.phasingVotingModel) {
+            if (byteArray[pos] != (parseInt(data.phasingVotingModel) & 0xFF)) {
                 return false;
             }
             pos++;
@@ -1280,6 +1291,7 @@ var NRS = (function (NRS, $, undefined) {
                 }
             }
             var hashedSecretLength = byteArray[pos];
+            pos++;
             if (hashedSecretLength > 0 && converters.byteArrayToHexString(byteArray.slice(pos, pos + hashedSecretLength)) !== data.phasingHashedSecret) {
                 return false;
             }
@@ -1305,11 +1317,11 @@ var NRS = (function (NRS, $, undefined) {
             } else {
                 isText.push(0);
             }
-            sha256.update(converters.byteArrayToWordArray(isText));
+            sha256.update(converters.byteArrayToWordArrayEx(isText));
             var utfBytes = NRS.getUtf8Bytes(data.message);
-            sha256.update(converters.byteArrayToWordArray(utfBytes));
+            sha256.update(converters.byteArrayToWordArrayEx(utfBytes));
             var hashWords = sha256.finalize();
-            var calculatedHash = converters.wordArrayToByteArrayImpl(hashWords, true);
+            var calculatedHash = converters.wordArrayToByteArrayEx(hashWords);
             if (serverHash !== converters.byteArrayToHexString(calculatedHash)) {
                 return false;
             }
@@ -1323,15 +1335,15 @@ var NRS = (function (NRS, $, undefined) {
             pos += 32;
             var sha256 = CryptoJS.algo.SHA256.create();
             if (data.messageToEncryptIsText == "true") {
-                sha256.update(converters.byteArrayToWordArray([1]));
+                sha256.update(converters.byteArrayToWordArrayEx([1]));
             } else {
-                sha256.update(converters.byteArrayToWordArray([0]));
+                sha256.update(converters.byteArrayToWordArrayEx([0]));
             }
-            sha256.update(converters.byteArrayToWordArray([1])); // compression
-            sha256.update(converters.byteArrayToWordArray(converters.hexStringToByteArray(data.encryptedMessageData)));
-            sha256.update(converters.byteArrayToWordArray(converters.hexStringToByteArray(data.encryptedMessageNonce)));
+            sha256.update(converters.byteArrayToWordArrayEx([1])); // compression
+            sha256.update(converters.byteArrayToWordArrayEx(converters.hexStringToByteArray(data.encryptedMessageData)));
+            sha256.update(converters.byteArrayToWordArrayEx(converters.hexStringToByteArray(data.encryptedMessageNonce)));
             var hashWords = sha256.finalize();
-            var calculatedHash = converters.wordArrayToByteArray(hashWords);
+            var calculatedHash = converters.wordArrayToByteArrayEx(hashWords);
             if (serverHash !== converters.byteArrayToHexString(calculatedHash)) {
                 return false;
             }

@@ -47,4 +47,9 @@ final class ProcessTransactions extends PeerServlet.PeerRequestHandler {
 
     }
 
+    @Override
+    boolean rejectWhileDownloading() {
+        return true;
+    }
+
 }

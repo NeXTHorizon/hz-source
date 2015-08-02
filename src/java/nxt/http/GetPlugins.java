@@ -57,11 +57,14 @@ public final class GetPlugins extends APIServlet.APIRequestHandler {
             return JSONResponses.fileNotFound(e.getMessage());
         }
         JSONArray plugins = new JSONArray();
-        for (Path dir : pluginDirListing.getDirectories()) {
-            plugins.add(Paths.get(dir.toString()).getFileName().toString());
-        }
+        pluginDirListing.getDirectories().forEach(dir -> plugins.add(Paths.get(dir.toString()).getFileName().toString()));
         response.put("plugins", plugins);
         return response;
+    }
+
+    @Override
+    boolean allowRequiredBlockParameters() {
+        return false;
     }
 
     private static class PluginDirListing extends SimpleFileVisitor<Path> {

@@ -16,6 +16,7 @@
 
 package nxt.peer;
 
+import nxt.BlockchainProcessor;
 import nxt.Nxt;
 import nxt.util.CountingInputReader;
 import nxt.util.CountingOutputWriter;
@@ -50,6 +51,7 @@ public final class PeerServlet extends WebSocketServlet {
 
     abstract static class PeerRequestHandler {
         abstract JSONStreamAware processRequest(JSONObject request, Peer peer);
+        abstract boolean rejectWhileDownloading();
     }
 
     private static final Map<String,PeerRequestHandler> peerRequestHandlers;
@@ -104,6 +106,15 @@ public final class PeerServlet extends WebSocketServlet {
         MAX_INBOUND_CONNECTIONS = JSON.prepare(response);
     }
 
+    private static final JSONStreamAware DOWNLOADING;
+    static {
+        JSONObject response = new JSONObject();
+        response.put("error", Errors.DOWNLOADING);
+        DOWNLOADING = JSON.prepare(response);
+    }
+
+    private static final BlockchainProcessor blockchainProcessor = Nxt.getBlockchainProcessor();
+
     private boolean isGzipEnabled;
 
     @Override
@@ -139,26 +150,38 @@ public final class PeerServlet extends WebSocketServlet {
         // Process the peer request
         //
         PeerImpl peer = Peers.findOrCreatePeer(req.getRemoteAddr());
-        if (peer == null)
+        if (peer == null) {
             jsonResponse = UNKNOWN_PEER;
-        else
+        } else {
             jsonResponse = process(peer, req.getReader());
+        }
         //
         // Return the response
         //
         resp.setContentType("text/plain; charset=UTF-8");
         try (CountingOutputWriter writer = new CountingOutputWriter(resp.getWriter())) {
-            jsonResponse.writeJSONString(writer);
+            JSON.writeJSONString(jsonResponse, writer);
             long byteCount;
-            if (isGzipEnabled)
-                byteCount = ((Response)((CompressedResponseWrapper)resp).getResponse()).getContentCount();
-            else
+            if (isGzipEnabled) {
+                byteCount = ((Response) ((CompressedResponseWrapper) resp).getResponse()).getContentCount();
+            } else {
                 byteCount = writer.getCount();
-            if (peer != null)
+            }
+            if (peer != null) {
                 peer.updateUploadedVolume(byteCount);
+            }
         } catch (RuntimeException | IOException e) {
-            if (peer != null)
+            if (peer != null) {
+                if ((Peers.communicationLoggingMask & Peers.LOGGING_MASK_EXCEPTIONS) != 0) {
+                    if (e instanceof RuntimeException) {
+                        Logger.logDebugMessage("Error sending response to peer " + peer.getHost(), e);
+                    } else {
+                        Logger.logDebugMessage(String.format("Error sending response to peer %s: %s",
+                            peer.getHost(), e.getMessage()!=null ? e.getMessage() : e.toString()));
+                    }
+                }
                 peer.blacklist(e);
+            }
             throw e;
         }
     }
@@ -176,8 +199,9 @@ public final class PeerServlet extends WebSocketServlet {
         // Process the peer request
         //
         InetSocketAddress socketAddress = webSocket.getRemoteAddress();
-        if (socketAddress == null)
+        if (socketAddress == null) {
             return;
+        }
         String remoteAddress = socketAddress.getHostString();
         PeerImpl peer = Peers.findOrCreatePeer(remoteAddress);
         if (peer == null) {
@@ -191,20 +215,23 @@ public final class PeerServlet extends WebSocketServlet {
         //
         try {
             StringWriter writer = new StringWriter(1000);
-            jsonResponse.writeJSONString(writer);
+            JSON.writeJSONString(jsonResponse, writer);
             String response = writer.toString();
             webSocket.sendResponse(requestId, response);
-            if (peer != null)
+            if (peer != null) {
                 peer.updateUploadedVolume(response.length());
+            }
         } catch (RuntimeException | IOException e) {
             if (peer != null) {
-                if (e instanceof RuntimeException) {
-                    Logger.logDebugMessage("Error sending response to peer " + peer.getHost(), e);
-                } else {
-                    Logger.logDebugMessage(String.format("Error sending response to peer %s: %s",
-                        peer.getHost(), e.getMessage()!=null ? e.getMessage() : e.toString()));
-                    peer.blacklist(e);
+                if ((Peers.communicationLoggingMask & Peers.LOGGING_MASK_EXCEPTIONS) != 0) {
+                    if (e instanceof RuntimeException) {
+                        Logger.logDebugMessage("Error sending response to peer " + peer.getHost(), e);
+                    } else {
+                        Logger.logDebugMessage(String.format("Error sending response to peer %s: %s",
+                            peer.getHost(), e.getMessage()!=null ? e.getMessage() : e.toString()));
+                    }
                 }
+                peer.blacklist(e);
             }
         }
     }
@@ -237,7 +264,7 @@ public final class PeerServlet extends WebSocketServlet {
                 Logger.logDebugMessage("Unsupported protocol " + request.get("protocol"));
                 return UNSUPPORTED_PROTOCOL;
             }
-            PeerRequestHandler peerRequestHandler = peerRequestHandlers.get(request.get("requestType"));
+            PeerRequestHandler peerRequestHandler = peerRequestHandlers.get((String)request.get("requestType"));
             if (peerRequestHandler == null) {
                 return UNSUPPORTED_REQUEST_TYPE;
             }
@@ -254,6 +281,9 @@ public final class PeerServlet extends WebSocketServlet {
                 Peers.notifyListeners(peer, Peers.Event.ADD_INBOUND);
             }
             peer.setLastInboundRequest(Nxt.getEpochTime());
+            if (peerRequestHandler.rejectWhileDownloading() && blockchainProcessor.isDownloading()) {
+                return DOWNLOADING;
+            }
             return peerRequestHandler.processRequest(request, peer);
         } catch (RuntimeException|ParseException|IOException e) {
             Logger.logDebugMessage("Error processing POST request: " + e.toString());
