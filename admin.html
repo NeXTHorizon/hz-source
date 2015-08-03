@@ -44,9 +44,7 @@
                     result += ':</td><td>';
                     result += formatAmount(accountBalance);
                     result += '</td></tr>';
-                    if (accountBalance) {
-                    	balance += accountBalance;
-                    }
+                    balance += accountBalance;
                 }
             }
             result += '<tr><td>total:</td><td>';
@@ -87,7 +85,7 @@
     </script>
 </head>
 <body>
-<h3>Nhz admin tools</h3>
+<h3>Horizon admin tools</h3>
 <b>Generate Hallmark:</b><br/>
 <form action="/nhz" method="POST" onsubmit="return submitForm(this);">
     <input type="hidden" name="requestType" value="markHost"/>
@@ -102,7 +100,7 @@
         </tr>
         <tr>
             <td>Date:</td>
-            <td><input type="text" name="date" value="2015-02-01"/></td>
+            <td><input type="text" name="date" value="2013-12-10"/></td>
         </tr>
         <tr>
             <td>Secret Phrase:</td>

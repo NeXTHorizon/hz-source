@@ -47,42 +47,11 @@ var NRS = (function(NRS, $, undefined) {
 		});
 
 		if (NRS.inApp) {
-			if (NRS.appPlatform && NRS.appVersion) {
-				NRS.sendRequest("getAlias", {
-					"aliasName": "nrswallet" + NRS.appPlatform
-				}, function(response) {
-					var versionInfo = $.parseJSON(response.aliasURI);
-
-					if (versionInfo && versionInfo.version != NRS.appVersion) {
-						var newerVersionAvailable = NRS.versionCompare(NRS.appVersion, versionInfo.version);
-
-						if (newerVersionAvailable == -1) {
-							parent.postMessage({
-								"type": "appUpdate",
-								"version": versionInfo.version,
-								"nrs": versionInfo.nrs,
-								"hash": versionInfo.hash,
-								"url": versionInfo.url
-							}, "*");
-						}
-					}
-				});
-			} else {
-				//user uses an old version which does not supply the platform / version
-				var noticeDate = new Date(2014, 8, 22);
-
-				if (new Date() > noticeDate) {
-					var isMac = navigator.platform.match(/Mac/i);
-
-					var downloadUrl = "https://bitbucket.org/wesleyh/nhz-wallet-" + (isMac ? "mac" : "win") + "/downloads";
-
-					$("#secondary_dashboard_message").removeClass("alert-success").addClass("alert-danger").html($.t("old_nhz_wallet_update", {
-						"link": downloadUrl
-					})).show();
-				}
-			}
+			//user uses an old version which does not supply the platform / version
+			if (NRS.appPlatform == "" || NRS.appVersion == "" || version_compare(NRS.appVersion, "NHZ V3.2", "<")) {
+				$("#secondary_dashboard_message").removeClass("alert-success").addClass("alert-danger").html("A new version of the Horizon Wallet application is available for download <a href='https://horizonplatform.io/wallets/' target='_blank'>here</a>. You must install it manually due to changes in the NRS startup procedure.").show();
+			}			
 		}
-
 	}
 
 	NRS.checkForNewVersion = function() {
@@ -127,7 +96,6 @@ var NRS = (function(NRS, $, undefined) {
 			return -1;
 		}
 
-		//remove leading "NHZ v"
         v1 = v1.substr(5);
 		v2 = v2.substr(5);
 		
@@ -278,7 +246,7 @@ var NRS = (function(NRS, $, undefined) {
 			$("#nrs_modal").modal("hide");
 		} else {
 			var versionNumber = NRS.downloadedVersion.versionNr.toLowerCase();
-			$("#nrs_update_iframe").attr("src", "https://github.com/NeXTHorizon/hz-source/releases/download/" + versionNumber + "/" + versionNumber + ".zip");
+            $("#nrs_update_iframe").attr("src", "https://github.com/NeXTHorizon/hz-source/releases/download/hz-v" + versionNumber.substr(5) + "/hz-v" + versionNumber.substr(5) + ".zip");
 			$("#nrs_update_explanation").hide();
 			$("#nrs_update_drop_zone").show();
 

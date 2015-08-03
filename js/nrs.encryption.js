@@ -525,6 +525,9 @@ var NRS = (function(NRS, $, undefined) {
 			var nonceField = (typeof title != "string" ? title.nonce : key + "Nonce");
 
 			if (key == "encryptedMessage" || key == "encryptToSelfMessage") {
+			    if (key == "encryptToSelfMessage") {
+					otherAccount=accountId;
+				}
 				encrypted = _encryptedNote.transaction.attachment[key].data;
 				nonce = _encryptedNote.transaction.attachment[key].nonce;
 			} else if (_encryptedNote.transaction.attachment && _encryptedNote.transaction.attachment[key]) {
@@ -560,7 +563,7 @@ var NRS = (function(NRS, $, undefined) {
 					return false;
 				}
 
-				output += "<div style='" + (!_encryptedNote.options.noPadding && title ? "padding-left:5px;" : "") + "'>" + (title ? "<label" + (nrFields > 1 ? " style='margin-top:5px'" : "") + "><i class='fa fa-lock'></i> " + String(title).escapeHTML() + "</label>" : "") + "<div>" + String(data).escapeHTML().nl2br() + "</div></div>";
+				output += "<div style='" + (!_encryptedNote.options.noPadding && title ? "padding-left:5px;" : "") + "'>" + (title ? "<label" + (nrFields > 1 ? " style='margin-top:5px'" : "") + "><i class='fa fa-lock'></i> " + String(title).escapeHTML() + "</label>" : "") + "<div>" + String(data).autoLink().nl2br() + "</div></div>";
 			}
 		});
 
