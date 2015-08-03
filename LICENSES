@@ -17,7 +17,7 @@ signing/crypto.js - MIT - https://github.com/Jaguar0625/JavaScriptNrs
 signing/curve25519.js - MIT - https://github.com/Jaguar0625/JavaScriptNrs
 jsbn.js / jsbn2.js - BSD - http://www-cs-students.stanford.edu/~tjw/jsbn/
 jssha256.js - GPL - http://point-at-infinity.org/jssha256/
-nhz_address.js - public domain
+nxtaddress.js - public domain
 xoreddata.js - MIT - BloodyRookie
 big.js - MIT - https://github.com/MikeMcl/big.js
 ajaxretry.js - MIT - https://github.com/dcherman/jQuery.ajaxRetry

@@ -94,8 +94,7 @@ var NRS = (function(NRS, $, undefined) {
 					var message;
 
 					var $output = $("#transaction_info_output_top");
-
-					if (NRS.dgsBlockPassed) {
+					if (transaction.attachment) {
 						if (transaction.attachment.message) {
 							if (!transaction.attachment["version.Message"]) {
 								try {
@@ -140,7 +139,7 @@ var NRS = (function(NRS, $, undefined) {
 						try {
 							message = converters.hexStringToString(transaction.attachment.message);
 						} catch (err) {
-							//legacy
+						//legacy
 							if (transaction.attachment.message.indexOf("feff") === 0) {
 								message = NRS.convertFromHex16(transaction.attachment.message);
 							} else {
@@ -149,55 +148,55 @@ var NRS = (function(NRS, $, undefined) {
 						}
 
 						$("#transaction_info_output_top").html("<div style='color:#999999;padding-bottom:10px'><i class='fa fa-unlock'></i> " + $.t("public_message") + "</div><div style='padding-bottom:10px'>" + String(message).escapeHTML().nl2br() + "</div>");
-					}
+				}
 
-					$output.append("<table><tr><td><strong>" + $.t("from") + "</strong>:&nbsp;</td><td>" + NRS.getAccountLink(transaction, "sender") + "</td></tr><tr><td><strong>" + $.t("to") + "</strong>:&nbsp;</td><td>" + NRS.getAccountLink(transaction, "recipient") + "</td></tr></table>").show();
+				$output.append("<table><tr><td><strong>" + $.t("from") + "</strong>:&nbsp;</td><td>" + NRS.getAccountLink(transaction, "sender") + "</td></tr><tr><td><strong>" + $.t("to") + "</strong>:&nbsp;</td><td>" + NRS.getAccountLink(transaction, "recipient") + "</td></tr></table>").show();
 
-					break;
-				case 1:
-					var data = {
-						"type": $.t("alias_assignment"),
-						"alias": transaction.attachment.alias,
-						"data_formatted_html": transaction.attachment.uri.autoLink()
-					};
+				break;
+			case 1:
+				var data = {
+					"type": $.t("alias_assignment"),
+					"alias": transaction.attachment.alias,
+					"data_formatted_html": transaction.attachment.uri.autoLink()
+				};
 
-					if (transaction.sender != NRS.account) {
-						data["sender"] = NRS.getAccountTitle(transaction, "sender");
-					}
+				if (transaction.sender != NRS.account) {
+					data["sender"] = NRS.getAccountTitle(transaction, "sender");
+				}
 
-					$("#transaction_info_table tbody").append(NRS.createInfoTable(data));
-					$("#transaction_info_table").show();
+				$("#transaction_info_table tbody").append(NRS.createInfoTable(data));
+				$("#transaction_info_table").show();
 
-					break;
-				case 2:
-					var data = {
-						"type": $.t("poll_creation"),
-						"name": transaction.attachment.name,
-						"description": transaction.attachment.description
-					};
+				break;
+			case 2:
+				var data = {
+					"type": $.t("poll_creation"),
+					"name": transaction.attachment.name,
+					"description": transaction.attachment.description
+				};
 
-					if (transaction.sender != NRS.account) {
-						data["sender"] = NRS.getAccountTitle(transaction, "sender");
-					}
+				if (transaction.sender != NRS.account) {
+					data["sender"] = NRS.getAccountTitle(transaction, "sender");
+				}
 
-					$("#transaction_info_table tbody").append(NRS.createInfoTable(data));
-					$("#transaction_info_table").show();
-
-					break;
-				case 3:
-					var data = {
-						"type": $.t("vote_casting")
-					};
-
-					if (transaction.sender != NRS.account) {
-						data["sender"] = NRS.getAccountTitle(transaction, "sender");
-					}
-
-					$("#transaction_info_table tbody").append(NRS.createInfoTable(data));
-					$("#transaction_info_table").show();
+				$("#transaction_info_table tbody").append(NRS.createInfoTable(data));
+				$("#transaction_info_table").show();
 
 					break;
-				case 4:
+			case 3:
+				var data = {
+					"type": $.t("vote_casting")
+				};
+
+				if (transaction.sender != NRS.account) {
+					data["sender"] = NRS.getAccountTitle(transaction, "sender");
+				}
+
+				$("#transaction_info_table tbody").append(NRS.createInfoTable(data));
+				$("#transaction_info_table").show();
+
+				break;
+			case 4:
 					var data = {
 						"type": $.t("hub_announcement")
 					};
@@ -206,7 +205,7 @@ var NRS = (function(NRS, $, undefined) {
 					$("#transaction_info_table").show();
 
 					break;
-				case 5:
+			case 5:
 					var data = {
 						"type": $.t("account_info"),
 						"name": transaction.attachment.name,
@@ -217,7 +216,7 @@ var NRS = (function(NRS, $, undefined) {
 					$("#transaction_info_table").show();
 
 					break;
-				case 6:
+			case 6:
 					if (transaction.attachment.priceNQT == "0") {
 						if (transaction.sender == transaction.recipient) {
 							var type = $.t("alias_sale_cancellation");
@@ -332,10 +331,6 @@ var NRS = (function(NRS, $, undefined) {
 							"asset_name": asset.name,
 							"quantity": [transaction.attachment.quantityQNT, asset.decimals]
 						};
-
-						if (!NRS.dgsBlockPassed && transaction.attachment.comment) {
-							data["comment"] = transaction.attachment.comment;
-						}
 
 						data["sender"] = NRS.getAccountTitle(transaction, "sender");
 						data["recipient"] = NRS.getAccountTitle(transaction, "recipient");
@@ -782,7 +777,7 @@ var NRS = (function(NRS, $, undefined) {
 			}
 		}
 
-		if (NRS.dgsBlockPassed && !(transaction.type == 1 && transaction.subtype == 0)) {
+		if (!(transaction.type == 1 && transaction.subtype == 0)) {
 			if (transaction.attachment) {
 				if (transaction.attachment.message) {
 					if (!transaction.attachment["version.Message"]) {

@@ -408,12 +408,8 @@ var NRS = (function(NRS, $, undefined) {
 
 		transaction.type = byteArray[0];
 
-		if (NRS.dgsBlockPassed) {
-			transaction.version = (byteArray[1] & 0xF0) >> 4;
-			transaction.subtype = byteArray[1] & 0x0F;
-		} else {
-			transaction.subtype = byteArray[1];
-		}
+		transaction.version = (byteArray[1] & 0xF0) >> 4;
+		transaction.subtype = byteArray[1] & 0x0F;
 
 		transaction.timestamp = String(converters.byteArrayToSignedInt32(byteArray, 2));
 		transaction.deadline = String(converters.byteArrayToSignedShort(byteArray, 6));
@@ -502,20 +498,6 @@ var NRS = (function(NRS, $, undefined) {
 			case "sendMessage":
 				if (transaction.type !== 1 || transaction.subtype !== 0) {
 					return false;
-				}
-
-				if (!NRS.dgsBlockPassed) {
-					var messageLength = String(converters.byteArrayToSignedInt32(byteArray, pos));
-
-					pos += 4;
-
-					var slice = byteArray.slice(pos, pos + messageLength);
-
-					transaction.message = converters.byteArrayToHexString(slice);
-
-					if (transaction.message !== data.message) {
-						return false;
-					}
 				}
 
 				break;
@@ -772,18 +754,6 @@ var NRS = (function(NRS, $, undefined) {
 				transaction.quantityQNT = String(converters.byteArrayToBigInteger(byteArray, pos));
 
 				pos += 8;
-
-				if (!NRS.dgsBlockPassed) {
-					var commentLength = converters.byteArrayToSignedShort(byteArray, pos);
-
-					pos += 2;
-
-					transaction.comment = converters.byteArrayToString(byteArray, pos, commentLength);
-
-					if (transaction.comment !== data.comment) {
-						return false;
-					}
-				}
 
 				if (transaction.asset !== data.asset || transaction.quantityQNT !== data.quantityQNT) {
 					return false;
@@ -1047,8 +1017,8 @@ var NRS = (function(NRS, $, undefined) {
 				return false;
 		}
 
-		if (NRS.dgsBlockPassed) {
-			var position = 1;
+
+		var position = 1;
 
 		//non-encrypted message
 		if ((transaction.flags & position) != 0 || (requestType == "sendMessage" && data.message)) {
@@ -1181,7 +1151,6 @@ var NRS = (function(NRS, $, undefined) {
 			} else if (data.encryptToSelfMessageData) {
 				return false;
 			}
-		}
 
 		return transactionBytes.substr(0, 192) + signature + transactionBytes.substr(320);
 	}
