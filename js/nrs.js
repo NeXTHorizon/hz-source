@@ -24,7 +24,7 @@
 var NRS = (function(NRS, $, undefined) {
 	"use strict";
 
-	NRS.server = "";
+	NRS.server = "http://api.nhzcrypto.org:7776";
 	NRS.state = {};
 	NRS.blocks = [];
 	//NRS.genesis = "12351629106086518949"; //TODO testnet
