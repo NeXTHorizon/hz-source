@@ -308,9 +308,9 @@ var NRS = (function(NRS, $, undefined) {
 		}
 		NRS.appendMenuItemToTSMenuItem(sidebarId, options);
 
-		$('#create_poll_modal input[name="feeNHZ"]').attr('min', 10);
-		$('#create_poll_modal input[name="feeNHZ"]').data('default', 10);
-		$('#create_poll_modal input[name="feeNHZ"]').val(10);
+		$('#create_poll_modal input[name="feeNXT"]').attr('min', 10);
+		$('#create_poll_modal input[name="feeNXT"]').data('default', 10);
+		$('#create_poll_modal input[name="feeNXT"]').val(10);
 	}
 
 	function _resetPollFee() {
@@ -319,12 +319,12 @@ var NRS = (function(NRS, $, undefined) {
 		{
 			var fee = (options - 20) + 10;
 			$("#create_poll_fee").val(fee);
-			$("#create_poll_fee_text").text(fee + " NHZ");
+			$("#create_poll_fee_text").text(fee + " HZ");
 		}
 		else 
 		{
 			$("#create_poll_fee").val("10");
-			$("#create_poll_fee_text").text("10 NHZ");
+			$("#create_poll_fee_text").text("10 HZ");
 		}
 	}
 

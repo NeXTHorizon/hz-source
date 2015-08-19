@@ -26,7 +26,7 @@
 				var secretPhrase = document.getElementById("secretPhrase").value;
 				var alias = document.getElementById("alias").value;
 				var uri = document.getElementById("uri").value;
-				var feeNQT = 100000000 * document.getElementById("feeNHZ").value;
+				var feeNQT = 100000000 * document.getElementById("feeNXT").value;
 				var deadline = document.getElementById("deadline").value;
 				sendRequest("requestType=setAlias&secretPhrase=" + encodeURIComponent(secretPhrase)
                         + "&aliasName=" + encodeURIComponent(alias) + "&aliasURI=" + encodeURIComponent(uri)
@@ -66,7 +66,7 @@
 			</tr>
 			<tr>
 				<td>Fee, HZ:</td>
-				<td><input id="feeNHZ" value="1"></td>
+				<td><input id="feeNXT" value="1"></td>
 			</tr>
 			<tr>
 				<td>Deadline, minute:</td>

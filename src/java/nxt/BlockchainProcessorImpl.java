@@ -1155,7 +1155,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
             throw new BlockNotAcceptedException("Invalid version " + block.getVersion(), block);
         }
         if (block.getTimestamp() > curTime + Constants.MAX_TIMEDRIFT) {
-            Logger.logWarningMessage("Received a block from the future, block timestamp is " + block.getTimestamp()
+            Logger.logWarningMessage("Received block " + block.getStringId() + " from the future, block timestamp is " + block.getTimestamp()
                     + ", current time is " + curTime + ", system clock may be off");
             throw new BlockOutOfOrderException("Invalid timestamp: " + block.getTimestamp()
                     + " current time is " + curTime, block);
@@ -1197,7 +1197,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
         long calculatedTotalAmount = 0;
         long calculatedTotalFee = 0;
         MessageDigest digest = Crypto.sha256();
-                long previousTransactionId = 0;
+        long previousTransactionId = 0;
 
         for (TransactionImpl transaction : block.getTransactions()) {
                     //Logger.logDebugMessage("Transaction Id"+transaction.getStringId()+"\ntx json: "+  transaction.getJSONObject().toJSONString()  +"\ntx bytes: "+ Convert.toHexString(transaction.getBytes()));

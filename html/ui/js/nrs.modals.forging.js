@@ -99,7 +99,7 @@ var NRS = (function(NRS, $) {
     NRS.getForgingTooltip = function(data) {
         if (!data || data.account == NRS.accountInfo.account) {
             NRS.isAccountForging = true;
-            return $.t("forging_tooltip", {"balance": NRS.accountInfo.effectiveBalanceNXT});
+            return $.t("forging_tooltip", {"balance": NRS.accountInfo.effectiveBalanceNHZ});
         }
         return $.t("forging_another_account_tooltip", {"accountRS": data.accountRS });
     };
@@ -123,7 +123,10 @@ var NRS = (function(NRS, $) {
         if (!NRS.accountInfo.publicKey) {
             status = NRS.constants.NOT_FORGING;
             tooltip = $.t("error_forging_no_public_key");
-        } else if (NRS.accountInfo.effectiveBalanceNXT == 0) {
+        } else if (NRS.isLeased) {
+            status = NRS.constants.NOT_FORGING;
+            tooltip = $.t("error_forging_lease");
+        } else if (NRS.accountInfo.effectiveBalanceNHZ == 0) {
             status = NRS.constants.NOT_FORGING;
             tooltip = $.t("error_forging_effective_balance");
         } else if (NRS.downloadingBlockchain) {
@@ -132,9 +135,6 @@ var NRS = (function(NRS, $) {
         } else if (NRS.state.isScanning) {
             status = NRS.constants.NOT_FORGING;
             tooltip = $.t("error_forging_blockchain_rescanning");
-        } else if (NRS.isLeased) {
-            status = NRS.constants.NOT_FORGING;
-            tooltip = $.t("error_forging_lease");
         } else if (NRS.needsAdminPassword && NRS.settings.admin_password == "" && (!secretPhrase || !NRS.isLocalHost)) {
             // do not change forging status
         } else {

@@ -85,7 +85,7 @@
             <div class="form-group">
                 <label for="{{name}}_fee" data-i18n="fee">FEE</label>
                 <div class="input-group">
-                    <input type="number" name="feeNHZ" id="{{name}}_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="121">
+                    <input type="number" name="feeNXT" id="{{name}}_fee" class="form-control" step="any" min="1" placeholder="Fee" data-i18n="[placeholder]fee" data-default="1" value="1" tabindex="121">
                     <span class="input-group-addon" style="min-width:50px;"><i class="fa fa-gavel"></i> 
                         <span id="{{name}}_feeNXT_addition_info" class="feeNXT_approval_addition_info">+0</span>
                     </span>
@@ -318,7 +318,16 @@
 
 <div id="advanced_broadcast_template">
     <div class="form-group advanced" style="margin-bottom:0;">
-        <input type="checkbox" name="doNotBroadcast" id="{{name}}_do_not_broadcast" value="1" tabindex="141"/> <label for="{{name}}_do_not_broadcast" style="font-weight:normal;" data-i18n="do_not_broadcast">Do Not Broadcast</label>
+        <input type="checkbox" name="doNotBroadcast" id="{{name}}_do_not_broadcast" class="do_not_broadcast" value="1" tabindex="141"/> <label for="{{name}}_do_not_broadcast" style="font-weight:normal;" data-i18n="do_not_broadcast">Do Not Broadcast</label>
+        <div class="form-group advanced optional_do_not_sign">
+            <input type="checkbox" name="doNotSign" id="{{name}}_do_not_sign" class="do_not_sign" value="1" tabindex="142"/> <label for="{{name}}_do_not_sign" style="font-weight:normal;" data-i18n="do_not_sign">DO NOT SIGN</label>
+        </div>
+        <div class="form-group advanced optional_public_key">
+            <label data-i18n="public_key">PUBLIC KEY</label>
+            <div class="form-group">
+                <textarea class="form-control" name="publicKey" rows="1"></textarea>
+            </div>
+        </div>
     </div>
 </div>
 

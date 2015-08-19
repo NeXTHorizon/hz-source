@@ -507,7 +507,7 @@ public final class Account {
     private static final DerivedDbTable accountGuaranteedBalanceTable = new DerivedDbTable("account_guaranteed_balance") {
 
         @Override
-        public void trim(int height) {        	
+        public void trim(int height) {
             try (Connection con = Db.db.getConnection();
                  PreparedStatement pstmtDelete = con.prepareStatement("DELETE FROM account_guaranteed_balance "
                          + "WHERE height < ? AND height >= 0")) {

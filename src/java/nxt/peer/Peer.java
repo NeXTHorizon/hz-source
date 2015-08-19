@@ -76,7 +76,7 @@ public interface Peer extends Comparable<Peer> {
     String getBlacklistingCause();
 
     JSONObject send(JSONStreamAware request);
-    
+
     JSONObject send(JSONStreamAware request, int maxResponseSize);
 
 }

@@ -28,10 +28,6 @@ import nxt.util.ThreadPool;
 import nxt.util.Time;
 import org.json.simple.JSONObject;
 
-import org.bitlet.weupnp.GatewayDevice;
-import org.bitlet.weupnp.GatewayDiscover;
-import org.bitlet.weupnp.PortMappingEntry;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,8 +42,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-
-import java.net.InetAddress;
 
 public final class Nxt {
 
@@ -382,7 +376,7 @@ public final class Nxt {
                 if (API.getBrowserUri() != null) {
                     Logger.logMessage("Client UI is at " + API.getBrowserUri());
                 }
-                setServerStatus("NXT Server - Online", API.getBrowserUri());
+                setServerStatus("Horizon Server - Online", API.getBrowserUri());
                 if (Constants.isTestnet) {
                     Logger.logMessage("RUNNING ON TESTNET - DO NOT USE REAL ACCOUNTS!");
                 }

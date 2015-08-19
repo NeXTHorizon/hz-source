@@ -142,10 +142,29 @@ var NRS = (function (NRS, $, undefined) {
                 var phasingDetails = {};
                 phasingDetails.finishHeight = finishHeight;
                 phasingDetails.finishIn = ((finishHeight - NRS.lastBlockHeight) > 0) ? (finishHeight - NRS.lastBlockHeight) + " " + $.t("blocks") : $.t("finished");
-                phasingDetails.quorum = transaction.attachment.phasingQuorum;
-                phasingDetails.minBalance = transaction.attachment.phasingMinBalance;
                 var votingModel = NRS.getVotingModelName(parseInt(transaction.attachment.phasingVotingModel));
                 phasingDetails.votingModel = $.t(votingModel);
+
+                switch (votingModel) {
+                    case 'ASSET':
+                        NRS.sendRequest("getAsset", { "asset": transaction.attachment.phasingHolding }, function(response) {
+                            phasingDetails.quorum = NRS.convertToQNTf(transaction.attachment.phasingQuorum, response.decimals);
+                            phasingDetails.minBalance = NRS.convertToQNTf(transaction.attachment.phasingMinBalance, response.decimals);
+                        }, false);
+                        break;
+                      
+                    case 'CURRENCY':
+                        NRS.sendRequest("getCurrency", { "currency": transaction.attachment.phasingHolding }, function(response) {
+                            phasingDetails.quorum = NRS.convertToQNTf(transaction.attachment.phasingQuorum, response.decimals);
+                            phasingDetails.minBalance = NRS.convertToQNTf(transaction.attachment.phasingMinBalance, response.decimals);
+                        }, false);
+                        break;
+                      
+                    default:
+                        phasingDetails.quorum = transaction.attachment.phasingQuorum;
+                        phasingDetails.minBalance = transaction.attachment.phasingMinBalance;
+                }
+
                 var phasingTransactionLink = "<a href='#' class='show_transaction_modal_action' data-transaction='" + String(transaction.attachment.phasingHolding).escapeHTML() + "'>" + transaction.attachment.phasingHolding + "</a>";
                 if (NRS.constants.VOTING_MODELS[votingModel] == NRS.constants.VOTING_MODELS.ASSET) {
                     phasingDetails.asset_formatted_html = phasingTransactionLink;
@@ -412,11 +431,11 @@ var NRS = (function (NRS, $, undefined) {
                                         messageStyle = "danger";
                                     } else if (transaction.recipient == NRS.account) {
                                         message = $.t("alias_sale_direct_offer", {
-                                            "nhz": NRS.formatAmount(transaction.attachment.priceNQT)
+                                            "nxt": NRS.formatAmount(transaction.attachment.priceNQT)
                                         }) + " <a href='#' data-alias='" + String(transaction.attachment.alias).escapeHTML() + "' data-toggle='modal' data-target='#buy_alias_modal'>" + $.t("buy_it_q") + "</a>";
                                     } else if (typeof transaction.recipient == "undefined") {
                                         message = $.t("alias_sale_indirect_offer", {
-                                            "nhz": NRS.formatAmount(transaction.attachment.priceNQT)
+                                            "nxt": NRS.formatAmount(transaction.attachment.priceNQT)
                                         }) + " <a href='#' data-alias='" + String(transaction.attachment.alias).escapeHTML() + "' data-toggle='modal' data-target='#buy_alias_modal'>" + $.t("buy_it_q") + "</a>";
                                     } else if (transaction.senderRS == NRS.accountRS) {
                                         if (transaction.attachment.priceNQT != "0") {
@@ -919,7 +938,8 @@ var NRS = (function (NRS, $, undefined) {
                     case 0:
                         var data = {
                             "type": $.t("balance_leasing"),
-                            "period": transaction.attachment.period
+                            "period": transaction.attachment.period,
+                            "lessee": transaction.recipientRS ? transaction.recipientRS : transaction.recipient
                         };
 
                         $("#transaction_info_table").find("tbody").append(NRS.createInfoTable(data));

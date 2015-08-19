@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="iso-8859-1"  ?>
 <installation version="5.0">
     <properties>
-		<property file="conf/nxt-default.properties" prefix="runtime"/>
+		<property file="conf/nhz-default.properties" prefix="runtime"/>
 	</properties>
 	<info>
-        <appname>NXT</appname>
+        <appname>Horizon</appname>
         <appversion>@{runtime.nxt.version}</appversion>
-        <url>http://nxt.org</url>
+        <url>http://horizonplatform.io</url>
         <run-privileged condition="izpack.windowsinstall"/>
     </info>
 	
@@ -165,6 +165,8 @@
             <executable targetfile="${INSTALL_PATH}/package.sh"/>
             <file src="compact.sh" targetdir="${INSTALL_PATH}" override="true"/>
             <executable targetfile="${INSTALL_PATH}/compact.sh"/>
+            <file src="sign.sh" targetdir="${INSTALL_PATH}" override="true"/>
+            <executable targetfile="${INSTALL_PATH}/sign.sh"/>
 		</pack>
         <pack name="jre" os="windows" required="yes" uninstall="false">
             <description>Java 32 bit</description>

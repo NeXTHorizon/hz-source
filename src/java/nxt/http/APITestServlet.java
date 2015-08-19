@@ -44,7 +44,7 @@ public class APITestServlet extends HttpServlet {
             "    <meta charset='UTF-8'/>\n" +
             "    <meta http-equiv='X-UA-Compatible' content='IE=edge'>\n" +
             "    <meta name='viewport' content='width=device-width, initial-scale=1'>\n" +
-            "    <title>Nhz http API</title>\n" +
+            "    <title>Horizon http API</title>\n" +
             "    <link href='css/bootstrap.min.css' rel='stylesheet' type='text/css' />\n" +
             "    <link href='css/font-awesome.min.css' rel='stylesheet' type='text/css' />\n" +
             "    <link href='css/highlight.style.css' rel='stylesheet' type='text/css' />\n" +

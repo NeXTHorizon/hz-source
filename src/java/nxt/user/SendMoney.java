@@ -58,8 +58,8 @@ public final class SendMoney extends UserServlet.UserRequestHandler {
 
             recipient = Convert.parseUnsignedLong(recipientValue);
             if (recipient == 0) throw new IllegalArgumentException("invalid recipient");
-            amountNQT = Convert.parseNHZ(amountValue.trim());
-            feeNQT = Convert.parseNHZ(feeValue.trim());
+            amountNQT = Convert.parseNXT(amountValue.trim());
+            feeNQT = Convert.parseNXT(feeValue.trim());
             deadline = (short)(Double.parseDouble(deadlineValue) * 60);
 
         } catch (RuntimeException e) {

@@ -107,8 +107,8 @@
 			}
 			
 			function adjustFee() {
-				var amount = parseInt(document.getElementById("amountNHZ").value);
-				document.getElementById("feeNHZ").value = isNaN(amount) ? 1 : (amount < 500 ? 1 : Math.round(amount / 1000));
+				var amount = parseInt(document.getElementById("amountNXT").value);
+				document.getElementById("feeNXT").value = isNaN(amount) ? 1 : (amount < 500 ? 1 : Math.round(amount / 1000));
 			}
 			
 			function adjustSections(widgetIndex, widgetHeight, sections) {
@@ -296,15 +296,15 @@
 			}
 			
 			function sendMoney() {
-				var element, recipient, amountNHZ, feeNHZ, deadline, secretPhrase;
+				var element, recipient, amountNXT, feeNXT, deadline, secretPhrase;
 				element = document.getElementById("input");
 				recipient = element.value;
 				element.readOnly = true;
-				element = document.getElementById("amountNHZ");
-				amountNHZ = element.value;
+				element = document.getElementById("amountNXT");
+				amountNXT = element.value;
 				element.readOnly = true;
-				element = document.getElementById("feeNHZ");
-				feeNHZ = element.value;
+				element = document.getElementById("feeNXT");
+				feeNXT = element.value;
 				element.readOnly = true;
 				element = document.getElementById("deadline");
 				deadline = element.value;
@@ -313,7 +313,7 @@
 				secretPhrase = element.value;
 				element.readOnly = true;
 				document.getElementById("sendMoney").disabled = true;
-				sendRequest("sendMoney&recipient=" + recipient + "&amountNHZ=" + amountNHZ + "&feeNHZ=" + feeNHZ + "&deadline=" + deadline +
+				sendRequest("sendMoney&recipient=" + recipient + "&amountNHZ=" + amountNXT + "&feeNHZ=" + feeNXT + "&deadline=" + deadline +
 				    "&secretPhrase=" + encodeURIComponent(secretPhrase));
 			}
 			
@@ -604,10 +604,10 @@
 				document.getElementById("fee").value = fee;
 			}
 			
-			function showTransactionDialog(recipient, amountNHZ, feeNHZ, deadline) {
+			function showTransactionDialog(recipient, amountNXT, feeNXT, deadline) {
 				showDialog("Transaction", "<table><tr><td class='label' colspan='2'>Recipient</td></tr><tr><td class='input' colspan='2'><input id='input'></td></tr>" +
 				    "<tr><td class='label' style='padding-top: 0;'>Amount</td><td class='label' style='padding-top: 0;'>Fee</td></tr>" +
-				    "<tr><td class='input'><input type='number' id='amountNHZ' oninput='adjustFee();'></td><td class='input'><input type='number' id='feeNHZ'></td></tr>" +
+				    "<tr><td class='input'><input type='number' id='amountNXT' oninput='adjustFee();'></td><td class='input'><input type='number' id='feeNXT'></td></tr>" +
 				    "<tr><td class='label' colspan='2' style='padding-top: 0;'>Deadline (in hours)</td></tr><tr><td class='input'><input type='number' id='deadline' oninput='adjustDeadlineTime();'></td>" +
 				        "<td class='input'><input id='deadlineTime' readonly></td></tr>" +
 				    "<tr><td class='label' colspan='2'>Secret phrase</td></tr>" +

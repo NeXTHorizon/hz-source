@@ -54,7 +54,7 @@ public final class GetAccountLessors extends APIServlet.APIRequestHandler {
                 while (lessors.hasNext()) {
                     Account lessor = lessors.next();
                     JSONObject lessorJSON = new JSONObject();
-                    JSONData.putAccount(lessorJSON, "lessor", lessor.getId());                    
+                    JSONData.putAccount(lessorJSON, "lessor", lessor.getId());
                     lessorJSON.put("guaranteedBalanceNQT", String.valueOf(lessor.getGuaranteedBalanceNQT(EFFECTIVE_BLOCKS, height)));
                     lessorsJSON.add(lessorJSON);
                 }

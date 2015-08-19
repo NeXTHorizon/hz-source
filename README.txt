@@ -7,7 +7,7 @@ There is no installation needed. Unpack the nhz-client.zip package and open a
 shell in the resulting nhz directory. Execute the run.sh script if using Linux,
 or run.bat if using Windows. This will start a java server process, which will
 begin logging its activities to the console. The initialization takes a few
-seconds. When it is ready, you should see the message "Nhz server 1.0.0 started
+seconds. When it is ready, you should see the message "Horizon server x.y.z started
 successfully". Open a browser, without stopping the java process, and go to
 http://localhost:7776 , where the Nhz UI should now be available. To stop the
 application, type Ctrl-C inside the console window.
@@ -43,7 +43,7 @@ There are many ways to contribute to Horizon. Here are some examples:
 
 Technical details:
 
-The Nhz software is a client-server application. It consists of a java server
+The Horizon software is a client-server application. It consists of a java server
 process, the one started by the run.sh script, and a javascript user interface
 run in a browser. To run a node, forge, update the blockchain, interact with
 peers, only the java process needs to be running, so you could logout and close
@@ -66,7 +66,7 @@ the new version whenever needed. But there is no harm if you do delete the
 nhz_db, except that it will take some extra time to download the blockchain
 from scratch.
 
-The default Nhz client does not store any wallet-type file on disk. Unlike
+The default Horizon client does not store any wallet-type file on disk. Unlike
 bitcoin, your password is the only thing you need to get access to your account,
 and is the only piece of data you need to backup or remember. This also means
 that anybody can get access to your account with only you password - so make

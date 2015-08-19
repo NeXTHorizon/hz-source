@@ -121,9 +121,9 @@ var NRS = (function (NRS, $) {
 					try {
 						options.publicKey = converters.hexStringToByteArray(NRS.getPublicKey(options.account, true));
 					} catch (err) {
-						var nhzAddress = new NxtAddress();
+						var nxtAddress = new NxtAddress();
 
-						if (!nhzAddress.set(options.account)) {
+						if (!nxtAddress.set(options.account)) {
 							throw {
 								"message": $.t("error_invalid_account_id"),
 								"errorCode": 3

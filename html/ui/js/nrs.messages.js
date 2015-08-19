@@ -262,7 +262,7 @@ var NRS = (function(NRS, $) {
 		if (option == "add_contact") {
 			$("#add_contact_account_id").val(account).trigger("blur");
 			$("#add_contact_modal").modal("show");
-		} else if (option == "send_nhz") {
+		} else if (option == "send_nxt") {
 			$("#send_money_recipient").val(account).trigger("blur");
 			$("#send_money_modal").modal("show");
 		} else if (option == "account_info") {
@@ -280,7 +280,7 @@ var NRS = (function(NRS, $) {
 
 		if (option == "update_contact") {
 			$("#update_contact_modal").modal("show");
-		} else if (option == "send_nhz") {
+		} else if (option == "send_nxt") {
 			$("#send_money_recipient").val(NRS.selectedContext.data("contact")).trigger("blur");
 			$("#send_money_modal").modal("show");
 		}

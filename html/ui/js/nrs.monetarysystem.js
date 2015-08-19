@@ -75,9 +75,9 @@ var NRS = (function (NRS, $, undefined) {
         }
         NRS.pageNumber = 1;
         var currencyCode = $.trim($("#currency_search").find("input[name=q]").val());
-        $("#buy_currency_with_nhz").html("Exchange HZ for " + currencyCode);
+        $("#buy_currency_with_nxt").html("Exchange HZ for " + currencyCode);
         $("#buy_currency_offers").html("Offers to Exchange HZ for " + currencyCode);
-        $("#sell_currency_with_nhz").html("Exchange " + currencyCode + " for HZ");
+        $("#sell_currency_with_nxt").html("Exchange " + currencyCode + " for HZ");
         $("#sell_currency_offers").html("Offers to Exchange " + currencyCode + " for HZ");
         $(".currency_code").html(String(currencyCode).escapeHTML());
 
@@ -142,10 +142,10 @@ var NRS = (function (NRS, $, undefined) {
                 NRS.getExchangeRequests(currencyId, refresh);
                 NRS.getExchangeHistory(currencyId, refresh);
                 if (NRS.accountInfo.unconfirmedBalanceNQT == "0") {
-                    $("#ms_your_nhz_balance").html("0");
+                    $("#ms_your_nxt_balance").html("0");
                     $("#buy_automatic_price").addClass("zero").removeClass("nonzero");
                 } else {
-                    $("#ms_your_nhz_balance").html(NRS.formatAmount(NRS.accountInfo.unconfirmedBalanceNQT));
+                    $("#ms_your_nxt_balance").html(NRS.formatAmount(NRS.accountInfo.unconfirmedBalanceNQT));
                     $("#buy_automatic_price").addClass("nonzero").removeClass("zero");
                 }
                 NRS.pageLoaded();
@@ -600,7 +600,7 @@ var NRS = (function (NRS, $, undefined) {
             });
             tooltipTitle = $.t("buy_currency_description_help", {
                 "rate": NRS.formatAmount(rateNQTPerWholeQNT, false, true),
-                "total_nhz": totalNXT
+                "total_nxt": totalNXT
             });
         } else {
             description = $.t("sell_currency_description", {
@@ -611,7 +611,7 @@ var NRS = (function (NRS, $, undefined) {
             });
             tooltipTitle = $.t("sell_currency_description_help", {
                 "rate": NRS.formatAmount(rateNQTPerWholeQNT, false, true),
-                "total_nhz": totalNXT
+                "total_nxt": totalNXT
             });
         }
 
@@ -1256,9 +1256,17 @@ var NRS = (function (NRS, $, undefined) {
         }
     });
 
+    $(".issue_currency_reservable").on("change", function() {
+   		if ($(this).is(":checked")) {
+   			$(this).closest("form").find(".optional_reserve").fadeIn();
+   		} else {
+   			$(this).closest("form").find(".optional_reserve").hide();
+   		}
+   	});
+
     $('#issue_currency_mintable').change(function () {
         if ($(this).is(":checked")) {
-            $(".optional_mint").show();
+            $(".optional_mint").fadeIn();
             $(".optional_mint input").prop("disabled", false);
         } else {
             $(".optional_mint").hide();

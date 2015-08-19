@@ -114,10 +114,13 @@ var NRS = (function(NRS, $) {
 						options.publicKey = data.recipientPublicKey;
 					}
 
-					encrypted = NRS.encryptNote(data.message, options, data.secretPhrase);
-
-					data.encryptedMessageData = encrypted.message;
-					data.encryptedMessageNonce = encrypted.nonce;
+                    if (data.doNotSign) {
+                        data.messageToEncrypt = data.message;
+                    } else {
+                        encrypted = NRS.encryptNote(data.message, options, data.secretPhrase);
+                        data.encryptedMessageData = encrypted.message;
+                        data.encryptedMessageNonce = encrypted.nonce;
+                    }
 					data.messageToEncryptIsText = "true";
 					if (!data.permanent_message) {
 						data.encryptedMessageIsPrunable = "true";
@@ -138,14 +141,17 @@ var NRS = (function(NRS, $) {
 
 		if (data.add_note_to_self && data.note_to_self) {
 			try {
-				encrypted = NRS.encryptNote(data.note_to_self, {
-					"publicKey": converters.hexStringToByteArray(NRS.generatePublicKey(data.secretPhrase))
-				}, data.secretPhrase);
+				if (data.doNotSign) {
+                    data.messageToEncryptToSelf = data.note_to_self;
+                } else {
+                    encrypted = NRS.encryptNote(data.note_to_self, {
+                        "publicKey": converters.hexStringToByteArray(NRS.generatePublicKey(data.secretPhrase))
+                    }, data.secretPhrase);
 
-				data.encryptToSelfMessageData = encrypted.message;
-				data.encryptToSelfMessageNonce = encrypted.nonce;
+                    data.encryptToSelfMessageData = encrypted.message;
+                    data.encryptToSelfMessageNonce = encrypted.nonce;
+                }
 				data.messageToEncryptToSelfIsText = "true";
-
 				delete data.note_to_self;
 			} catch (err) {
 				throw err;
@@ -200,8 +206,7 @@ var NRS = (function(NRS, $) {
 		}
 
 		var originalRequestType = requestType;
-		
-		if (requestType != "addPeer" && requestType != "blacklistPeer") {
+        if (!NRS.isOfflineSafeRequest(requestType)) {
 			if (NRS.downloadingBlockchain) {
 				$form.find(".error_message").html($.t("error_blockchain_downloading")).show();
 				if (formErrorFunction) {
@@ -459,7 +464,7 @@ var NRS = (function(NRS, $) {
 			data.deadline = String(data.deadline * 60); //hours to minutes
 		}
 
-		if ("secretPhrase" in data && !data.secretPhrase.length && !NRS.rememberPassword) {
+        if ("secretPhrase" in data && !data.secretPhrase.length && !NRS.rememberPassword) {
 			$form.find(".error_message").html($.t("error_passphrase_required")).show();
 			if (formErrorFunction) {
 				formErrorFunction(false, data);
@@ -485,7 +490,7 @@ var NRS = (function(NRS, $) {
 				if (new BigInteger(amountNQT).compareTo(new BigInteger(NRS.settings["amount_warning"])) > 0) {
 					NRS.showedFormWarning = true;
 					$form.find(".error_message").html($.t("error_max_amount_warning", {
-						"nhz": NRS.formatAmount(NRS.settings["amount_warning"])
+						"nxt": NRS.formatAmount(NRS.settings["amount_warning"])
 					})).show();
 					if (formErrorFunction) {
 						formErrorFunction(false, data);
@@ -510,8 +515,29 @@ var NRS = (function(NRS, $) {
 				if (new BigInteger(feeNQT).compareTo(new BigInteger(NRS.settings["fee_warning"])) > 0) {
 					NRS.showedFormWarning = true;
 					$form.find(".error_message").html($.t("error_max_fee_warning", {
-						"nhz": NRS.formatAmount(NRS.settings["fee_warning"])
+						"nxt": NRS.formatAmount(NRS.settings["fee_warning"])
 					})).show();
+					if (formErrorFunction) {
+						formErrorFunction(false, data);
+					}
+					NRS.unlockForm($modal, $btn);
+					return;
+				}
+			}
+
+			if ("decimals" in data) {
+                try {
+                    var decimals = parseInt(data.decimals);
+				} catch (err) {
+                    decimals = 0;
+				}
+
+				if (decimals < 2 || decimals > 6) {
+					NRS.showedFormWarning = true;
+                    var entity = (requestType == 'issueCurrency' ? 'currency' : 'asset');
+					$form.find(".error_message").html($.t("error_decimal_positions_warning", {
+                        "entity": entity
+                    })).show();
 					if (formErrorFunction) {
 						formErrorFunction(false, data);
 					}
@@ -559,7 +585,7 @@ var NRS = (function(NRS, $) {
 
 				formCompleteFunction = NRS["forms"][originalRequestType + "Complete"];
 
-				if (requestType != "parseTransaction") {
+				if (requestType != "parseTransaction" && requestType != "calculateFullHash") {
 					if (typeof formCompleteFunction == "function") {
 						data.requestType = requestType;
 

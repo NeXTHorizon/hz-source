@@ -66,7 +66,7 @@ var NRS = (function(NRS, $, undefined) {
 			//user uses an old version which does not supply the platform / version
 			if (NRS.appPlatform == "" || NRS.appVersion == "" || version_compare(NRS.appVersion, "NHZ V3.2", "<")) {
 				$("#secondary_dashboard_message").removeClass("alert-success").addClass("alert-danger").html("A new version of the Horizon Wallet application is available for download <a href='https://horizonplatform.io/wallets/' target='_blank'>here</a>. You must install it manually due to changes in the NRS startup procedure.").show();
-			}			
+			}
 		}
 	}
 

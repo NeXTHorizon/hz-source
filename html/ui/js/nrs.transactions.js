@@ -427,7 +427,7 @@ var NRS = (function(NRS, $, undefined) {
 						}
 						if (mbModel == 1) {
 							if (minBalance > 0) {
-								minBalanceFormatted = NRS.convertToNXT(minBalance) + " NHZ";
+								minBalanceFormatted = NRS.convertToNXT(minBalance) + " HZ";
 								$approveBtn.data('minBalanceFormatted', minBalanceFormatted.escapeHTML());
 							}
 						}
