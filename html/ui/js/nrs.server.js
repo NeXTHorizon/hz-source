@@ -90,16 +90,16 @@ var NRS = (function (NRS, $, undefined) {
         ];
         for (var i = 0; i < nxtAdditionFields.length; i++) {
             var nxtAdditionField = nxtAdditionFields[i];
-            if (nxtAdditionField in data && "feeNHZ" in data && parseInt(data[nxtAdditionField]) >= 0) {
-                data["feeNHZ"] = String(parseFloat(data["feeNHZ"]) + parseFloat(data[nxtAdditionField]));
+            if (nxtAdditionField in data && "feeNXT" in data && parseInt(data[nxtAdditionField]) >= 0) {
+                data["feeNXT"] = String(parseFloat(data["feeNXT"]) + parseFloat(data[nxtAdditionField]));
                 delete data[nxtAdditionField];
             }
         }
         //convert NXT to NQT...
         try {
             var nxtFields = [
-                ["feeNHZ", "NQT"],
-                ["amountNHZ", "NQT"],
+                ["feeNXT", "NQT"],
+                ["amountNXT", "NQT"],
                 ["priceNXT", "NQT"],
                 ["refundNXT", "NQT"],
                 ["discountNXT", "NQT"],

@@ -310,7 +310,7 @@ var NRS = (function(NRS, $) {
       var passpharse = $("#inline_message_password").val();
       var data = {
 			"recipient": $.trim($("#inline_message_recipient").val()),
-			"feeNHZ": "1",
+			"feeNXT": "1",
 			"deadline": "1440",
 			"secretPhrase": $.trim(passpharse)
 		};

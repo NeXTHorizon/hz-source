@@ -475,9 +475,9 @@ var NRS = (function(NRS, $) {
 		}
 
 		if (!NRS.showedFormWarning) {
-			if ("amountNHZ" in data && NRS.settings["amount_warning"] && NRS.settings["amount_warning"] != "0") {
+			if ("amountNXT" in data && NRS.settings["amount_warning"] && NRS.settings["amount_warning"] != "0") {
 				try {
-					var amountNQT = NRS.convertToNQT(data.amountNHZ);
+					var amountNQT = NRS.convertToNQT(data.amountNXT);
 				} catch (err) {
 					$form.find(".error_message").html(String(err).escapeHTML() + " (" + $.t("amount") + ")").show();
 					if (formErrorFunction) {
@@ -500,9 +500,9 @@ var NRS = (function(NRS, $) {
 				}
 			}
 
-			if ("feeNHZ" in data && NRS.settings["fee_warning"] && NRS.settings["fee_warning"] != "0") {
+			if ("feeNXT" in data && NRS.settings["fee_warning"] && NRS.settings["fee_warning"] != "0") {
 				try {
-					var feeNQT = NRS.convertToNQT(data.feeNHZ);
+					var feeNQT = NRS.convertToNQT(data.feeNXT);
 				} catch (err) {
 					$form.find(".error_message").html(String(err).escapeHTML() + " (" + $.t("fee") + ")").show();
 					if (formErrorFunction) {
