@@ -138,7 +138,7 @@ public final class Constants {
     public static final int VOTING_SYSTEM_BLOCK = isTestnet ? 220000 : Integer.MAX_VALUE;
     public static final int PHASING_BLOCK = isTestnet ? 220000 : Integer.MAX_VALUE;
 
-    public static final int LAST_KNOWN_BLOCK = CheckPoints.previousBlockId.length*720;
+    public static final int LAST_KNOWN_BLOCK = (CheckPoints.previousBlockId.length-1)*720;
     
     public static final int[] MIN_VERSION = new int[] {3, 8};
 
