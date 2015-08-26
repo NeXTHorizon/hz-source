@@ -64,24 +64,8 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
     private static final byte[] CHECKSUM_TRANSPARENT_FORGING = new byte[]{-75, -47, 54, -19, 77, 48, 32, 97, 126, -111, -41, 90, 18, 116, 2, 45, -2, 68, -33, 38, 108, -105, -10, 69, -51, 112, 81, 110, 33, 59, 34, 23};
 	private static final byte[] CHECKSUM_BLOCK_1000 = new byte[]{ -119, -41, 39, -28, -91, -89, -63, -64, -105, -7, -120, -108, -104, 31, 23, 31,117, 29, -57, -71, 22, -31, 86, 77, -5, -94, 11, 61, 14, 91, 63, -24};
     private static final byte[] CHECKSUM_NQT_BLOCK = new byte[]{106, -81, -37, -67, 107, 97, 86, -66, -76, -111, 3, -79, -50, -57, 81, 122, -50, -86, 34, 58, 72, -67, 33, -26, 94, -98, -12, -1, 81, 91, -63, -64};
-    private static final byte[] CHECKSUM_MONETARY_SYSTEM_BLOCK = Constants.isTestnet ?
-            new byte[] {
-                    119, 51, 105, -101, -74, -49, -49, 19, 11, 103, -84, 80, -46, -5, 51, 42,
-                    84, 88, 87, -115, -19, 104, 49, -93, -41, 84, -34, -92, 103, -48, 29, 44
-            }
-            : new byte[] {
-            -117, -101, 74, 111, -114, 39, 80, -67, 48, 86, 68, 106, -105, 2, 84, -109,
-            1, 4, -20, -82, -112, -112, 25, 119, 23, -113, 126, -121, -36, 15, -32, -24
-    };
-    private static final byte[] CHECKSUM_PHASING_BLOCK = Constants.isTestnet ?
-            new byte [] {
-                    4, -100, -26, 47, 93, 1, -114, 86, -42, 46, -103, 13, 120, 0, 2, 100, -52,
-                    -67, 109, -90, 87, 13, 30, -110, -58, -70, -94, 21, 105, -58, 20, 0
-            }
-            : new byte[] {
-            -88, -128, 68, -118, 10, -62, 110, 19, -73, 61, 34, -76, 35, 73, -101, 9,
-            33, -111, 40, 114, 27, 105, 54, 0, 16, -97, 115, -12, -110, -88, 1, -15
-    };
+    private static final byte[] CHECKSUM_MONETARY_SYSTEM_BLOCK = null;
+    private static final byte[] CHECKSUM_PHASING_BLOCK = null;
 
     private static final BlockchainProcessorImpl instance = new BlockchainProcessorImpl();
 
@@ -151,7 +135,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 Logger.logErrorMessage("CRITICAL ERROR. PLEASE REPORT TO THE DEVELOPERS.\n" + t.toString(), t);
                 System.exit(1);
             }
-        }
+         }
 
         private void downloadPeer() throws InterruptedException {
             try {
@@ -198,7 +182,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 }
 
                 chainBlockIds = getBlockIdsAfterCommon(peer, commonMilestoneBlockId, false);
-                if (chainBlockIds.size() < 2 || !peerHasMore) {
+                if (chainBlockIds.size() < 2 || !peerHasMore) { //TODO check
                     return;
                 }
 
@@ -399,7 +383,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
             // is the common block for that segment.
             //
             List<GetNextBlocks> getList = new ArrayList<>();
-            int segSize = 36;
+            int segSize = (blockchain.getLastBlock().getHeight() < nxt.Constants.PHASING_BLOCK ? 720 : 36);
             int stop = chainBlockIds.size() - 1;
             for (int start = 0; start < stop; start += segSize) {
                 getList.add(new GetNextBlocks(chainBlockIds, start, Math.min(start + segSize, stop)));
@@ -479,6 +463,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 }
 
             }
+            //TODO check, could encourage forks
             if (slowestPeer != null && connectedPublicPeers.size() >= Peers.maxNumberOfConnectedPublicPeers && chainBlockIds.size() > 360) {
                 Logger.logDebugMessage(slowestPeer.getHost() + " took " + maxResponseTime + " ms, disconnecting");
                 slowestPeer.deactivate();
@@ -632,8 +617,8 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
             request.put("requestType", "getNextBlocks");
             request.put("blockIds", idList);
             request.put("blockId", Long.toUnsignedString(blockIds.get(start)));
-            long startTime = System.currentTimeMillis();
-            JSONObject response = peer.send(JSON.prepareRequest(request), 10 * 1024 * 1024);
+            long startTime = System.currentTimeMillis();             
+            JSONObject response = peer.send(JSON.prepareRequest(request), (Nxt.getBlockchain().getLastBlock().getHeight() < Constants.PHASING_BLOCK ? 192 : 10) * 1024 * 1024);
             responseTime = System.currentTimeMillis() - startTime;
             if (response == null) {
                 return null;
@@ -791,7 +776,8 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
     }
 
     private final Listener<Block> checksumListener = block -> {
-    if (! Constants.isTestnet) { //TODO add nxt like optimization, add testnet
+    		//TODO add nxt like optimization
+    		if (!Constants.isTestnet) {
     		if (block.getHeight() == Constants.BLOCK_1000 
     			&& ! verifyChecksum(CHECKSUM_BLOCK_1000,0,Constants.BLOCK_1000)) {
         		popOffTo(0);
@@ -801,18 +787,19 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
             	popOffTo(0);
         	}
         	if (block.getHeight() == Constants.NQT_BLOCK
-                	&& ! verifyChecksum(CHECKSUM_NQT_BLOCK, 0, Constants.NQT_BLOCK)) {
+                    && ! verifyChecksum(CHECKSUM_NQT_BLOCK, 0, Constants.NQT_BLOCK)) {
             	popOffTo(Constants.TRANSPARENT_FORGING_BLOCK);
         	}
-        	//if (block.getHeight() == Constants.MONETARY_SYSTEM_BLOCK
-                //	&& ! verifyChecksum(CHECKSUM_MONETARY_SYSTEM_BLOCK, Constants.NQT_BLOCK, Constants.MONETARY_SYSTEM_BLOCK)) {
-            	//popOffTo(Constants.NQT_BLOCK);
-        	//}
-        	//if (block.getHeight() == Constants.PHASING_BLOCK
-                //	&& ! verifyChecksum(CHECKSUM_PHASING_BLOCK, Constants.MONETARY_SYSTEM_BLOCK, Constants.PHASING_BLOCK)) {
-            	//popOffTo(Constants.MONETARY_SYSTEM_BLOCK);
-        	//}
-        }
+        	/*
+        	if (block.getHeight() == Constants.MONETARY_SYSTEM_BLOCK
+                	&& ! verifyChecksum(CHECKSUM_MONETARY_SYSTEM_BLOCK, Constants.NQT_BLOCK, Constants.MONETARY_SYSTEM_BLOCK)) {
+            	popOffTo(Constants.NQT_BLOCK);
+        	}
+        	if (block.getHeight() == Constants.PHASING_BLOCK
+                	&& ! verifyChecksum(CHECKSUM_PHASING_BLOCK, Constants.MONETARY_SYSTEM_BLOCK, Constants.PHASING_BLOCK)) {
+            	popOffTo(Constants.MONETARY_SYSTEM_BLOCK);
+        	} */
+    		}
     };
 
     private BlockchainProcessorImpl() {
@@ -1390,7 +1377,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
         MessageDigest digest = Crypto.sha256();
         try (Connection con = Db.db.getConnection();
              PreparedStatement pstmt = con.prepareStatement(
-                     "SELECT * FROM transaction WHERE height > ? AND height <= ? ORDER BY id ASC, timestamp ASC")) {
+                     "SELECT * FROM transaction WHERE height >= ? AND height <= ? ORDER BY id ASC, timestamp ASC")) {
             pstmt.setInt(1, fromHeight);
             pstmt.setInt(2, toHeight);
             try (DbIterator<TransactionImpl> iterator = blockchain.getTransactions(con, pstmt)) {

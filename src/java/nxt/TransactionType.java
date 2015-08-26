@@ -956,6 +956,10 @@ public abstract class TransactionType {
             @Override
             void validateAttachment(Transaction transaction) throws NxtException.ValidationException {
 
+                if (Nxt.getBlockchain().getHeight() < Constants.PHASING_BLOCK) {
+                    throw new NxtException.NotYetEnabledException("Phasing not yet enabled at height " + Nxt.getBlockchain().getHeight());
+                }
+
                 Attachment.MessagingPhasingVoteCasting attachment = (Attachment.MessagingPhasingVoteCasting) transaction.getAttachment();
                 byte[] revealedSecret = attachment.getRevealedSecret();
                 if (revealedSecret.length > Constants.MAX_PHASING_REVEALED_SECRET_LENGTH) {
@@ -2363,6 +2367,9 @@ public abstract class TransactionType {
 
             @Override
             void validateAttachment(Transaction transaction) throws NxtException.ValidationException {
+                if (Nxt.getBlockchain().getHeight() < Constants.VOTING_SYSTEM_BLOCK) {
+                    throw new NxtException.NotYetEnabledException("Prunable Tagged Data not yet enabled");
+                }
                 Attachment.TaggedDataUpload attachment = (Attachment.TaggedDataUpload) transaction.getAttachment();
                 if (attachment.getData() == null && Nxt.getEpochTime() - transaction.getTimestamp() < Constants.MIN_PRUNABLE_LIFETIME) {
                     throw new NxtException.NotCurrentlyValidException("Data has been pruned prematurely");
@@ -2424,6 +2431,9 @@ public abstract class TransactionType {
 
             @Override
             void validateAttachment(Transaction transaction) throws NxtException.ValidationException {
+                if (Nxt.getBlockchain().getHeight() < Constants.VOTING_SYSTEM_BLOCK) {
+                    throw new NxtException.NotYetEnabledException("Prunable Tagged Data not yet enabled");
+                }
                 Attachment.TaggedDataExtend attachment = (Attachment.TaggedDataExtend) transaction.getAttachment();
                 if ((attachment.jsonIsPruned() || attachment.getData() == null) && Nxt.getEpochTime() - transaction.getTimestamp() < Constants.MIN_PRUNABLE_LIFETIME) {
                     throw new NxtException.NotCurrentlyValidException("Data has been pruned prematurely");
