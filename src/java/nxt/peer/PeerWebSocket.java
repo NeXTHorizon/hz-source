@@ -64,7 +64,7 @@ public class PeerWebSocket {
     private static final boolean isGzipEnabled = Nxt.getBooleanProperty("nxt.enablePeerServerGZIPFilter");
 
     /** Maximum message size */
-    static final int MAX_MESSAGE_SIZE = (Nxt.getBlockchain().getLastBlock().getHeight() < Constants.PHASING_BLOCK ? 192 : 10)*1024*1024;
+    static final int MAX_MESSAGE_SIZE = 192 *1024*1024;
 
     /** Minimum compressed message size */
     private static final int MIN_COMPRESS_SIZE = 256;
