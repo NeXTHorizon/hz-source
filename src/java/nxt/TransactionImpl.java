@@ -897,7 +897,7 @@ final class TransactionImpl implements Transaction {
 
     private boolean useNQT() {
         return this.height > Constants.NQT_BLOCK
-                && (this.timestamp > (Constants.isTestnet ? 12908200 : 14271000)
+                && (this.timestamp > (Constants.isTestnet ? 24443293 : 6939464)
                 || Nxt.getBlockchain().getHeight() >= Constants.NQT_BLOCK);
     }
 
