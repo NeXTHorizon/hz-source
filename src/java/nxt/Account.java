@@ -992,7 +992,7 @@ public final class Account {
 
     public long getGuaranteedBalanceNQT(final int numberOfConfirmations, final int currentHeight) {
         int height = currentHeight - numberOfConfirmations;
-        final int EFFECTIVE_BLOCKS = (height < Constants.MONETARY_SYSTEM_BLOCK ? 40 : Constants.GUARANTEED_BALANCE_CONFIRMATIONS );
+        final int EFFECTIVE_BLOCKS = (currentHeight < Constants.MONETARY_SYSTEM_BLOCK ? 40 : Constants.GUARANTEED_BALANCE_CONFIRMATIONS );
         if (height + EFFECTIVE_BLOCKS < Nxt.getBlockchainProcessor().getMinRollbackHeight()
                 || height > Nxt.getBlockchain().getHeight()) {
             throw new IllegalArgumentException("Height " + height + " not available for guaranteed balance calculation");
