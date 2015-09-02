@@ -1994,22 +1994,22 @@ body > .header .logo .icon {
   text-align: center;
   text-transform: uppercase;
 }
-#registration_link a, #custom_passphrase_link a {
+#registration_link a, #custom_passphrase_link a, #login_another_account a {
   color: rgba(255,255,255,0.5);
 }
-#registration_link a:hover, #custom_passphrase_link a {
+#registration_link a:hover, #custom_passphrase_link a, #login_another_account a:hover {
   color: rgba(255,255,255,1.0);
   text-decoration: none;
 }
 
 #login_panel #remember_password_container label,
 #login_panel #remember_account_container label, 
-#lockscreen_active_plugins_warning label
+#lockscreen_active_plugins_warning label, #remember_device_container label
 { opacity: 0.53; }
 
 #login_panel #remember_password_container label:hover,
 #login_panel #remember_account_container label:hover,
-#lockscreen_active_plugins_warning label:hover 
+#lockscreen_active_plugins_warning label:hover, #remember_device_container label:hover
 { opacity: 1.0; }
 
 /* 
@@ -2953,11 +2953,11 @@ label .popover-content {
   background-color: #3c8dbc;
   color: #f9f9f9;
 }
-#remember_password_container,#remember_account_container {
+#remember_password_container,#remember_account_container, #remember_device_container {
   color:#fff;
   text-align:center;
 }
-#remember_password_container label,#remember_account_container label {
+#remember_password_container label,#remember_account_container label, #remember_device_container label {
 	font-weight:normal;
 }
 .popover {

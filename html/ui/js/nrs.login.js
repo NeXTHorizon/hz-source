@@ -52,8 +52,6 @@ var NRS = (function(NRS, $, undefined) {
         $("#login_account_other").mask("NHZ-****-****-****-*****");
         
 		$("#login_panel").show();
-		$("#login_new").show();
-		$("#login_remember").hide();
 		setTimeout(function() {
 			$("#login_password").focus()
 		}, 10);
@@ -63,6 +61,11 @@ var NRS = (function(NRS, $, undefined) {
 		$("#login_panel, #account_phrase_generator_panel, #account_phrase_custom_panel, #welcome_panel, #custom_passphrase_link").hide();
 		$("#welcome_panel").show();
 	};
+
+	NRS.showLoginNewContainer = function() {
+		$("#login_remember_container").hide();
+		$("#login_new_container").show();
+	}
 
 	NRS.registerUserDefinedAccount = function() {
 		$("#account_phrase_generator_panel, #login_panel, #welcome_panel, #custom_passphrase_link").hide();
@@ -392,15 +395,15 @@ var NRS = (function(NRS, $, undefined) {
 					if (!NRS.downloadingBlockchain) {
 						NRS.checkIfOnAFork();
 					}
-					if(navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) {
-						// Don't use account based DB in Safari due to a buggy indexedDB implementation (2015-02-24)
-						NRS.createDatabase("NRS_USER_DB");
-						$.growl($.t("nrs_safari_no_account_based_db"), {
-							"type": "danger"
-						});
-					} else {
-						NRS.createDatabase("NRS_USER_DB_" + String(NRS.account));
-					}
+					// if(navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) {
+					// 	// Don't use account based DB in Safari due to a buggy indexedDB implementation (2015-02-24)
+					// 	NRS.createDatabase("NRS_USER_DB");
+					// 	$.growl($.t("nrs_safari_no_account_based_db"), {
+					// 		"type": "danger"
+					// 	});
+					// } else {
+					// 	NRS.createDatabase("NRS_USER_DB_" + String(NRS.account));
+					// }
 
 					NRS.setupClipboardFunctionality();
 
@@ -625,23 +628,35 @@ var NRS = (function(NRS, $, undefined) {
 	}
 
 	$("#remember_short_password_container").hide();
-	$("#remember_device").change(function(){
-		$("#remember_short_password_container").toggle();
-	});
 
-	$("#login_remember").hide();
-	$("#login_new").hide();
+	NRS.createDatabase("NRS_USER_DB");
+
 	$(document).ready(function() {
 		setTimeout(function(){
-			NRS.database.select("data", [{
-				"id": 'passphrase'
-			}], function(error, data) {
-				if(data.length == 0) {
-					$("#login_new").show();
-				} else {
-					$("#login_remember").show();
-				}
-			});
+			if(NRS.databaseSupport){
+				$("#remember_device").change(function(){
+					$("#remember_short_password_container").toggle();
+					$("#remember_password").click();
+				});
+	
+				NRS.database.select("data", [{
+					"id": 'passphrase'
+				}], function(error, data) {
+					if(data.length == 0) {
+						$("#login_new_container").show();
+					} else {
+						$("#login_remember_container").show();
+					}
+				});
+
+				$("#login_password").keyup(function(){
+					if($(this).val() == ""){
+						$("#login_with_password").hide();
+					} else {
+						$("#login_with_password").show();
+					}
+				});
+			}
 		},500);
 	});
 
