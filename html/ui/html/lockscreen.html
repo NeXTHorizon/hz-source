@@ -41,6 +41,9 @@
                 </div>
 
                 <div id="login_remember_container" style="display: none;">
+                    <button type="button" class="btn btn-primary loginButtons" data-toggle="button" data-login-type="account" aria-pressed="false" style="min-width:40px;">
+                        <input type="hidden" name="loginType" id="accountLogin" value="password" autocomplete="off" /><i class="fa fa-lock"></i>
+                    </button>
                     <div class="lockscreen-item">
                         <div class="lockscreen-credentials">   
                             <div class="input-group">
@@ -57,7 +60,7 @@
                 </div>
                 
                 <div id="login_new_container" style="display: none;">
-    				<button type="button" id="loginButtons" class="btn btn-primary" data-toggle="button" data-login-type="account" aria-pressed="false" style="min-width:40px;">
+    				<button type="button" class="btn btn-primary loginButtons" data-toggle="button" data-login-type="account" aria-pressed="false" style="min-width:40px;">
         				<input type="hidden" name="loginType" id="accountLogin" value="account" autocomplete="off" /><i class="fa fa-male"></i>
     				</button>
     				
@@ -86,8 +89,8 @@
 
                     <div style="color: #fff;">OR</div>
 
-                    <button type="button" id="loginButtons" class="btn btn-primary" data-toggle="button" data-login-type="passphrase" aria-pressed="false" style="min-width:40px;">
-                        <input type="hidden" name="loginType" id="accountLogin" value="passphrase" autocomplete="off" /><i class="fa fa-lock"></i>
+                    <button type="button" class="btn btn-primary loginButtons" data-toggle="button" data-login-type="passphrase" aria-pressed="false" style="min-width:40px;">
+                        <input type="hidden" name="loginType" id="accountLogin" value="passphrase" autocomplete="off" /><i class="fa fa-key"></i>
                     </button>
 
                     <div class="lockscreen-item">

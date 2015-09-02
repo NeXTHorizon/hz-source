@@ -3339,7 +3339,7 @@ input.masked {
   display: none;
 }
 
-#loginButtons {
+.loginButtons {
   margin: 10px 0;
   vertical-align: top;
 }
