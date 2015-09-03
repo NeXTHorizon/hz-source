@@ -667,7 +667,6 @@ var NRS = (function(NRS, $, undefined) {
 					if(aliasTimeout>0) window.clearTimeout(aliasTimeout);
 					if(val != "") {
 						aliasTimeout = window.setTimeout(function(){
-							var hide = true;
 							NRS.sendRequest("getAlias", {aliasName: val}, function(response) {
 								if (!response.errorCode) {
 									var alias = String(response.aliasURI);
