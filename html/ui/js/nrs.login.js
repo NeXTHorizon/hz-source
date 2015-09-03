@@ -374,17 +374,12 @@ var NRS = (function(NRS, $, undefined) {
 
 					//NRS.getAccountAliases();
 
-					NRS.database.delete("data", [{
-						id: 'passphrase'
-					}]);
+					NRS.deleteCookie('encryptedPassphrase');
 					if($("#remember_device").is(':checked'))
 					{
-						key = $("#remember_short_password").val();
-						var shortpw = GibberishAES.enc(password,key);
-						NRS.database.insert("data", {
-							id: 'passphrase',
-							contents: shortpw
-						});
+						var key = $("#remember_short_password").val();
+						var encryptedPw = GibberishAES.enc(password,key);
+						NRS.setCookie('encryptedPassphrase',encryptedPw);
 					}
 					
 					NRS.unlock();
@@ -400,7 +395,7 @@ var NRS = (function(NRS, $, undefined) {
 					}
 					if(navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) {
 						// Don't use account based DB in Safari due to a buggy indexedDB implementation (2015-02-24)
-						// NRS.createDatabase("NRS_USER_DB");
+						NRS.createDatabase("NRS_USER_DB");
 						$.growl($.t("nrs_safari_no_account_based_db"), {
 							"type": "danger"
 						});
@@ -567,6 +562,7 @@ var NRS = (function(NRS, $, undefined) {
 				} else {
 					NRS.setDecryptionPassword("");
 					NRS.setPassword("");
+					NRS.deleteCookie('encryptedPassphrase');
 					//window.location.reload();
 					window.location.href = window.location.pathname;    
 				}
@@ -601,33 +597,27 @@ var NRS = (function(NRS, $, undefined) {
 	};
 
 	NRS.relogin = function(shortpw) {
-		NRS.database.select("data", [{
-			"id": 'passphrase'
-		}], function(error, data) {			
-			if(data.length > 0) {
-				var storedpassphrase = data[0].contents;
-				try {
-					var decrypted_password = GibberishAES.dec(
-						storedpassphrase,
-						shortpw
-					);
-				} catch(e) {
-					alert("Password error");
-				}
-
-				if(typeof(decrypted_password) !== 'undefined') {
-					NRS.database.select("data", [{
-						"id": 'savepassphrase'
-					}], function(er, da) {
-						if(da.length > 0) {
-							$("#remember_password").click();
-						}
-					});
-
-					NRS.login(true,decrypted_password);
-				}
+		var data = NRS.getCookie('encryptedPassphrase');	
+		if(data !== null) {
+			var storedpassphrase = data;
+			try {
+				var decrypted_password = GibberishAES.dec(
+					storedpassphrase,
+					shortpw
+				);
+			} catch(e) {
+				alert("Password error");
 			}
-		});
+
+			if(typeof(decrypted_password) !== 'undefined') {
+				$("#remember_password, #remember_device").attr('checked','checked');
+				$("#remember_short_password").val(shortpw);
+
+				NRS.login(true,decrypted_password);
+
+				setTimeout(function(){$("#remember_short_password").val("")},5000);
+			}
+		}
 	}
 
 	$("#remember_short_password_container").hide();
@@ -635,78 +625,72 @@ var NRS = (function(NRS, $, undefined) {
 	NRS.createDatabase("NRS_USER_DB");
 
 	$(document).ready(function() {
-		setTimeout(function(){
-			if(NRS.databaseSupport){
-				$("#remember_device").change(function(){
-					$("#remember_short_password_container").toggle();
-					$("#remember_password").click();
-				});
-	
-				NRS.database.select("data", [{
-					"id": 'passphrase'
-				}], function(error, data) {
-					if(data.length == 0) {
-						$("#login_new_container").show();
-					} else {
-						$("#login_remember_container").show();
-					}
-				});
+		$("#remember_device").change(function(){
+			$("#remember_short_password_container").toggle();
+			$("#remember_password").click();
+		});
 
-				$("#login_password").keyup(function(){
-					if($(this).val() == ""){
-						$("#login_with_password").hide();
-					} else {
-						$("#login_with_password").show();
-					}
-				});
+		
+		var encryptedPw = NRS.getCookie('encryptedPassphrase');
+		if(encryptedPw === null) {
+			$("#login_new_container").show();
+		} else {
+			$("#login_remember_container").show();
+		}
 
-				var aliasTimeout = 0;
-				$("#login_account_other").keyup(function(){
-					var val = $(this).val();
-					NRS.loginAliasAccount = "";
-					if(aliasTimeout>0) window.clearTimeout(aliasTimeout);
-					if(val != "") {
-						aliasTimeout = window.setTimeout(function(){
-							NRS.sendRequest("getAlias", {aliasName: val}, function(response) {
-								if (!response.errorCode) {
-									var alias = String(response.aliasURI);
-
-									var regex_1 = /acct:(.*)@nhz/;
-									var regex_2 = /nacc:(.*)/;
-
-									var match = alias.match(regex_1);
-
-									if (!match) {
-										match = alias.match(regex_2);
-									}
-
-									if (match && match[1]) {
-										NRS.loginAliasAccount = String(match[1]).toUpperCase();
-
-										if (/^\d+$/.test(NRS.loginAliasAccount)) {
-											var address = new NxtAddress();
-
-											if (address.set(NRS.loginAliasAccount)) {
-												NRS.loginAliasAccount = address.toString();
-											}
-										}
-									}
-								}
-
-								$("#foundAlias").hide();
-								if(NRS.loginAliasAccount != ""){
-									$("#foundAlias").show();
-									$("#foundAliasAccount").text(NRS.loginAliasAccount);
-									$("#foundAliasAlias").text(val);
-								}
-							});
-						},500);
-					} else {
-						$("#foundAlias").hide();
-					}
-				});
+		$("#login_password").keyup(function(){
+			if($(this).val() == ""){
+				$("#login_with_password").hide();
+			} else {
+				$("#login_with_password").show();
 			}
-		},1000);
+		});
+
+		var aliasTimeout = 0;
+		$("#login_account_other").keyup(function(){
+			var val = $(this).val();
+			NRS.loginAliasAccount = "";
+			if(aliasTimeout>0) window.clearTimeout(aliasTimeout);
+			if(val != "") {
+				aliasTimeout = window.setTimeout(function(){
+					NRS.sendRequest("getAlias", {aliasName: val}, function(response) {
+						if (!response.errorCode) {
+							var alias = String(response.aliasURI);
+
+							var regex_1 = /acct:(.*)@nhz/;
+							var regex_2 = /nacc:(.*)/;
+
+							var match = alias.match(regex_1);
+
+							if (!match) {
+								match = alias.match(regex_2);
+							}
+
+							if (match && match[1]) {
+								NRS.loginAliasAccount = String(match[1]).toUpperCase();
+
+								if (/^\d+$/.test(NRS.loginAliasAccount)) {
+									var address = new NxtAddress();
+
+									if (address.set(NRS.loginAliasAccount)) {
+										NRS.loginAliasAccount = address.toString();
+									}
+								}
+							}
+						}
+
+						$("#foundAlias").hide();
+						if(NRS.loginAliasAccount != ""){
+							$("#foundAlias").show();
+							$("#foundAliasAccount").text(NRS.loginAliasAccount);
+							$("#foundAliasAlias").text(val);
+						}
+					});
+				},500);
+			} else {
+				$("#foundAlias").hide();
+			}
+		});
 	});
 
 	return NRS;
