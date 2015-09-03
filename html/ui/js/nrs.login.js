@@ -667,9 +667,35 @@ var NRS = (function(NRS, $, undefined) {
 					if(aliasTimeout>0) window.clearTimeout(aliasTimeout);
 					if(val != "") {
 						aliasTimeout = window.setTimeout(function(){
+							var hide = true;
 							NRS.sendRequest("getAlias", {aliasName: val}, function(response) {
 								if (!response.errorCode) {
-									NRS.loginAliasAccount = response.accountRS;
+									var alias = String(response.aliasURI);
+
+									var regex_1 = /acct:(.*)@nhz/;
+									var regex_2 = /nacc:(.*)/;
+
+									var match = alias.match(regex_1);
+
+									if (!match) {
+										match = alias.match(regex_2);
+									}
+
+									if (match && match[1]) {
+										NRS.loginAliasAccount = String(match[1]).toUpperCase();
+
+										if (/^\d+$/.test(NRS.loginAliasAccount)) {
+											var address = new NxtAddress();
+
+											if (address.set(NRS.loginAliasAccount)) {
+												NRS.loginAliasAccount = address.toString();
+											}
+										}
+									}
+								}
+
+								$("#foundAlias").hide();
+								if(NRS.loginAliasAccount != ""){
 									$("#foundAlias").show();
 									$("#foundAliasAccount").text(NRS.loginAliasAccount);
 									$("#foundAliasAlias").text(val);
