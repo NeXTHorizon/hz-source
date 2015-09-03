@@ -19,6 +19,7 @@
  */
 var NRS = (function(NRS, $, undefined) {
 	NRS.newlyCreatedAccount = false;
+	NRS.loginAliasAccount = "";
 
 	NRS.allowLoginViaEnter = function() {
 		$("#login_account_other").keypress(function(e) {
@@ -253,10 +254,12 @@ var NRS = (function(NRS, $, undefined) {
 			if (passLogin) {
 				var accountRequest = "getAccountId";
 				var requestVariable = {secretPhrase: password};
-			}
-			else {
+			} else {
 				var accountRequest = "getAccount";
 				var requestVariable = {account: password};
+				if(NRS.loginAliasAccount != "") {
+					var requestVariable = {account: String(NRS.loginAliasAccount).escapeHTML()};
+				}
 			}
 
 			//this is done locally..
@@ -655,6 +658,15 @@ var NRS = (function(NRS, $, undefined) {
 					} else {
 						$("#login_with_password").show();
 					}
+				});
+
+				$("#login_account_other").keyup(function(){
+					NRS.loginAliasAccount = "";
+					NRS.sendRequest("getAlias", {aliasName: $(this).val()}, function(response) {
+						if (!response.errorCode) {
+							NRS.loginAliasAccount = response.accountRS;
+						}
+					});
 				});
 			}
 		},1000);
