@@ -44,10 +44,10 @@
                     <button type="button" class="btn btn-primary loginButtons" data-toggle="button" data-login-type="account" aria-pressed="false" style="min-width:40px;">
                         <input type="hidden" name="loginType" id="accountLogin" value="password" autocomplete="off" /><i class="fa fa-lock"></i>
                     </button>
-                    <div class="lockscreen-item">
+                    <div class="lockscreen-item" style="width: 165px;">
                         <div class="lockscreen-credentials">   
                             <div class="input-group">
-                                <input type="password" class="form-control" id="relogin_password" name="relogin_password" placeholder="Password to relogin" data-i18n="[placeholder]your_passphrase" autofocus />
+                                <input type="password" class="form-control" id="relogin_password" name="relogin_password" placeholder="Short password" style="width: 125px" autofocus />
                                 <div class="input-group-btn" style="border:1px solid #fff;">
                                     <button class="btn btn-flat" onclick="NRS.relogin($('#relogin_password').val())"><i class="fa fa-arrow-right text-muted"></i></button>
                                 </div>
