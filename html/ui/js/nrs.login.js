@@ -660,13 +660,20 @@ var NRS = (function(NRS, $, undefined) {
 					}
 				});
 
+				var aliasTimeout = 0;
 				$("#login_account_other").keyup(function(){
+					var val = $(this).val();
 					NRS.loginAliasAccount = "";
-					NRS.sendRequest("getAlias", {aliasName: $(this).val()}, function(response) {
-						if (!response.errorCode) {
-							NRS.loginAliasAccount = response.accountRS;
-						}
-					});
+					if(aliasTimeout>0) window.clearTimeout(aliasTimeout);
+					if(val != "") {
+						aliasTimeout = window.setTimeout(function(){
+							NRS.sendRequest("getAlias", {aliasName: val}, function(response) {
+								if (!response.errorCode) {
+									NRS.loginAliasAccount = response.accountRS;
+								}
+							});
+						},500);
+					}
 				});
 			}
 		},1000);
