@@ -670,9 +670,14 @@ var NRS = (function(NRS, $, undefined) {
 							NRS.sendRequest("getAlias", {aliasName: val}, function(response) {
 								if (!response.errorCode) {
 									NRS.loginAliasAccount = response.accountRS;
+									$("#foundAlias").show();
+									$("#foundAliasAccount").text(NRS.loginAliasAccount);
+									$("#foundAliasAlias").text(val);
 								}
 							});
 						},500);
+					} else {
+						$("#foundAlias").hide();
 					}
 				});
 			}
