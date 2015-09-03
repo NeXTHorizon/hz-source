@@ -611,7 +611,7 @@
   "maximum_difficulty":"",
   "maximum_nr_choices":"",
   "maximum_range_value":"",
-  "memorize_passphrase_help":"Proszę zapisać lub zapamiętać te 12 wyrazów (ich kolejność oraz wielkość liter ma znaczenie - zawsze są pisane małymi literami). To hasło jest konieczne, aby uzyskać dostęp do konta Nxt.",
+  "memorize_passphrase_help":"Proszę zapisać lub zapamiętać te 12 wyrazów (ich kolejność oraz wielkość liter ma znaczenie - zawsze są pisane małymi literami). To hasło jest konieczne, aby uzyskać dostęp do konta Horizon.",
   "message":"",
   "message_count":"",
   "message_empty":"",
