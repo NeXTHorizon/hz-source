@@ -51,7 +51,8 @@ final class GetNextBlocks extends PeerServlet.PeerRequestHandler {
         List<? extends Block> blocks;
         long blockId = Convert.parseUnsignedLong((String) request.get("blockId"));
         List<String> stringList = (List<String>)request.get("blockIds");
-        final int blockLimit=(Nxt.getBlockchain().getLastBlock().getHeight() < Constants.PHASING_BLOCK ? 720 : 36); 
+        // TODO change limit to 36 after hard fork
+        final int blockLimit=720; 
         if (stringList != null) {
             if (stringList.size() > blockLimit) {
                 return TOO_MANY_BLOCKS_REQUESTED;
