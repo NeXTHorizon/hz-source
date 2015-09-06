@@ -27,6 +27,7 @@ import nxt.util.CountingInputStream;
 import nxt.util.CountingOutputWriter;
 import nxt.util.JSON;
 import nxt.util.Logger;
+
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 import org.json.simple.JSONValue;
@@ -53,6 +54,7 @@ import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 final class PeerImpl implements Peer {
@@ -557,17 +559,26 @@ final class PeerImpl implements Peer {
         return getHost().compareTo(o.getHost());
     }
 
+
     void connect() {
         lastConnectAttempt = Nxt.getEpochTime();
         try {
             if (!Peers.ignorePeerAnnouncedAddress && announcedAddress != null) {
                 try {
                     URI uri = new URI("http://" + announcedAddress);
-                    InetAddress inetAddress = InetAddress.getByName(uri.getHost());
-                    if (!inetAddress.equals(InetAddress.getByName(host))) {
-                        Logger.logDebugMessage("Connect: announced address " + announcedAddress + " now points to " + inetAddress.getHostAddress() + ", replacing peer " + host);
-                        Peers.removePeer(this);
-                        PeerImpl newPeer = Peers.findOrCreatePeer(inetAddress, announcedAddress, true);
+                    InetAddress inetAddress = InetAddress.getByName(uri.getHost()); 
+                    if (!inetAddress.getHostAddress().equals(InetAddress.getByName(host).getHostAddress())) {
+                    	PeerImpl newPeer=null;
+                        if (Pattern.matches("^pool\\d\\.horizonplatform\\.io$", announcedAddress) ) {
+                        	if (Peers.findOrCreatePeer(inetAddress, announcedAddress, false)==null) {                        		
+                        		newPeer = Peers.findOrCreatePeer(inetAddress, announcedAddress, true);
+                        		Logger.logDebugMessage("Connect: pool address " + announcedAddress + " now points to " + inetAddress.getHostAddress() + ", adding new peer " + inetAddress.getHostAddress());
+                        	}
+                        } else {
+                        	newPeer = Peers.findOrCreatePeer(inetAddress, announcedAddress, true);
+                        	Logger.logDebugMessage("Connect: announced address " + announcedAddress + " now points to " + inetAddress.getHostAddress() + ", replacing peer " + host);
+                        	Peers.removePeer(this);                        	
+                        }
                         if (newPeer != null) {
                             Peers.addPeer(newPeer);
                             newPeer.connect();
