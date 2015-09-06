@@ -16,7 +16,6 @@
 
 package nxt.peer;
 
-import nxt.Constants;
 import nxt.Nxt;
 import nxt.util.Logger;
 

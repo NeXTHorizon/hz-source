@@ -17,7 +17,6 @@
 package nxt.peer;
 
 import nxt.Block;
-import nxt.Constants;
 import nxt.Nxt;
 import nxt.util.Convert;
 import nxt.util.JSON;
