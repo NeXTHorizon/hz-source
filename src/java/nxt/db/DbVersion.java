@@ -86,6 +86,30 @@ public abstract class DbVersion {
         }
     }
 
+    protected void applyWithoutVersionUpdate(String sql) {
+        Connection con = null;
+        Statement stmt = null;
+        try {
+            con = db.getConnection();
+            stmt = con.createStatement();
+            try {
+                if (sql != null) {
+                    Logger.logDebugMessage("Will apply sql:\n" + sql);
+                    stmt.executeUpdate(sql);
+                }
+                //stmt.executeUpdate("UPDATE version SET next_update = next_update + 1");
+                con.commit();
+            } catch (Exception e) {
+                DbUtils.rollback(con);
+                throw e;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Database error executing " + sql, e);
+        } finally {
+            DbUtils.close(stmt, con);
+        }
+    }
+    
     protected abstract void update(int nextUpdate);
 
 }

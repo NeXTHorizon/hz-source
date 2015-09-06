@@ -16,16 +16,8 @@
 
 package nxt;
 
-import nxt.NxtException.ValidationException;
 import nxt.db.DbVersion;
-import nxt.util.Convert;
-import nxt.util.Logger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 class NxtDbVersion extends DbVersion {
 
     protected void update(int nextUpdate) {
@@ -139,17 +131,13 @@ class NxtDbVersion extends DbVersion {
             case 48:
                 apply("ALTER TABLE transaction DROP COLUMN attachment");
             case 49:
-                apply("UPDATE transaction a SET a.referenced_transaction_full_hash = "
-                        + "(SELECT full_hash FROM transaction b WHERE b.id = a.referenced_transaction_id) "
-                        + "WHERE a.referenced_transaction_full_hash IS NULL");
+                apply(null);
             case 50:
                 apply("ALTER TABLE transaction DROP COLUMN referenced_transaction_id");
             case 51:
                 apply("ALTER TABLE transaction DROP COLUMN hash");
             case 52:
-                apply("CREATE TABLE IF NOT EXISTS public_key (db_id IDENTITY, account_id BIGINT NOT NULL, "
-                        + "public_key BINARY(32), height INT NOT NULL, FOREIGN KEY (height) REFERENCES block (height) ON DELETE CASCADE)");
-                BlockDb.deleteAll(); //kill forks
+                BlockDb.deleteAll(); //3.2 forks
             case 53:
                 apply("DROP INDEX transaction_recipient_id_idx");
             case 54:
@@ -187,49 +175,14 @@ class NxtDbVersion extends DbVersion {
             case 70:
                 apply("DROP INDEX transaction_timestamp_idx");
             case 71:
-            	try (Connection con = Db.db.getConnection();
-                        Statement stmt = con.createStatement();
-                        PreparedStatement pstmt = con.prepareStatement("UPDATE transaction SET recipient_id = null WHERE type = ? AND subtype = ?")) {
-                       try {
-                           for (byte type = 0; type <= 4; type++) {
-                               for (byte subtype = 0; subtype <= 8; subtype++) {
-                                   TransactionType transactionType = TransactionType.findTransactionType(type, subtype);
-                                   if (transactionType == null) {
-                                       continue;
-                                   }
-                                   if (!transactionType.canHaveRecipient()) {
-                                       pstmt.setByte(1, type);
-                                       pstmt.setByte(2, subtype);
-                                       pstmt.executeUpdate();
-                                   }
-                               }
-                           }
-                           con.commit();
-                       } catch (SQLException e) {
-                           con.rollback();
-                           throw e;
-                       }
-                   } catch (SQLException e) {
-                       throw new RuntimeException(e);
-                   }
+            	apply(null);
             case 72:
-            	try (Connection con = Db.db.getConnection();
-                        Statement stmt = con.createStatement();
-                        PreparedStatement pstmt = con.prepareStatement("CREATE TABLE IF NOT EXISTS alias (db_id IDENTITY, id BIGINT NOT NULL, "
+            	BlockDb.deleteAll(); // 3.9 forks
+            	applyWithoutVersionUpdate("CREATE TABLE IF NOT EXISTS alias (db_id IDENTITY, id BIGINT NOT NULL, "
                         		+ "account_id BIGINT NOT NULL, alias_name VARCHAR NOT NULL, "
                         		+ "alias_name_lower VARCHAR AS LOWER (alias_name) NOT NULL, "
                         		+ "alias_uri VARCHAR NOT NULL, timestamp INT NOT NULL, "
-                        		+ "height INT NOT NULL, latest BOOLEAN NOT NULL DEFAULT TRUE)")) {
-            			try {	
-            					pstmt.execute();
-            					con.commit();
-            			} catch (SQLException e) {
-                            con.rollback();
-                            throw e;
-                        }                       	                        	
-                     } catch (SQLException e) {                    	 	
-                            throw new RuntimeException(e);
-                     }            			
+                        		+ "height INT NOT NULL, latest BOOLEAN NOT NULL DEFAULT TRUE)");            	
                 apply("CREATE UNIQUE INDEX IF NOT EXISTS alias_id_height_idx ON alias (id, height DESC)");
             case 73:
                 apply("CREATE INDEX IF NOT EXISTS alias_account_id_idx ON alias (account_id, height DESC)");
@@ -390,9 +343,9 @@ class NxtDbVersion extends DbVersion {
             case 131:
                 apply("CALL FTL_INIT()");
             case 132:
-                apply("CALL FTL_CREATE_INDEX('PUBLIC', 'GOODS', 'NAME,DESCRIPTION,TAGS')");
+                apply(null);
             case 133:
-                apply("CALL FTL_CREATE_INDEX('PUBLIC', 'ASSET', 'NAME,DESCRIPTION')");
+                apply(null);
             case 134:
                 apply("CREATE TABLE IF NOT EXISTS tag (db_id IDENTITY, tag VARCHAR NOT NULL, in_stock_count INT NOT NULL, "
                         + "total_count INT NOT NULL, height INT NOT NULL, latest BOOLEAN NOT NULL DEFAULT TRUE)");
@@ -497,51 +450,25 @@ class NxtDbVersion extends DbVersion {
                 apply("CREATE INDEX IF NOT EXISTS unconfirmed_transaction_height_fee_timestamp_idx ON unconfirmed_transaction "
                         + "(transaction_height ASC, fee_per_byte DESC, arrival_timestamp ASC)");
             case 174:
-                apply("ALTER TABLE transaction ADD COLUMN IF NOT EXISTS transaction_index SMALLINT");
+                apply(null);
             case 175:
-                Logger.logMessage("Will update transaction_index column...");
-                try (Connection con = Db.db.getConnection();
-                     Statement stmt = con.createStatement();
-                     PreparedStatement pstmt = con.prepareStatement("SELECT * FROM transaction ORDER BY height, id FOR UPDATE",
-                             ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE)) {
-                    stmt.executeUpdate("SET UNDO_LOG 0");
-                    try (ResultSet rs = pstmt.executeQuery()) {
-                        int height = 0;
-                        short index = 0;
-                        while (rs.next()) {
-                            int nextHeight = rs.getInt("height");
-                            if (nextHeight != height) {
-                                index = 0;
-                                if (height / 5000 != nextHeight / 5000) {
-                                    Logger.logMessage("Processed " + (nextHeight / 5000) * 5000 + " blocks");
-                                }
-                                height = nextHeight;
-                            }
-                            rs.updateShort("transaction_index", index++);
-                            rs.updateRow();
-                        }
-                    }
-                    stmt.executeUpdate("SET UNDO_LOG 1");
-				} catch (SQLException e) {
-                	throw new RuntimeException(e);
-				}
-                apply(null);    
+                apply("ALTER TABLE transaction ADD COLUMN IF NOT EXISTS transaction_index SMALLINT NOT NULL");
             case 176:
-                apply("ALTER TABLE transaction ALTER COLUMN transaction_index SET NOT NULL");
+                apply(null);    
             case 177:
-                apply("ALTER TABLE ask_order ADD COLUMN IF NOT EXISTS transaction_index SMALLINT");
+                apply("TRUNCATE TABLE ask_order");
             case 178:
-                apply("UPDATE ask_order SET transaction_index = (SELECT transaction_index FROM transaction WHERE transaction.id = ask_order.id)");
+                apply("ALTER TABLE ask_order ADD COLUMN IF NOT EXISTS transaction_index SMALLINT NOT NULL");
             case 179:
-                apply("ALTER TABLE ask_order ALTER COLUMN transaction_index SET NOT NULL");
+                apply(null);
             case 180:
-                apply("ALTER TABLE bid_order ADD COLUMN IF NOT EXISTS transaction_index SMALLINT");
+                apply("TRUNCATE TABLE bid_order");
             case 181:
-                apply("UPDATE bid_order SET transaction_index = (SELECT transaction_index FROM transaction WHERE transaction.id = bid_order.id)");
+                apply("ALTER TABLE bid_order ADD COLUMN IF NOT EXISTS transaction_index SMALLINT NOT NULL");
             case 182:
-                apply("ALTER TABLE bid_order ALTER COLUMN transaction_index SET NOT NULL");
+                apply(null);
             case 183:
-                apply("CALL FTL_CREATE_INDEX('PUBLIC', 'CURRENCY', 'CODE,NAME,DESCRIPTION')");
+                apply(null);
             case 184:
                 apply("CREATE TABLE IF NOT EXISTS scan (rescan BOOLEAN NOT NULL DEFAULT FALSE, height INT NOT NULL DEFAULT 0, "
                         + "validate BOOLEAN NOT NULL DEFAULT FALSE)");
@@ -550,55 +477,14 @@ class NxtDbVersion extends DbVersion {
             case 186:
                 apply("CREATE INDEX IF NOT EXISTS currency_creation_height_idx ON currency (creation_height DESC)");
             case 187:
-                BlockchainProcessorImpl.getInstance().scheduleScan(0, false);
                 apply(null);
             case 188:
-            	apply("CREATE TABLE IF NOT EXISTS public_key (db_id IDENTITY, account_id BIGINT NOT NULL, "
-                        + "public_key BINARY(32), height INT NOT NULL, FOREIGN KEY (height) REFERENCES block (height) ON DELETE CASCADE)");
+                apply(null);
             case 189:
-            	apply("INSERT INTO public_key (account_id, public_key, height) select sender_id, sender_public_key, a.height " +
-            			" from (SELECT Sender_ID, SENDER_PUBLIC_KEY, min(height) as height FROM transaction group by Sender_ID, SENDER_PUBLIC_KEY) a" +
-            			" left outer join public_key b on (a.sender_id=b.account_id and a.sender_public_key=b.public_key)" +
-            			" where b.public_key is null or b.height>a.height");
+                apply(null);
             case 190:
-                apply("MERGE INTO public_key (account_id, public_key, height) Key(account_id) select generator_ID, generator_PUBLIC_KEY, a.height" 
-                		+ " from (SELECT generator_ID, generator_PUBLIC_KEY, min(height) as height FROM  block group by generator_ID, generator_PUBLIC_KEY) a" 
-                		+ " left outer join public_key b on (a.generator_id=b.account_id and a.generator_public_key=b.public_key) " 
-                		+ " where b.public_key is null or b.height>a.height");               
-                
-            case 191:
-            	try (Connection con = Db.db.getConnection();
-            			Statement stmt = con.createStatement();
-            			// only select transactions with pk announcement which have a lower height than already recorded in public_key
-                        PreparedStatement pstmt = con.prepareStatement("select t.* from transaction t left outer join  public_key p "
-                        		+ "on (t.recipient_id  = p.account_id) WHERE has_public_key_announcement is true and (t.height < p.height "
-                        		+ "or p.public_key is null)")) {
-            		 try (ResultSet rs = pstmt.executeQuery()) {
-            			 PreparedStatement pstmt2 = con.prepareStatement("MERGE INTO public_key (account_id, public_key, height) KEY(account_id) VALUES (?,?,?)");
-                        	 while (rs.next()) {
-                        		 try {
-									TransactionImpl transaction = TransactionDb.loadTransaction(con, rs);
-									pstmt2.setLong(1, transaction.getRecipientId());
-									pstmt2.setBytes(2,transaction.getPublicKeyAnnouncement().getPublicKey());
-									pstmt2.setInt(3, transaction.getHeight());
-									pstmt2.executeUpdate();
-									Logger.logDebugMessage("PublicKeyAnnouncement account " + transaction.getRecipientId() + " pk: " 
-											+ Convert.toHexString(transaction.getPublicKeyAnnouncement().getPublicKey()));
-								} catch (ValidationException e) {
-									con.rollback();
-									throw new RuntimeException(e);
-								}                                 
-                        	 }                        	 
-                        	con.commit();
-                          } catch (SQLException e) {
-                        	  con.rollback();
-                        	  throw e;
-                          }
-                      } catch (SQLException e) {
-                          throw new RuntimeException(e);
-                }
-                   
-                   
+                apply(null);
+            case 191:                   
             	apply(null);                
             case 192:
                 apply(null);
@@ -615,14 +501,15 @@ class NxtDbVersion extends DbVersion {
             case 197:
                 apply("ALTER TABLE currency DROP COLUMN IF EXISTS current_reserve_per_unit_nqt");
             case 198:
-                BlockchainProcessorImpl.getInstance().scheduleScan(0, true);
-                apply(null);
+                 apply(null);
             case 199:
-                apply("CALL FTL_REINDEX()");
+                apply(null);
             case 200:
-            	apply(null);
+                apply("CREATE TABLE IF NOT EXISTS public_key (db_id IDENTITY, account_id BIGINT NOT NULL, "
+                        + "public_key BINARY(32), height INT NOT NULL, FOREIGN KEY (height) REFERENCES block (height) ON DELETE CASCADE)");
             case 201:
-            	apply(null);
+                apply("INSERT INTO public_key (account_id, public_key, height) SELECT id, public_key, min(height) "
+                        + "FROM account WHERE public_key IS NOT NULL GROUP BY id");
             case 202:
                 apply("CREATE UNIQUE INDEX IF NOT EXISTS public_key_account_id_idx ON public_key (account_id)");
             case 203:            	
