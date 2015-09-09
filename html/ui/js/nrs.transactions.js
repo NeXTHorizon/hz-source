@@ -527,7 +527,7 @@ var NRS = (function(NRS, $, undefined) {
   		html += "<td style='vertical-align:middle;text-align:center;'>" + (hasMessage ? "&nbsp; <i class='fa fa-envelope-o'></i>&nbsp;" : "&nbsp;") + "</td>";
 		html += '<td style="vertical-align:middle;">';
 		html += NRS.getTransactionIconHTML(t.type, t.subtype) + '&nbsp; ';
-		html += '<span style="font-size:11px;display:inline-block;margin-top:5px;">' + transactionType + '</span>';
+		html += '<span style="font-size:11px;display:inline-block;margin-top:5px; text-transform:uppercase;">' + transactionType + '</span>';
 		html += '</td>';
 		html += "<td style='width:5px;padding-right:0;vertical-align:middle;'>";
 		html += (t.type == 0 ? (receiving ? "<i class='fa fa-plus-circle' style='color:#65C62E'></i>" : "<i class='fa fa-minus-circle' style='color:#E04434'></i>") : "") + "</td>";
