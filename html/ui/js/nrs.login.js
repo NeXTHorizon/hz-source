@@ -420,7 +420,7 @@ var NRS = (function(NRS, $, undefined) {
 						}
 					});
 					
-					setTimeout(function () { NRS.loadPlugins(); }, 1500);
+					setTimeout(function () { NRS.loadPlugins(); NRS.getAccountInfo(); }, 1500);
 					
 					$(".sidebar .treeview").tree();
 					$('#dashboard_link a').addClass("ignore").click();

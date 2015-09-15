@@ -894,7 +894,7 @@ var NRS = (function(NRS, $, undefined) {
 					}
 				}
 
-				$("#account_balance, #account_balance_sidebar").html(NRS.formatStyledAmount(response.unconfirmedBalanceNQT));
+				$("#account_balance, #account_balance_sidebar").html(NRS.formatStyledAmount(response.unconfirmedBalanceNQT)).removeClass("loading_dots");
 				$("#account_forged_balance").html(NRS.formatStyledAmount(response.forgedBalanceNQT));
 
 				if (response.assetBalances) {
