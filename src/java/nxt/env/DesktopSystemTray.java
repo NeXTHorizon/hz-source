@@ -182,7 +182,7 @@ public class DesktopSystemTray {
         addDataRow(statusPanel, "Updated", dateFormat.format(new Date()));
         if (statusDialog == null || !statusDialog.isVisible()) {
             JOptionPane pane = new JOptionPane(statusPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, imageIcon);
-            statusDialog = pane.createDialog(wrapper, "NXT Server Status");
+            statusDialog = pane.createDialog(wrapper, "Horizon Server Status");
             statusDialog.setVisible(true);
             statusDialog.dispose();
         } else {
