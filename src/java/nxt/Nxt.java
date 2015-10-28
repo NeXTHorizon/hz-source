@@ -46,7 +46,7 @@ import java.util.Properties;
 public final class Nxt {
 
     //be careful PeerImpl.java will only connect to versions starting with 'NHZ'
-    public static final String VERSION = "NHZ V5.1e";
+    public static final String VERSION = "NHZ V5.2";
     public static final String APPLICATION = "NRS";
 
     private static volatile Time time = new Time.EpochTime();
