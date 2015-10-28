@@ -176,7 +176,7 @@ public interface Appendix {
 
         static Message parse(JSONObject attachmentData) {
             if (!hasAppendix(appendixName, attachmentData) &&
-                    (attachmentData.get("message") == null || hasAppendix(PrunablePlainMessage.appendixName, attachmentData))) { //TODO: VOTING_SYSTEM_BLOCK
+                    (attachmentData.get("message") == null || hasAppendix(PrunablePlainMessage.appendixName, attachmentData))) { //TODO: Remove after VOTING_SYSTEM_BLOCK
                 return null;
             }
             return new Message(attachmentData);
