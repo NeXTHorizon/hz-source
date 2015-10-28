@@ -466,11 +466,10 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 }
 
             }
-            //TODO check, could encourage forks
-            if (slowestPeer != null && connectedPublicPeers.size() >= Peers.maxNumberOfConnectedPublicPeers && chainBlockIds.size() > 360) {
-                Logger.logDebugMessage(slowestPeer.getHost() + " took " + maxResponseTime + " ms, disconnecting");
-                slowestPeer.deactivate();
-            }
+//            if (slowestPeer != null && connectedPublicPeers.size() >= Peers.maxNumberOfConnectedPublicPeers && chainBlockIds.size() > 360) {
+//                Logger.logDebugMessage(slowestPeer.getHost() + " took " + maxResponseTime + " ms, disconnecting");
+//                slowestPeer.deactivate();
+//            }
             //
             // Add the new blocks to the blockchain.  We will stop if we encounter
             // a missing block (this will happen if an invalid block is encountered
