@@ -40,6 +40,8 @@
 var NRS = (function(NRS, $, undefined) {
 	"use strict";
 
+	NRS.forkBlock = 500000;
+
 	NRS.server = "";
 	NRS.state = {};
 	NRS.blocks = [];
