@@ -23,8 +23,8 @@ import java.io.IOException;
 public final class CompareTraceFiles {
 
     public static void main(String[] args) {
-        String testFile = args.length > 0 ? args[0] : "nxt-trace.csv";
-        String defaultFile = args.length > 1 ? args[1] : "nxt-trace-default.csv";
+        String testFile = args.length > 0 ? args[0] : "nhz-trace.csv";
+        String defaultFile = args.length > 1 ? args[1] : "nhz-trace-default.csv";
         try (BufferedReader defaultReader = new BufferedReader(new FileReader(defaultFile));
              BufferedReader testReader = new BufferedReader(new FileReader(testFile))) {
             System.out.println(defaultReader.readLine());

@@ -35,7 +35,7 @@ import javax.servlet.http.HttpServletRequest;
  * See <b><a href="CreateTransaction.html">CreateTransaction</a></b> for additional parameters
  * 
  * <b>Example request:</b>
- * <a href="http://localhost:7776/nhz?requestType=sendMoney&secretPhrase=IWontTellYou&recipient=NHZ-4VNQ-RWZC-4WWQ-GVM8S&amountNQT=100000000&feeNQT=100000000&deadline=60">http://localhost:7776/nhz?requestType=sendMoney&secretPhrase=IWontTellYou&recipient=NHZ-4VNQ-RWZC-4WWQ-GVM8S&amountNQT=100000000&feeNQT=100000000&deadline=60</a>
+ * <a href="http://localhost:7776/nhz?requestType=sendMoney&amp;secretPhrase=IWontTellYou&amp;recipient=NHZ-4VNQ-RWZC-4WWQ-GVM8S&amp;amountNQT=100000000&amp;feeNQT=100000000&amp;deadline=60">http://localhost:7776/nhz?requestType=sendMoney&amp;secretPhrase=IWontTellYou&amp;recipient=NHZ-4VNQ-RWZC-4WWQ-GVM8S&amp;amountNQT=100000000&amp;feeNQT=100000000&amp;deadline=60</a>
  * 
  * <b>Example response:</b>
  * </pre>

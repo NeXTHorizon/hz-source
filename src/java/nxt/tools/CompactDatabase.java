@@ -132,9 +132,9 @@ public class CompactDatabase {
         //
         int phase = 0;
         File sqlFile = new File(dbDir, "backup.sql.gz");
-        File dbFile = new File(dbDir, "nxt.h2.db");
+        File dbFile = new File(dbDir, "nhz.h2.db");
         if (!dbFile.exists()) {
-            dbFile = new File(dbDir, "nxt.mv.db");
+            dbFile = new File(dbDir, "nhz.mv.db");
             if (!dbFile.exists()) {
                 Logger.logErrorMessage("NRS database not found");
                 return 1;
@@ -193,13 +193,13 @@ public class CompactDatabase {
                     //
                     // We failed while creating the new database
                     //
-                    File newFile = new File(dbDir, "nxt.h2.db");
+                    File newFile = new File(dbDir, "nhz.h2.db");
                     if (newFile.exists()) {
                         if (!newFile.delete()) {
                             Logger.logErrorMessage(String.format("Unable to delete '%s'", newFile.getPath()));
                         }
                     } else {
-                        newFile = new File(dbDir, "nxt.mv.db");
+                        newFile = new File(dbDir, "nhz.mv.db");
                         if (newFile.exists()) {
                             if (!newFile.delete()) {
                                 Logger.logErrorMessage(String.format("Unable to delete '%s'", newFile.getPath()));

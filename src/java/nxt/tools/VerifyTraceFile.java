@@ -60,7 +60,7 @@ public final class VerifyTraceFile {
     }
 
     public static void main(String[] args) {
-        String fileName = args.length == 1 ? args[0] : "nxt-trace.csv";
+        String fileName = args.length == 1 ? args[0] : "nhz-trace.csv";
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line = reader.readLine();
             String[] headers = unquote(line.split("\t"));
