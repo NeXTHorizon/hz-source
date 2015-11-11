@@ -420,7 +420,7 @@ var NRS = (function(NRS, $, undefined) {
 						}
 					});
 					
-					setTimeout(function () { NRS.loadPlugins(); NRS.getAccountInfo(); }, 1500);
+					setTimeout(function () { NRS.loadPlugins(); }, 1500);
 					
 					$(".sidebar .treeview").tree();
 					$('#dashboard_link a').addClass("ignore").click();
@@ -446,6 +446,12 @@ var NRS = (function(NRS, $, undefined) {
 					}
 
 					$("[data-i18n]").i18n();
+
+					// @todo remove when forkBlock is reached
+					NRS.checkBlockHeight();
+
+					// quick-fix to update .loading_dots, @todo remove class when data is loaded
+					setTimeout(function () { NRS.getAccountInfo(); }, 3000);
 					
 					/* Add accounts to dropdown for quick switching */
 					$("#account_id_dropdown .dropdown-menu .switchAccount").remove();
