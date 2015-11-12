@@ -25,7 +25,7 @@ import java.util.Properties;
 
 public class WindowsUserDirProvider implements DirProvider {
 
-    public static final String NXT_USER_HOME = Paths.get(System.getProperty("user.home"), "AppData", "Roaming", "NXT").toString();
+    public static final String NXT_USER_HOME = Paths.get(System.getProperty("user.home"), "AppData", "Roaming", "Horizon").toString();
     public static final String LOG_FILE_PATTERN = "java.util.logging.FileHandler.pattern";
     protected File logFileDir;
 

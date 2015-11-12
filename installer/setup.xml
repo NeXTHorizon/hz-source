@@ -5,7 +5,7 @@
 	</properties>
 	<info>
         <appname>Horizon</appname>
-        <appversion>@{runtime.nxt.version}</appversion>
+        <appversion>5.2</appversion>
         <url>http://horizonplatform.io</url>
         <run-privileged condition="izpack.windowsinstall"/>
     </info>
@@ -83,7 +83,7 @@
     </locale>
 
     <resources>
-		<res id="InfoPanel.info" src="changelogs/nxt-client-@{runtime.nxt.version}.changelog.txt" parse="yes"/>
+		<res id="InfoPanel.info" src="changelogs/hz-client-5.2.changelog.txt" parse="yes"/>
 		<res id="LicencePanel.licence" src="LICENSE.txt"/>
 		<res id="Installer.image" src="html/ui/img/installer_left_pane.png"/>
 		<res id="shortcutSpec.xml" src="../installer/shortcutSpec.xml"/>
@@ -110,19 +110,16 @@
     <packs>
         <pack name="server" required="yes">
             <description>Common Server Files</description>
-            <file src="nxt.jar" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="horizon.jar" targetdir="${INSTALL_PATH}" override="true"/>
 			<file src="README.txt" targetdir="${INSTALL_PATH}" override="true"/>
-			<file src="NXT_Wallet.url" targetdir="${INSTALL_PATH}" override="true"/>
+			<file src="Horizon_Wallet.url" targetdir="${INSTALL_PATH}" override="true"/>
 			<file src="3RD-PARTY-LICENSES.txt" targetdir="${INSTALL_PATH}" override="true"/>
             <file src="AUTHORS.txt" targetdir="${INSTALL_PATH}" override="true"/>
             <file src="COPYING.txt" targetdir="${INSTALL_PATH}" override="true"/>
             <file src="DEVELOPER-AGREEMENT.txt" targetdir="${INSTALL_PATH}" override="true"/>
             <file src="LICENSE.txt" targetdir="${INSTALL_PATH}" override="true"/>
             <file src="DEVELOPERS-GUIDE.md" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="OPERATORS-GUIDE.md" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="README.md" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="USERS-GUIDE.md" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="conf/nxt-default.properties" targetdir="${INSTALL_PATH}/conf" override="true"/>
+            <file src="conf/nhz-default.properties" targetdir="${INSTALL_PATH}/conf" override="true"/>
 			<file src="conf/logging-default.properties" targetdir="${INSTALL_PATH}/conf" override="true"/>
 			<fileset dir="lib" targetdir="${INSTALL_PATH}/lib" override="true" excludes=".gitignore"/>
 			<fileset dir="changelogs" targetdir="${INSTALL_PATH}/changelogs" override="true" excludes=".gitignore"/>
@@ -135,15 +132,15 @@
         <pack name="server.windows" os="windows" required="yes">
             <description>Windows Specific Resources</description>
 			<os family="windows"/>
-            <file src="nxt.exe" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="nxtservice.exe" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="nxtservice.jar" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="horizon.exe" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="hzservice.exe" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="hzservice.jar" targetdir="${INSTALL_PATH}" override="true"/>
             <file src="run.bat" targetdir="${INSTALL_PATH}" override="false"/>
             <file src="mint.bat" targetdir="${INSTALL_PATH}" override="false"/>
             <file src="compact.bat" targetdir="${INSTALL_PATH}" override="false"/>
             <parsable targetfile="${INSTALL_PATH}/run.bat"/>
-			<singlefile src="resource/nxt.properties" target="${INSTALL_PATH}/resource/nxt.properties" override="true"/>
-			<singlefile src="resource/nxtservice.properties" target="${INSTALL_PATH}/resource/nxtservice.properties" override="true"/>
+			<singlefile src="resource/horizon.properties" target="${INSTALL_PATH}/resource/horizon.properties" override="true"/>
+			<singlefile src="resource/hzservice.properties" target="${INSTALL_PATH}/resource/hzservice.properties" override="true"/>
 		</pack>
         <pack name="server.unix" os="unix" required="yes">
             <description>Unix Specific Resources</description>

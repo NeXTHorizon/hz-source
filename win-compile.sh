@@ -2,8 +2,8 @@
 CP="lib/*;classes"
 SP=src/java/
 
-/bin/rm -f nhz.jar
-/bin/rm -f nxtservice.jar
+/bin/rm -f horizon.jar
+/bin/rm -f hzservice.jar
 /bin/rm -rf classes
 /bin/mkdir -p classes/
 
