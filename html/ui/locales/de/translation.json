@@ -946,7 +946,7 @@
   "status":"Status",
   "status_blockchain_downloading":"Die Blockchain wird gerade herunterladen. Bitte warten Sie, bis sie auf dem neuesten Stand ist.",
   "status_blockchain_rescanning":"Die Blockchain wird gerade erneut eingelesen. Bitte warten Sie, bis der Vorgang abgeschlossen ist.",
-  "status_new_account":"Willkommen zu Ihren neuen HZ-Konto. Ihre Konto-ID ist __account_id__ - Wenn sie zum ersten mal HZ auf ihr Konte überweisen, können sie die Sicherheit erhöhen in dem sie ihren öffentlichen Schlüssel __public_key__ bereitstellen",
+  "status_new_account":"Willkommen zu Ihren neuen HZ-Konto. Ihre Konto-ID ist __account_id__ - Wenn sie zum ersten mal HZ auf ihr Konte überweisen, können sie die Sicherheit erhöhen in dem sie ihren öffentlichen Schlüssel __public_key__ bereitstellen<br />Wenn Sie nur den Schlüssel bekanntgeben möchten, ist dies auf <a href=\"http://hzaccounce.com\" target=\"_blank\">hzannounce.com</a> möglich",
   "status_new_account_no_pk":"Willkommen zu Ihrem neuen HZ-Konto. Ihre Konto-ID ist __account_id__",
   "stop_forging":"Blockgenerierung beenden",
   "stop_forging_confirmation":"Wenn Sie sicher sind, dass Sie keine weiteren Blöcke generieren möchten, klicken Sie zur Bestätigung auf die Schaltfläche unten.",
