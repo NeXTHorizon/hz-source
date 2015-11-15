@@ -1,4 +1,4 @@
-This release is a mandatory upgrade! It introduces a lot of new features, and makes a hard fork necessary at the block height of 500000.
+This release is a mandatory upgrade! It introduces a lot of new features, and makes a hard fork necessary at the block height of 515000.
 
 This release requires Java 8 and will not compile nor run with Java 7.
 
@@ -27,7 +27,7 @@ Phasing transactions (multi signature transactions)
 Plugin support
 Parallel blockchain download after hard fork
 
-The following features will be available after block 500000:
+The following features will be available after block 515000:
 Digital Good Store, Monetary System (Currencies), Dividend Payments, 
 Alias Deletion, Prunable Messages, Voting System, Phasing
 

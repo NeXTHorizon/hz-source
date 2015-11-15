@@ -133,10 +133,10 @@ public final class Constants {
     public static final int REFERENCED_TRANSACTION_FULL_HASH_BLOCK_TIMESTAMP = (isTestnet ? 24443212 : 7756981);
     public static final int MAX_REFERENCED_TRANSACTION_TIMESPAN = 60 * 1440 * 60;
     public static final int TRANSACTIONS_VERSION_1_BLOCK =  (isTestnet ? 580 : 275000);
-    public static final int DIGITAL_GOODS_STORE_BLOCK =  (isTestnet ? 110000 : 500000);
-    public static final int MONETARY_SYSTEM_BLOCK = (isTestnet ? 110000 : 500000);
-    public static final int VOTING_SYSTEM_BLOCK = isTestnet ? 110000 : 500000;
-    public static final int PHASING_BLOCK = isTestnet ? 110000 : 500000;
+    public static final int DIGITAL_GOODS_STORE_BLOCK =  (isTestnet ? 110000 : 515000);
+    public static final int MONETARY_SYSTEM_BLOCK = (isTestnet ? 110000 : 515000);
+    public static final int VOTING_SYSTEM_BLOCK = isTestnet ? 110000 : 515000;
+    public static final int PHASING_BLOCK = isTestnet ? 110000 : 515000;
 
     public static final int LAST_KNOWN_BLOCK = (CheckPoints.previousBlockId.length-1)*720;
     
