@@ -16,6 +16,7 @@ WebSockets are disabled by default
 GUI login with account alias
 GUI can optional encrypt and store secret in web browser
 After hard fork guaranteed balance confirmations need 1440 blocks instead of 40 blocks
+Support for hzannounce.com added
 Horizon merged with Nxt client version 1.5.15
 
 New features from Nxt introduced with this release are:
