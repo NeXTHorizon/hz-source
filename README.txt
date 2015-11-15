@@ -3,13 +3,13 @@ Running the Horizon software:
 Dependencies: Java 8 or later needs to be installed first. Only the Oracle JVM
 has been tested and supported.
 
-There is no installation needed. Unpack the nhz-client.zip package and open a
-shell in the resulting nhz directory. Execute the run.sh script if using Linux,
+There is no installation needed. Unpack the hz-client.zip package and open a
+shell in the resulting HZ directory. Execute the run.sh script if using Linux,
 or run.bat if using Windows. This will start a java server process, which will
 begin logging its activities to the console. The initialization takes a few
-seconds. When it is ready, you should see the message "Horizon server x.y.z started
+seconds. When it is ready, you should see the message "Horizon server started
 successfully". Open a browser, without stopping the java process, and go to
-http://localhost:7776 , where the Nhz UI should now be available. To stop the
+http://localhost:7776 , where the HZ UI should now be available. To stop the
 application, type Ctrl-C inside the console window.
 
 
@@ -43,6 +43,7 @@ There are many ways to contribute to Horizon. Here are some examples:
 
 Technical details:
 
+Horizon is a NXT clone. The software bases on the amazing work of the NXT developers.
 The Horizon software is a client-server application. It consists of a java server
 process, the one started by the run.sh script, and a javascript user interface
 run in a browser. To run a node, forge, update the blockchain, interact with
@@ -57,7 +58,7 @@ connections, you should setup port forwarding. The server will still work though
 even if only outgoing connections are allowed, so opening this port is optional.
 
 The user interface is available on port 7776. This port also accepts http API
-requests which other Nhz client applications could use.
+requests which other HZ client applications could use.
 
 The blockchain is stored on disk using the H2 embedded database, inside the
 nhz_db directory. When upgrading, you should not delete the old nhz_db
@@ -103,4 +104,3 @@ put them under the classes subdirectory, which is already in the classpath
 used by the run.sh startup script. The compiled class files can optionally be
 packaged in a nhz.jar file using the enclosed jar.sh script, and then nhz.jar
 should be included in the classpath instead of the classes subdirectory.
-
