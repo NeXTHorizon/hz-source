@@ -303,13 +303,18 @@ var NRS = (function(NRS, $, undefined) {
 					}
 
 					if ($("#remember_password").is(":checked") && passLogin) {
-						NRS.database.delete("data", [{
-							id: 'savepassphrase'
-						}]);
-						NRS.database.insert("data", {
-							id: 'savepassphrase',
-							contents: 'yes'
-						});
+						setTimeout(function(){
+							if(!NRS.database === false) {
+								NRS.database.delete("data", [{
+									id: 'savepassphrase'
+								}]);						
+
+								NRS.database.insert("data", {
+									id: 'savepassphrase',
+									contents: 'yes'
+								});
+							}
+						},2000);
 
 						NRS.rememberPassword = true;
 						$("#remember_password").prop("checked", false);
