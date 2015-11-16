@@ -638,7 +638,6 @@ var NRS = (function(NRS, $, undefined) {
 	$(document).ready(function() {
 		$("#remember_device").change(function(){
 			$("#remember_short_password_container").toggle();
-			$("#remember_password").click();
 		});
 
 		
