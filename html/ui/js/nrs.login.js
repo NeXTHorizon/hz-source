@@ -229,7 +229,7 @@ var NRS = (function(NRS, $, undefined) {
 					"offset": 10
 				});
 				return;
-			} else if (!NRS.isTestNet && password.length < 12 && $("#login_check_password_length").val() == 1) {
+			} else if (!NRS.isTestNet && password.length < 12 && $("#login_check_password_length").val() == 1 && $("#relogin_password").val() == '') {
 				$("#login_check_password_length").val(0);
 				$("#login_error .callout").html($.t("error_passphrase_login_length"));
 				$("#login_error").show();
