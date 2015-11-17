@@ -960,7 +960,7 @@
   "status": "Status",
   "status_blockchain_downloading": "The blockchain is currently downloading. Please wait until it is up to date.",
   "status_blockchain_rescanning": "The blockchain is currently rescanning. Please wait until that has completed.",
-  "status_new_account": "Welcome to your new HZ account. Your account ID is __account_id__ - When funding your account for the first time, you can increase security by also providing your public key, which is __public_key__ <br />If you only want to announce the key right now you can do that on <a href=\"http://hzannounce.com/?q1=__account_id__&q2=__public_key__\" target=\"_blank\">hzannounce.com</a>",
+  "status_new_account": "Welcome to your new HZ account. Your account ID is __account_id__ and your public key is <br /> __public_key__ <br />Please <a href=\"http://hzannounce.com/?q1=__account_id__&q2=__public_key__\" target=\"_blank\">click here</a> to complete the setup process and announce your account onto the Horizon network.",
   "status_new_account_no_pk": "Welcome to your new HZ account. Your account ID is __account_id__",
   "stop_forging": "Stop Forging",
   "stop_forging_confirmation": "If you are sure you want to stop forging, click the button below to confirm.",

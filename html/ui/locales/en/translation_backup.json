@@ -66,7 +66,7 @@
     "error_invalid_balance_leasing_no_public_key": "Invalid effective balance leasing: Recipient account not found or no public key published.",
     "error_invalid_balance_leasing": "Invalid effective balance leasing.",
     "error_wrong_buyer_for_alias": "Wrong buyer for alias.",
-    "status_new_account": "Welcome to your new HZ account. Your account ID is <strong>__account_id__<\/strong> - When funding your account for the first time, you also need to include your public key, which is __public_key__ <br />If you only want to announce the key right now you can do that on <a href=\"http://hzannounce.com/?q1=__account_id__&q2=__public_key__\" target=\"_blank\">hzannounce.com</a>",
+    "status_new_account": "Welcome to your new HZ account. Your account ID is __account_id__ and your public key is <br /> __public_key__ <br />Please <a href=\"http://hzannounce.com/?q1=__account_id__&q2=__public_key__\" target=\"_blank\">click here</a> to complete the setup process and announce your account onto the Horizon network.",
     "error_public_key_already_announced": "Public key for this account has already been announced.",
     "error_public_key_announcement_no_recipient": "Public key announcement cannot be attached to transactions with no recipient.",
     "error_public_key_different_account_id": "Announced public key does not match recipient account ID.",
