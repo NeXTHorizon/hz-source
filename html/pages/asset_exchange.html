@@ -1,3 +1,19 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright © 2013-2015 The Nxt Core Developers.                            ~
+  ~                                                                           ~
+  ~ See the AUTHORS.txt, DEVELOPER-AGREEMENT.txt and LICENSE.txt files at     ~
+  ~ the top-level directory of this distribution for the individual copyright ~
+  ~ holder information and the developer policies on copyright and licensing. ~
+  ~                                                                           ~
+  ~ Unless otherwise agreed in a custom licensing agreement, no part of the   ~
+  ~ Nxt software, including this file, may be copied, modified, propagated,   ~
+  ~ or distributed except according to the terms contained in the LICENSE.txt ~
+  ~ file.                                                                     ~
+  ~                                                                           ~
+  ~ Removal or modification of this copyright notice is prohibited.           ~
+  ~                                                                           ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
 <div id="open_orders_page" class="page">
     <section class="content-header"><h1 data-i18n="open_orders">Open Orders</h1></section>
     <section class="content">
@@ -123,7 +139,7 @@
                     <th data-i18n="percentage">Percentage</th>
                     <th data-i18n="lowest_ask">Lowest Ask</th>
                     <th data-i18n="highest_bid">Highest Bid</th>
-                    <th data-i18n="value_in_nhz">Value in HZ</th>
+                    <th data-i18n="value_in_nxt">Value in HZ</th>
                     <th data-i18n="transfer">Transfer</th>
                 </tr>
                 </thead>
@@ -176,7 +192,9 @@
                         <div id="no_asset_selected" style="padding-top: 150px;text-align:center;" data-i18n="no_asset_selected">Please select an asset in the left sidebar.</div>
                         <div id="loading_asset_data" style="padding-top: 150px;text-align:center;display: none;"><span data-i18n="asset_data_loading">Asset data loading, please wait...</span><br /><br /><img class="loading" src="img/loading_indicator.gif" alt="Loading..." width="32" height="32" /></div>
                         <div id="asset_details" style="display:none;">
-                            <div class="alert alert-danger alert-no-icon" id="asset_exchange_duplicates_warning" style="display:none" data-i18n="[html]asset_exchange_duplicates_warning"></div>
+                            <div class="alert alert-danger alert-no-icon" id="asset_exchange_duplicates_warning" style="display:none">
+                                <span data-i18n="asset_exchange_duplicates_warning"></span>
+                            </div>
 
                             <div style="float:right;color: #999999;background:white;padding:5px;border:1px solid #ccc;border-radius:3px">
                                 <strong data-i18n="account">Account</strong>: <span id="asset_account"></span><br />
@@ -204,13 +222,13 @@
                                 <div class="col-md-6">
                                     <div class="box box-solid box-info collapsed-box" id="buy_asset_box">
                                         <div class="box-header" style="background-color:#DFF0D9;color: #48AB6C;">
-                                        <h3 class="box-title" id="buy_asset_with_nhz"></h3>
+                                        <h3 class="box-title" id="buy_asset_with_nxt"></h3>
                                            <div class="box-tools pull-right">
                                             <button class="btn btn-info btn-sm" style="background-color: #48AB6C"><i class="fa fa-plus"></i></button>
                                             </div>
                                         </div>
                                         <div class="box-body no-padding" style="display:none">
-                                            <div style="background-color:#DFF0D9;color: #666;padding-left:10px;padding-right: 10px;padding-top: 0px;padding-bottom:3px;" id="buy_automatic_price"><strong data-i18n="balance">Balance</strong>: <span id="your_nhz_balance"></span> HZ</div>
+                                            <div style="background-color:#DFF0D9;color: #666;padding-left:10px;padding-right: 10px;padding-top: 0px;padding-bottom:3px;" id="buy_automatic_price"><strong data-i18n="balance">Balance</strong>: <span id="your_nxt_balance"></span> HZ</div>
                                         
                                             <form role="form" class="form-horizontal" style="padding: 10px;;max-width:350px;margin-left:auto;margin-right:auto;" autocomplete="off">
                                                 <div style="margin-left:-20px">
@@ -269,6 +287,7 @@
                                                 <table class="table table-striped" id="asset_exchange_ask_orders_table">
                                                     <thead>
                                                     <tr>
+                                                        <th></th>
                                                         <th data-i18n="account">Account</th>
                                                         <th data-i18n="quantity">Quantity</th>
                                                         <th data-i18n="price">Price</th>
@@ -288,7 +307,7 @@
                                 <div class="col-md-6">
                                     <div class="box box-solid box-info collapsed-box" id="sell_asset_box">
                                         <div class="box-header" style="background:#F2DEDE;color:#ED4348;">
-                                            <h3 class="box-title" id="sell_asset_for_nhz"></h3>
+                                            <h3 class="box-title" id="sell_asset_for_nxt"></h3>
                                             <div class="box-tools pull-right">
                                                 <button class="btn btn-info btn-sm" style="background-color: #ED4348"> <i class="fa fa-plus"></i></button>
                                             </div>
@@ -353,6 +372,7 @@
                                                 <table class="table table-striped" id="asset_exchange_bid_orders_table">
                                                     <thead>
                                                     <tr>
+                                                        <th></th>
                                                         <th data-i18n="account">Account</th>
                                                         <th data-i18n="quantity">Quantity</th>
                                                         <th data-i18n="price">Price</th>
@@ -413,5 +433,43 @@
                 </div>
             </div>
         </div>
+    </section>
+</div>
+
+<div id="approval_requests_asset_page" class="paginated page">
+    <section class="content-header">
+        <h1><span data-i18n="approval_requests">Approval Requests</span> (<span data-i18n="asset">Asset</span>)</h1>
+    </section>
+
+    <section class="content">
+        <div style="margin-bottom:4px;" id="approve_curreny_navi">
+            <select id="approve_asset_select" class="form-control" style="max-width:250px;"></select>
+        </div>
+        <div class="panel panel-default">
+        <div class="data-container data-loading panel-body table-responsive">
+            <table class="table table-striped" id="approval_requests_asset_table">
+                <thead>
+                <tr>
+                    <th data-i18n="transaction">Transaction</th>
+                    <th style="width:60px;text-align:center;"><i class="fa fa-envelope-o"></i></th>
+                    <th data-i18n="type">Type</th>
+                    <th data-i18n="amount" colspan="2">Amount</th>
+                    <th style="text-align:center;" data-i18n="fee">Fee</th>
+                    <th data-i18n="account">Account</th>
+                    <th style="text-align:center;"><i class="fa fa-gavel"></i></th>
+                    <th style="text-align:center;" data-i18n="conf_abbrev">Conf.</th>
+                    <th data-i18n="actions" style="text-align:right;">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <div class="data-loading-container"><img src="img/loading_indicator.gif" alt="Loading..." width="32" height="32" /></div>
+            <div class="data-empty-container" style="text-align:center;">
+                <p style="padding-top:80px;padding-bottom:100px;"><span id="ar_asset_no_entries"></span>.</p>
+            </div>
+        </div>
+    </div>
+        <div class="data-pagination"></div>
     </section>
 </div>

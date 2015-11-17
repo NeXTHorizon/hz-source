@@ -1,3 +1,19 @@
+/******************************************************************************
+ * Copyright © 2013-2015 The Nxt Core Developers.                             *
+ *                                                                            *
+ * See the AUTHORS.txt, DEVELOPER-AGREEMENT.txt and LICENSE.txt files at      *
+ * the top-level directory of this distribution for the individual copyright  *
+ * holder information and the developer policies on copyright and licensing.  *
+ *                                                                            *
+ * Unless otherwise agreed in a custom licensing agreement, no part of the    *
+ * Nxt software, including this file, may be copied, modified, propagated,    *
+ * or distributed except according to the terms contained in the LICENSE.txt  *
+ * file.                                                                      *
+ *                                                                            *
+ * Removal or modification of this copyright notice is prohibited.            *
+ *                                                                            *
+ ******************************************************************************/
+
 var converters = function() {
 	var charToNibble = {};
 	var nibbleToChar = [];
@@ -126,6 +142,9 @@ var converters = function() {
 		},
 		// assumes wordArray is Big-Endian
 		wordArrayToByteArray: function(wordArray) {
+			return converters.wordArrayToByteArrayImpl(wordArray, true);
+		},
+		wordArrayToByteArrayImpl: function(wordArray, isFirstByteHasSign) {
 			var len = wordArray.words.length;
 			if (len == 0) {
 				return new Array(0);
@@ -135,13 +154,13 @@ var converters = function() {
 				word, i;
 			for (i = 0; i < len - 1; i++) {
 				word = wordArray.words[i];
-				byteArray[offset++] = word >> 24;
+				byteArray[offset++] = isFirstByteHasSign ? word >> 24 : (word >> 24) & 0xff;
 				byteArray[offset++] = (word >> 16) & 0xff;
 				byteArray[offset++] = (word >> 8) & 0xff;
 				byteArray[offset++] = word & 0xff;
 			}
 			word = wordArray.words[len - 1];
-			byteArray[offset++] = word >> 24;
+			byteArray[offset++] = isFirstByteHasSign ? word >> 24 : (word >> 24) & 0xff;
 			if (wordArray.sigBytes % 4 == 0) {
 				byteArray[offset++] = (word >> 16) & 0xff;
 				byteArray[offset++] = (word >> 8) & 0xff;
@@ -239,6 +258,43 @@ var converters = function() {
 		},
 		int32ToBytes: function(x, opt_bigEndian) {
 			return converters.intToBytes_(x, 4, 4294967295, opt_bigEndian);
-		}
+		},
+        /**
+         * Based on https://groups.google.com/d/msg/crypto-js/TOb92tcJlU0/Eq7VZ5tpi-QJ
+         * Converts a word array to a Uint8Array.
+         * @param {WordArray} wordArray The word array.
+         * @return {Uint8Array} The Uint8Array.
+         */
+        wordArrayToByteArrayEx: function (wordArray) {
+            // Shortcuts
+            var words = wordArray.words;
+            var sigBytes = wordArray.sigBytes;
+
+            // Convert
+            var u8 = new Uint8Array(sigBytes);
+            for (var i = 0; i < sigBytes; i++) {
+                var byte = (words[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
+                u8[i]=byte;
+            }
+
+            return u8;
+        },
+        /**
+         * Converts a Uint8Array to a word array.
+         * @param {string} u8Str The Uint8Array.
+         * @return {WordArray} The word array.
+         */
+        byteArrayToWordArrayEx: function (u8arr) {
+            // Shortcut
+            var len = u8arr.length;
+
+            // Convert
+            var words = [];
+            for (var i = 0; i < len; i++) {
+                words[i >>> 2] |= (u8arr[i] & 0xff) << (24 - (i % 4) * 8);
+            }
+
+            return CryptoJS.lib.WordArray.create(words, len);
+        }
 	}
 }();

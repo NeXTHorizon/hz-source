@@ -1,3 +1,19 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright © 2013-2015 The Nxt Core Developers.                            ~
+  ~                                                                           ~
+  ~ See the AUTHORS.txt, DEVELOPER-AGREEMENT.txt and LICENSE.txt files at     ~
+  ~ the top-level directory of this distribution for the individual copyright ~
+  ~ holder information and the developer policies on copyright and licensing. ~
+  ~                                                                           ~
+  ~ Unless otherwise agreed in a custom licensing agreement, no part of the   ~
+  ~ Nxt software, including this file, may be copied, modified, propagated,   ~
+  ~ or distributed except according to the terms contained in the LICENSE.txt ~
+  ~ file.                                                                     ~
+  ~                                                                           ~
+  ~ Removal or modification of this copyright notice is prohibited.           ~
+  ~                                                                           ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
 <div id="currencies_page" class="paginated page">
     <section class="content-header">
         <h1 data-i18n="currencies">Currencies</h1>
@@ -23,7 +39,7 @@
         </div>
     </section>
     <section class="content">
-        <div class="data-container data-loading">
+        <div class="data-container data-loading table-responsive">
             <table class="table table-striped" id="currencies_table">
                 <thead>
                 <tr>
@@ -62,7 +78,7 @@
         </div>
     </section>
     <section class="content" id="MSnoCode">
-            <p>Please type in your currency code in the top right.</p>
+            <p data-i18n="please_type_in_currency_code_top_right">Please type in your currency code in the top right.</p>
     </section>
     <section class="content" id="MScode" style="display:none">
         <div style="float:right;color: #999999;background:white;padding:5px;border:1px solid #ccc;border-radius:3px">
@@ -83,14 +99,14 @@
             <div class="col-md-6">
                 <div class="box box-solid box-info collapsed-box" id="buy_currency_box">
                     <div class="box-header" style="background-color:#DFF0D9;color: #48AB6C;">
-                    <h3 class="box-title" id="buy_currency_with_nhz"></h3>
+                    <h3 class="box-title" id="buy_currency_with_nxt"></h3>
                        <div class="box-tools pull-right">
                         <button class="btn btn-info btn-sm" style="background-color: #48AB6C"><i class="fa fa-plus"></i></button>
                         </div>
                     </div>
                     <div class="box-body no-padding" style="display:none">
                         <div style="background-color:#DFF0D9;color: #666;padding-left:10px;padding-right: 10px;padding-top: 0px;padding-bottom:3px;" id="buy_automatic_currency_price"><strong data-i18n="balance">Balance</strong>:
-                            <span id="ms_your_nhz_balance"></span> HZ
+                            <span id="ms_your_nxt_balance"></span> HZ
                         </div>
                 
                         <form role="form" class="form-horizontal" style="padding: 10px;;max-width:350px;margin-left:auto;margin-right:auto;" autocomplete="off">
@@ -109,7 +125,7 @@
                                     <div class="col-sm-9">
                                         <div class="input-group">
                                             <input id="buy_currency_price" type="text" value="0" name="buy_currency_price" class="form-control" data-type="buy" />
-                                            <span class="input-group-addon">HZ / <span class="currency_code"></span></span>
+                                            <span class="input-group-addon"><span class="currency_code"></span> / HZ</span>
                                         </div>
                                     </div>
                                 </div>
@@ -144,11 +160,11 @@
                 <div class="box box-primary">
                     <div class="box-header"><h3 class="box-title" id="sell_currency_offers"></h3></div>
                     <div class="box-body no-padding">
-                        <div class="data-container data-loading" data-no-padding="true">
+                        <div class="data-container data-loading table-responsive" data-no-padding="true">
                             <table class="table table-striped" id="ms_open_sell_orders_table">
                                 <thead>
                                 <tr>
-                                    <th data-i18n="height">Height</th>
+                                    <th></th>
                                     <th data-i18n="account">Account</th>
                                     <th data-i18n="units">Units</th>
                                     <th data-i18n="limit">Limit</th>
@@ -168,7 +184,7 @@
             <div class="col-md-6">
                 <div class="box box-solid box-info collapsed-box" id="sell_currency_box">
                     <div class="box-header" style="background:#F2DEDE;color:#ED4348;">
-                    <h3 class="box-title" id="sell_currency_with_nhz"></h3>
+                    <h3 class="box-title" id="sell_currency_with_nxt"></h3>
                        <div class="box-tools pull-right">
                         <button class="btn btn-info btn-sm" style="background-color: #ED4348"><i class="fa fa-plus"></i></button>
                         </div>
@@ -194,7 +210,7 @@
                                     <div class="col-sm-9">
                                         <div class="input-group">
                                             <input id="sell_currency_price" type="text" value="0" name="sell_currency_price" class="form-control" data-type="sell" />
-                                            <span class="input-group-addon">HZ / <span class="currency_code"></span></span>
+                                            <span class="input-group-addon"><span class="currency_code"></span> / HZ</span>
                                         </div>
                                     </div>
                                 </div>
@@ -229,11 +245,11 @@
                 <div class="box box-primary">
                     <div class="box-header"><h3 class="box-title" id="buy_currency_offers"></h3></div>
                     <div class="box-body no-padding">
-                        <div class="data-container data-loading" data-no-padding="true">
+                        <div class="data-container data-loading table-responsive" data-no-padding="true">
                             <table class="table table-striped" id="ms_open_buy_orders_table">
                                 <thead>
                                 <tr>
-                                    <th data-i18n="height">Height</th>
+                                    <th></th>
                                     <th data-i18n="account">Account</th>
                                     <th data-i18n="units">Units</th>
                                     <th data-i18n="limit">Limit</th>
@@ -259,11 +275,12 @@
                         <div style="position:absolute;top:9px;right:9px;"></div>
                     </div>
                     <div class="box-body no-padding">
-                        <div class="data-container data-loading" data-no-padding="true">
+                        <div class="data-container data-loading table-responsive" data-no-padding="true">
                             <table class="table table-striped" id="ms_exchange_requests_table">
                                 <thead>
                                 <tr>
-                                    <th data-i18n="date">Date</th>
+                                    <th></th>
+                                    <th data-i18n="height">Height</th>
                                     <th data-i18n="type">Type</th>
                                     <th data-i18n="units">Units</th>
                                     <th data-i18n="rate">Rate</th>
@@ -296,7 +313,7 @@
                     </div>
                     </div>
                     <div class="box-body no-padding">
-                        <div class="data-container data-loading" data-no-padding="true">
+                        <div class="data-container data-loading table-responsive" data-no-padding="true">
                             <table class="table table-striped" id="ms_exchanges_history_table">
                                 <thead>
                                 <tr>
@@ -325,7 +342,7 @@
 <div id="exchange_history_page" class="paginated page">
     <section class="content-header"><h1 data-i18n="my_exchange_history">My Exchange History</h1></section>
     <section class="content">
-        <div class="data-container data-loading">
+        <div class="data-container data-loading table-responsive">
             <table class="table table-striped" id="exchange_history_table">
                 <thead>
                 <tr>
@@ -347,6 +364,44 @@
             <div class="data-loading-container"><img src="img/loading_indicator.gif" alt="Loading..." width="32" height="32" /></div>
             <div class="data-empty-container"><p data-i18n="no_exchange_history">No Exchanges available.</p></div>
         </div>
+        <div class="data-pagination"></div>
+    </section>
+</div>
+
+<div id="approval_requests_currency_page" class="paginated page">
+    <section class="content-header">
+        <h1><span data-i18n="approval_requests">Approval Requests</span> (<span data-i18n="currency">Currency</span>)</h1>
+    </section>
+
+    <section class="content">
+        <div style="margin-bottom:4px;" id="approve_curreny_navi">
+            <select id="approve_currency_select" class="form-control" style="max-width:250px;"></select>
+        </div>
+        <div class="panel panel-default">
+        <div class="data-container data-loading panel-body table-responsive">
+            <table class="table table-striped" id="approval_requests_currency_table">
+                <thead>
+                <tr>
+                    <th data-i18n="transaction">Transaction</th>
+                    <th style="width:60px;text-align:center;"><i class="fa fa-envelope-o"></i></th>
+                    <th data-i18n="type">Type</th>
+                    <th data-i18n="amount" colspan="2">Amount</th>
+                    <th style="text-align:center;" data-i18n="fee">Fee</th>
+                    <th data-i18n="account">Account</th>
+                    <th style="text-align:center;"><i class="fa fa-gavel"></i></th>
+                    <th style="text-align:center;" data-i18n="conf_abbrev">Conf.</th>
+                    <th data-i18n="actions" style="text-align:right;">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <div class="data-loading-container"><img src="img/loading_indicator.gif" alt="Loading..." width="32" height="32" /></div>
+            <div class="data-empty-container" style="text-align:center;">
+                <p style="padding-top:80px;padding-bottom:100px;"><span id="ar_currency_no_entries"></span>.</p>
+            </div>
+        </div>
+    </div>
         <div class="data-pagination"></div>
     </section>
 </div>
