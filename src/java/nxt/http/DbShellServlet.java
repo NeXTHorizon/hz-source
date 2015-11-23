@@ -36,7 +36,7 @@ public final class DbShellServlet extends HttpServlet {
                     "<html>\n" +
                     "<head>\n" +
                     "    <meta charset=\"UTF-8\"/>\n" +
-                    "    <title>Nxt H2 Database Shell</title>\n" +
+                    "    <title>Horizon H2 Database Shell</title>\n" +
                     "    <script type=\"text/javascript\">\n" +
                     "        function submitForm(form, adminPassword) {\n" +
                     "            var url = '/dbshell';\n" +

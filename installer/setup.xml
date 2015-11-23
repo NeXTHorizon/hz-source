@@ -5,7 +5,7 @@
 	</properties>
 	<info>
         <appname>Horizon</appname>
-        <appversion>5.2</appversion>
+        <appversion>5.3</appversion>
         <url>http://horizonplatform.io</url>
         <run-privileged condition="izpack.windowsinstall"/>
     </info>
@@ -83,7 +83,7 @@
     </locale>
 
     <resources>
-		<res id="InfoPanel.info" src="changelogs/hz-client-5.2.changelog.txt" parse="yes"/>
+		<res id="InfoPanel.info" src="changelogs/hz-client-5.3.changelog.txt" parse="yes"/>
 		<res id="LicencePanel.licence" src="LICENSE.txt"/>
 		<res id="Installer.image" src="html/ui/img/installer_left_pane.png"/>
 		<res id="shortcutSpec.xml" src="../installer/shortcutSpec.xml"/>
