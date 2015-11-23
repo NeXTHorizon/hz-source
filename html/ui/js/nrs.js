@@ -40,8 +40,6 @@
 var NRS = (function(NRS, $, undefined) {
 	"use strict";
 
-	NRS.forkBlock = 515000;
-
 	NRS.server = "";
 	NRS.state = {};
 	NRS.blocks = [];
@@ -125,12 +123,14 @@ var NRS = (function(NRS, $, undefined) {
 			
 			if (!isTestnet) {
 				$(".testnet_only").hide();
-				NRS.genesis = "13675701959091502344"; //nhz mainnet
-				NRS.genesisRS = "NHZ-8HAA-H88W-UVT5-DUGLV"; //nhz mainnet
+				NRS.genesis = "13675701959091502344"; //horizon mainnet
+				NRS.genesisRS = "NHZ-8HAA-H88W-UVT5-DUGLV"; //horizon mainnet
+				NRS.forkBlock = 515000;
 			} else {
 				NRS.isTestNet = true;
-				NRS.genesis = "12351629106086518949"; //nhz testnet
-				NRS.genesisRS = "NHZ-MA77-9DSU-SRDA-CFGUQ"; //nhz testnet
+				NRS.genesis = "12351629106086518949"; //horizon testnet
+				NRS.genesisRS = "NHZ-MA77-9DSU-SRDA-CFGUQ"; //horizon testnet
+				NRS.forkBlock = 110000;
 				var testnetWarningDiv = $("#testnet_warning");
 				var warningText = testnetWarningDiv.text() + " The testnet peer port is " + peerPort + (isOffline ? ", the peer is working offline." : ".");
                 NRS.logConsole(warningText);
