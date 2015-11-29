@@ -155,17 +155,6 @@ var NRS = (function(NRS, $, undefined) {
 			NRS.lastBlockHeight = blockHeight;
 		}
 
-		// @todo remove after forkBlock
-		if (NRS.lastBlockHeight < NRS.forkBlock) {
-			if($("#sidebar_dgs_buyer").css('display') != 'none' ) {
-				$("#sidebar_dgs_buyer, #sidebar_monetary_system, #sidebar_voting_system, a[data-target=#transfer_currency_modal]").hide();
-			}
-		} else {
-			if($("#sidebar_dgs_buyer").css('display') == 'none' ) {
-				$("#sidebar_dgs_buyer, #sidebar_monetary_system, #sidebar_voting_system, a[data-target=#transfer_currency_modal]").show();
-			}
-		}
-
 		//no checks needed at the moment
 	}
 

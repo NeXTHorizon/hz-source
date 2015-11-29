@@ -18,7 +18,6 @@ package nxt.peer;
 
 import nxt.Nxt;
 import nxt.util.Logger;
-
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.UpgradeException;
 import org.eclipse.jetty.websocket.api.WebSocketException;
@@ -63,7 +62,7 @@ public class PeerWebSocket {
     private static final boolean isGzipEnabled = Nxt.getBooleanProperty("nxt.enablePeerServerGZIPFilter");
 
     /** Maximum message size */
-    static final int MAX_MESSAGE_SIZE = 192 *1024*1024;
+    static final int MAX_MESSAGE_SIZE = 10*1024*1024;
 
     /** Minimum compressed message size */
     private static final int MIN_COMPRESS_SIZE = 256;

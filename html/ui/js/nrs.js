@@ -123,14 +123,8 @@ var NRS = (function(NRS, $, undefined) {
 			
 			if (!isTestnet) {
 				$(".testnet_only").hide();
-				NRS.genesis = "13675701959091502344"; //horizon mainnet
-				NRS.genesisRS = "NHZ-8HAA-H88W-UVT5-DUGLV"; //horizon mainnet
-				NRS.forkBlock = 515000;
 			} else {
 				NRS.isTestNet = true;
-				NRS.genesis = "12351629106086518949"; //horizon testnet
-				NRS.genesisRS = "NHZ-MA77-9DSU-SRDA-CFGUQ"; //horizon testnet
-				NRS.forkBlock = 110000;
 				var testnetWarningDiv = $("#testnet_warning");
 				var warningText = testnetWarningDiv.text() + " The testnet peer port is " + peerPort + (isOffline ? ", the peer is working offline." : ".");
                 NRS.logConsole(warningText);
@@ -896,7 +890,7 @@ var NRS = (function(NRS, $, undefined) {
 					}
 				}
 
-				$("#account_balance, #account_balance_sidebar").html(NRS.formatStyledAmount(response.unconfirmedBalanceNQT)).removeClass("loading_dots");
+				$("#account_balance, #account_balance_sidebar").html(NRS.formatStyledAmount(response.unconfirmedBalanceNQT));
 				$("#account_forged_balance").html(NRS.formatStyledAmount(response.forgedBalanceNQT));
 
 				if (response.assetBalances) {

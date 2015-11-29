@@ -27,7 +27,6 @@ import nxt.util.CountingInputStream;
 import nxt.util.CountingOutputWriter;
 import nxt.util.JSON;
 import nxt.util.Logger;
-
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 import org.json.simple.JSONValue;

@@ -140,7 +140,7 @@ public final class Constants {
 
     public static final int LAST_KNOWN_BLOCK = (CheckPoints.previousBlockId.length-1)*720;
     
-    public static final int[] MIN_VERSION = new int[] {3, 8};
+    public static final int[] MIN_VERSION = new int[] {5, 2};
 
     static final long UNCONFIRMED_POOL_DEPOSIT_NQT = (isTestnet ? 50 : 100) * ONE_NXT;
 

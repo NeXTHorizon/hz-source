@@ -18,7 +18,6 @@ package nxt;
 
 import nxt.db.DbIterator;
 import nxt.util.Logger;
-
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -157,7 +156,7 @@ public class BlockchainProcessorTest extends AbstractBlockchainTest {
         if (numBlocks > Constants.MAX_ROLLBACK) {
             return;
         }
-        int endHeight = blockchain.getHeight();        
+        int endHeight = blockchain.getHeight();
         List<List<Long>> allLessorsBefore = new ArrayList<>();
         List<List<Long>> allLessorBalancesBefore = new ArrayList<>();
         for (long accountId : testLesseeAccounts) {

@@ -17,7 +17,6 @@
 package nxt;
 
 import nxt.util.Convert;
-
 import org.json.simple.JSONObject;
 
 import java.nio.ByteBuffer;
@@ -556,7 +555,7 @@ public abstract class TransactionType {
                 } else if (alias.getAccountId() != transaction.getSenderId()) {
                     throw new NxtException.NotCurrentlyValidException("Alias doesn't belong to sender: " + aliasName);
                 }
-                if (transaction.getRecipientId() == Genesis.CREATOR_ID && Nxt.getBlockchain().getHeight() > Constants.MONETARY_SYSTEM_BLOCK) {
+                if (transaction.getRecipientId() == Genesis.CREATOR_ID) {
                     throw new NxtException.NotCurrentlyValidException("Selling alias to Genesis not allowed");
                 }
             }
@@ -693,9 +692,6 @@ public abstract class TransactionType {
 
             @Override
             void validateAttachment(final Transaction transaction) throws NxtException.ValidationException {
-            	if (Nxt.getBlockchain().getLastBlock().getHeight() < Constants.MONETARY_SYSTEM_BLOCK) {
-                    throw new NxtException.NotYetEnabledException("Delete alias not yet enabled at height " + Nxt.getBlockchain().getLastBlock().getHeight());
-                }
                 final Attachment.MessagingAliasDelete attachment =
                         (Attachment.MessagingAliasDelete) transaction.getAttachment();
                 final String aliasName = attachment.getAliasName();
@@ -762,9 +758,7 @@ public abstract class TransactionType {
 
             @Override
             void validateAttachment(Transaction transaction) throws NxtException.ValidationException {
-                if (Nxt.getBlockchain().getLastBlock().getHeight() < Constants.VOTING_SYSTEM_BLOCK) {
-                    throw new NxtException.NotYetEnabledException("Voting System not yet enabled at height " + Nxt.getBlockchain().getLastBlock().getHeight());
-                }
+
                 Attachment.MessagingPollCreation attachment = (Attachment.MessagingPollCreation) transaction.getAttachment();
 
                 int optionsCount = attachment.getPollOptions().length;
@@ -855,9 +849,7 @@ public abstract class TransactionType {
 
             @Override
             void validateAttachment(Transaction transaction) throws NxtException.ValidationException {
-                if (Nxt.getBlockchain().getLastBlock().getHeight() < Constants.VOTING_SYSTEM_BLOCK) {
-                    throw new NxtException.NotYetEnabledException("Voting System not yet enabled at height " + Nxt.getBlockchain().getLastBlock().getHeight());
-                }
+
                 Attachment.MessagingVoteCasting attachment = (Attachment.MessagingVoteCasting) transaction.getAttachment();
                 if (attachment.getPollId() == 0 || attachment.getPollVote() == null
                         || attachment.getPollVote().length > Constants.MAX_POLL_OPTION_COUNT) {
@@ -955,10 +947,6 @@ public abstract class TransactionType {
 
             @Override
             void validateAttachment(Transaction transaction) throws NxtException.ValidationException {
-
-                if (Nxt.getBlockchain().getHeight() < Constants.PHASING_BLOCK) {
-                    throw new NxtException.NotYetEnabledException("Phasing not yet enabled at height " + Nxt.getBlockchain().getHeight());
-                }
 
                 Attachment.MessagingPhasingVoteCasting attachment = (Attachment.MessagingPhasingVoteCasting) transaction.getAttachment();
                 byte[] revealedSecret = attachment.getRevealedSecret();
@@ -1609,9 +1597,6 @@ public abstract class TransactionType {
 
             @Override
             void validateAttachment(Transaction transaction) throws NxtException.ValidationException {
-            	if (Nxt.getBlockchain().getLastBlock().getHeight() < Constants.MONETARY_SYSTEM_BLOCK) {
-                    throw new NxtException.NotYetEnabledException("Dividend payment not yet enabled at height " + Nxt.getBlockchain().getLastBlock().getHeight());
-                }
                 Attachment.ColoredCoinsDividendPayment attachment = (Attachment.ColoredCoinsDividendPayment)transaction.getAttachment();
                 Asset asset = Asset.getAsset(attachment.getAssetId());
                 if (asset == null) {
@@ -1662,9 +1647,6 @@ public abstract class TransactionType {
 
         @Override
         final void validateAttachment(Transaction transaction) throws NxtException.ValidationException {
-            if (Nxt.getBlockchain().getLastBlock().getHeight() < Constants.DIGITAL_GOODS_STORE_BLOCK) {
-                throw new NxtException.NotValidException("Digital goods listing not yet enabled at height " + Nxt.getBlockchain().getLastBlock().getHeight());
-            }
             if (transaction.getAmountNQT() != 0) {
                 throw new NxtException.NotValidException("Invalid digital goods transaction");
             }
@@ -2279,7 +2261,7 @@ public abstract class TransactionType {
                     throw new NxtException.NotCurrentlyValidException("Invalid effective balance leasing: "
                             + " recipient account " + transaction.getRecipientId() + " not found or no public key published");
                 }
-                if (transaction.getRecipientId() == Genesis.CREATOR_ID && Nxt.getBlockchain().getHeight() > Constants.MONETARY_SYSTEM_BLOCK) {
+                if (transaction.getRecipientId() == Genesis.CREATOR_ID) {
                     throw new NxtException.NotCurrentlyValidException("Leasing to Genesis account not allowed");
                 }
             }
@@ -2367,9 +2349,6 @@ public abstract class TransactionType {
 
             @Override
             void validateAttachment(Transaction transaction) throws NxtException.ValidationException {
-                if (Nxt.getBlockchain().getHeight() < Constants.VOTING_SYSTEM_BLOCK) {
-                    throw new NxtException.NotYetEnabledException("Prunable Tagged Data not yet enabled");
-                }
                 Attachment.TaggedDataUpload attachment = (Attachment.TaggedDataUpload) transaction.getAttachment();
                 if (attachment.getData() == null && Nxt.getEpochTime() - transaction.getTimestamp() < Constants.MIN_PRUNABLE_LIFETIME) {
                     throw new NxtException.NotCurrentlyValidException("Data has been pruned prematurely");
@@ -2431,9 +2410,6 @@ public abstract class TransactionType {
 
             @Override
             void validateAttachment(Transaction transaction) throws NxtException.ValidationException {
-                if (Nxt.getBlockchain().getHeight() < Constants.VOTING_SYSTEM_BLOCK) {
-                    throw new NxtException.NotYetEnabledException("Prunable Tagged Data not yet enabled");
-                }
                 Attachment.TaggedDataExtend attachment = (Attachment.TaggedDataExtend) transaction.getAttachment();
                 if ((attachment.jsonIsPruned() || attachment.getData() == null) && Nxt.getEpochTime() - transaction.getTimestamp() < Constants.MIN_PRUNABLE_LIFETIME) {
                     throw new NxtException.NotCurrentlyValidException("Data has been pruned prematurely");

@@ -20,7 +20,6 @@ import nxt.Block;
 import nxt.Nxt;
 import nxt.util.Convert;
 import nxt.util.JSON;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
@@ -50,10 +49,8 @@ final class GetNextBlocks extends PeerServlet.PeerRequestHandler {
         List<? extends Block> blocks;
         long blockId = Convert.parseUnsignedLong((String) request.get("blockId"));
         List<String> stringList = (List<String>)request.get("blockIds");
-        // TODO change limit to 36 after hard fork
-        final int blockLimit=720; 
         if (stringList != null) {
-            if (stringList.size() > blockLimit) {
+            if (stringList.size() > 36) {
                 return TOO_MANY_BLOCKS_REQUESTED;
             }
             List<Long> idList = new ArrayList<>();
@@ -61,7 +58,7 @@ final class GetNextBlocks extends PeerServlet.PeerRequestHandler {
             blocks = Nxt.getBlockchain().getBlocksAfter(blockId, idList);
         } else {
             long limit = Convert.parseLong(request.get("limit"));
-            if (limit > blockLimit) {
+            if (limit > 36) {
                 return TOO_MANY_BLOCKS_REQUESTED;
             }
             blocks = Nxt.getBlockchain().getBlocksAfter(blockId, limit > 0 ? (int)limit : 36);

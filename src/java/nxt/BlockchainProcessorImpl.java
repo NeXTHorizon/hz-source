@@ -138,7 +138,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 Logger.logErrorMessage("CRITICAL ERROR. PLEASE REPORT TO THE DEVELOPERS.\n" + t.toString(), t);
                 System.exit(1);
             }
-         }
+        }
 
         private void downloadPeer() throws InterruptedException {
             try {
@@ -293,7 +293,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                     return Genesis.GENESIS_BLOCK_ID;
                 }
                 // prevent overloading with blockIds
-                if (blockchain.getHeight() > Constants.MONETARY_SYSTEM_BLOCK && milestoneBlockIds.size() > 20) {
+                if (milestoneBlockIds.size() > 20) {
                     Logger.logDebugMessage("Obsolete or rogue peer " + peer.getHost() + " sends too many milestoneBlockIds, blacklisting");
                     peer.blacklist("Too many milestoneBlockIds");
                     return 0;
@@ -334,7 +334,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                     break;
                 }
                 // prevent overloading with blockIds
-                if (blockchain.getHeight() > Constants.MONETARY_SYSTEM_BLOCK && nextBlockIds.size() > limit) {
+                if (nextBlockIds.size() > limit) {
                     Logger.logDebugMessage("Obsolete or rogue peer " + peer.getHost() + " sends too many nextBlockIds, blacklisting");
                     peer.blacklist("Too many nextBlockIds");
                     return Collections.emptyList();
@@ -466,10 +466,10 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 }
 
             }
-//            if (slowestPeer != null && connectedPublicPeers.size() >= Peers.maxNumberOfConnectedPublicPeers && chainBlockIds.size() > 360) {
-//                Logger.logDebugMessage(slowestPeer.getHost() + " took " + maxResponseTime + " ms, disconnecting");
-//                slowestPeer.deactivate();
-//            }
+            if (slowestPeer != null && connectedPublicPeers.size() >= Peers.maxNumberOfConnectedPublicPeers && chainBlockIds.size() > 360) {
+                Logger.logDebugMessage(slowestPeer.getHost() + " took " + maxResponseTime + " ms, disconnecting");
+                slowestPeer.deactivate();
+            }
             //
             // Add the new blocks to the blockchain.  We will stop if we encounter
             // a missing block (this will happen if an invalid block is encountered
@@ -619,8 +619,8 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
             request.put("requestType", "getNextBlocks");
             request.put("blockIds", idList);
             request.put("blockId", Long.toUnsignedString(blockIds.get(start)));
-            long startTime = System.currentTimeMillis();             
-            JSONObject response = peer.send(JSON.prepareRequest(request), 192 * 1024 * 1024);
+            long startTime = System.currentTimeMillis();
+            JSONObject response = peer.send(JSON.prepareRequest(request), 10 * 1024 * 1024);
             responseTime = System.currentTimeMillis() - startTime;
             if (response == null) {
                 return null;
@@ -633,7 +633,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
             List<JSONObject> nextBlocks = (List<JSONObject>)response.get("nextBlocks");
             if (nextBlocks == null)
                 return null;
-            if (nextBlocks.size() > 1440 || (Nxt.getBlockchain().getHeight() > Constants.MONETARY_SYSTEM_BLOCK && nextBlocks.size() > 36)) { //TODO check
+            if (nextBlocks.size() > 36) {
                 Logger.logDebugMessage("Obsolete or rogue peer " + peer.getHost() + " sends too many nextBlocks, blacklisting");
                 peer.blacklist("Too many nextBlocks");
                 return null;
@@ -1180,15 +1180,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
         long calculatedTotalAmount = 0;
         long calculatedTotalFee = 0;
         MessageDigest digest = Crypto.sha256();
-        long previousTransactionId = 0;
         for (TransactionImpl transaction : block.getTransactions()) {
-            //Logger.logDebugMessage("Transaction Id"+transaction.getStringId()+"\ntx json: "+  transaction.getJSONObject().toJSONString()  +"\ntx bytes: "+ Convert.toHexString(transaction.getBytes()));
-            if (previousLastBlock.getHeight() < Constants.MONETARY_SYSTEM_BLOCK) {
-            	if (transaction.getId() <= previousTransactionId && previousTransactionId != 0) {
-            		throw new BlockNotAcceptedException("Block transactions are not sorted!",block);
-                }
-            	previousTransactionId = transaction.getId();
-            }
             if (transaction.getTimestamp() > curTime + Constants.MAX_TIMEDRIFT) {
                 throw new BlockOutOfOrderException("Invalid transaction timestamp: " + transaction.getTimestamp()
                         + ", current time is " + curTime, block);
@@ -1395,13 +1387,6 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
             return true;
         }
     }
-//TODO check comparator
-    private static final Comparator<UnconfirmedTransaction> transactionIdComparator = new Comparator<UnconfirmedTransaction>() {
-        @Override
-        public int compare(UnconfirmedTransaction o1, UnconfirmedTransaction o2) {
-            return Long.compare(o1.getId(), o2.getId());
-        }
-    };
 
     SortedSet<UnconfirmedTransaction> selectUnconfirmedTransactions(Map<TransactionType, Map<String, Boolean>> duplicates, Block previousBlock, int blockTimestamp) {
         List<UnconfirmedTransaction> orderedUnconfirmedTransactions = new ArrayList<>();
@@ -1412,8 +1397,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 orderedUnconfirmedTransactions.add(unconfirmedTransaction);
             }
         }
-        SortedSet<UnconfirmedTransaction> sortedTransactions = new TreeSet<>(previousBlock.getHeight() < Constants.MONETARY_SYSTEM_BLOCK
-                ? transactionIdComparator : transactionArrivalComparator);
+        SortedSet<UnconfirmedTransaction> sortedTransactions = new TreeSet<>(transactionArrivalComparator);
         int payloadLength = 0;
         while (payloadLength <= Constants.MAX_PAYLOAD_LENGTH && sortedTransactions.size() <= Constants.MAX_NUMBER_OF_TRANSACTIONS) {
             int prevNumberOfNewTransactions = sortedTransactions.size();
@@ -1726,7 +1710,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 	Logger.logMessage("Fork isssue detected, resolving.");
                 	popOffTo(popOffHeight);
                 }
-                isScanning = false;                
+                isScanning = false;
             }
         } finally {
             blockchain.writeUnlock();
