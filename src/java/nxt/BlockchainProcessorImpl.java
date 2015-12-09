@@ -68,7 +68,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
     private static final byte[] CHECKSUM_TRANSACTION_VERSION_1_BLOCK = Constants.isTestnet ? new byte [] {-105, -119, -125, -117, -72, -41, -112, -97, -76, 112, 32, -24, -43, -121, -46, 22, 1, -20, -13, 74, -76, 22, 103, 64, 125, -13, 37, -57, -57, 73, 58, 46} 
     		: new byte[] {-115, 83, -88, 64, 77, 110, 107, 23, 127, 37, 120, 86, -100, -70, 16, 35, -75, 105, 124, -79, 28, -82, 60, 93, -48, -108, 7, 92, 36, -24, 25, 57};
     private static final byte[] CHECKSUM_PHASING_BLOCK = Constants.isTestnet ? new byte [] {-91, 83, -33, -31, -54, -22, -58, -124, -104, -56, -41, 126, -86, -65, 44, -78, -75, 89, 81, 18, 23, -53, -60, 61, 126, -47, -112, -52, -47, 44, -68, -92}
-    		: null;
+    		: new byte[] {52, -50, -25, 21, -64, 23, 123, -110, -74, 4, 91, -53, -91, 49, -117, -54, -119, -45, 112, -114, -85, 7, -123, -106, 65, -2, -97, 30, -36, 18, 49, 63};
 
     private static final BlockchainProcessorImpl instance = new BlockchainProcessorImpl();
 

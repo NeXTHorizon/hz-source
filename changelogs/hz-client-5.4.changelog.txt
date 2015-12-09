@@ -4,3 +4,5 @@ New API call getRichList added. This request is very expensive, therefore it is 
 Versions less than 5.2 will be blacklisted.
 
 Only calculate checksums when checkpoint check is disabled.
+
+Checkpoints and checksums updated.
