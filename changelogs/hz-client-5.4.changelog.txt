@@ -1,2 +1,6 @@
 
 New API call getRichList added. This request is very expensive, therefore it is protected with a password (nhz.adminPassword) for non localhost access.
+
+Versions less than 5.2 will be blacklisted.
+
+Only calculate checksums when checkpoint check is disabled.

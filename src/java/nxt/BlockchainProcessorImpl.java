@@ -779,23 +779,25 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
 
     private final Listener<Block> checksumListener = block -> {
     	   	
-    	//TODO add nxt like optimization    		
-    	if (block.getHeight() == Constants.BLOCK_1000 
-    		&& ! verifyChecksum(CHECKSUM_BLOCK_1000,0,Constants.BLOCK_1000)) {
-        	popOffTo(0);
-        }
-        if (block.getHeight() == Constants.NQT_BLOCK
-                   && ! verifyChecksum(CHECKSUM_NQT_BLOCK, 0, Constants.NQT_BLOCK)) {
-           	popOffTo(0);
-        }
-        if (block.getHeight() == Constants.TRANSACTIONS_VERSION_1_BLOCK
-               	&& ! verifyChecksum(CHECKSUM_TRANSACTION_VERSION_1_BLOCK, Constants.NQT_BLOCK, Constants.TRANSACTIONS_VERSION_1_BLOCK)) {
-           	popOffTo(Constants.NQT_BLOCK);
-        }
-        if (block.getHeight() == Constants.PHASING_BLOCK
-               	&& ! verifyChecksum(CHECKSUM_PHASING_BLOCK, Constants.TRANSACTIONS_VERSION_1_BLOCK, Constants.PHASING_BLOCK)) {
-           	popOffTo(Constants.TRANSACTIONS_VERSION_1_BLOCK);
-        }
+    	//TODO add nxt like optimization    	
+    	if (! useCheckpoints) {
+	    	if (block.getHeight() == Constants.BLOCK_1000 
+	    		&& ! verifyChecksum(CHECKSUM_BLOCK_1000,0,Constants.BLOCK_1000)) {
+	        	popOffTo(0);
+	        }
+	        if (block.getHeight() == Constants.NQT_BLOCK
+	                   && ! verifyChecksum(CHECKSUM_NQT_BLOCK, 0, Constants.NQT_BLOCK)) {
+	           	popOffTo(0);
+	        }
+	        if (block.getHeight() == Constants.TRANSACTIONS_VERSION_1_BLOCK
+	               	&& ! verifyChecksum(CHECKSUM_TRANSACTION_VERSION_1_BLOCK, Constants.NQT_BLOCK, Constants.TRANSACTIONS_VERSION_1_BLOCK)) {
+	           	popOffTo(Constants.NQT_BLOCK);
+	        }
+	        if (block.getHeight() == Constants.PHASING_BLOCK
+	               	&& ! verifyChecksum(CHECKSUM_PHASING_BLOCK, Constants.TRANSACTIONS_VERSION_1_BLOCK, Constants.PHASING_BLOCK)) {
+	           	popOffTo(Constants.TRANSACTIONS_VERSION_1_BLOCK);
+	        }
+    	}
     };
 
     private BlockchainProcessorImpl() {
