@@ -352,6 +352,7 @@ img {
 }
 .table > tbody > tr >td {
 	background-color: #fff;
+    white-space:nowrap;
 }
 /* Change the color of the striped tables */
 .table-striped > tbody > tr:nth-child(odd) > td,
