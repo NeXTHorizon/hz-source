@@ -40,9 +40,7 @@
 var NRS = (function(NRS, $, undefined) {
 	"use strict";
 
-	NRS.forkBlock = 515000;
-
-	NRS.server = "http://api.nhzcrypto.org:7776";
+	NRS.server = "";
 	NRS.state = {};
 	NRS.blocks = [];
 	NRS.account = "";
@@ -125,12 +123,8 @@ var NRS = (function(NRS, $, undefined) {
 			
 			if (!isTestnet) {
 				$(".testnet_only").hide();
-				NRS.genesis = "13675701959091502344"; //nhz mainnet
-				NRS.genesisRS = "NHZ-8HAA-H88W-UVT5-DUGLV"; //nhz mainnet
 			} else {
 				NRS.isTestNet = true;
-				NRS.genesis = "12351629106086518949"; //nhz testnet
-				NRS.genesisRS = "NHZ-MA77-9DSU-SRDA-CFGUQ"; //nhz testnet
 				var testnetWarningDiv = $("#testnet_warning");
 				var warningText = testnetWarningDiv.text() + " The testnet peer port is " + peerPort + (isOffline ? ", the peer is working offline." : ".");
                 NRS.logConsole(warningText);
@@ -896,7 +890,7 @@ var NRS = (function(NRS, $, undefined) {
 					}
 				}
 
-				$("#account_balance, #account_balance_sidebar").html(NRS.formatStyledAmount(response.unconfirmedBalanceNQT)).removeClass("loading_dots");
+				$("#account_balance, #account_balance_sidebar").html(NRS.formatStyledAmount(response.unconfirmedBalanceNQT));
 				$("#account_forged_balance").html(NRS.formatStyledAmount(response.forgedBalanceNQT));
 
 				if (response.assetBalances) {
@@ -1039,9 +1033,9 @@ var NRS = (function(NRS, $, undefined) {
 				}
 			}
 
-			if (firstRun) {
+//			if (firstRun) {
 				$("#account_balance, #account_balance_sidebar, #account_assets_balance, #account_nr_assets, #account_currencies_balance, #account_nr_currencies, #account_purchase_count, #account_pending_sale_count, #account_completed_sale_count, #account_message_count, #account_alias_count").removeClass("loading_dots");
-			}
+//			}
 
 			if (callback) {
 				callback();

@@ -87,7 +87,7 @@ var NRS = (function(NRS, $, undefined) {
     		return false;
     	}
 
-    	if (manifest["nrsVersion"].split('.').length != 3 || !(/^[\d\.]+$/.test(manifest["nrsVersion"]))) {
+    	if (manifest["nrsVersion"].split('.').length != 2 || !(/^[\d\.]+$/.test(manifest["nrsVersion"]))) {
     		plugin['validity'] = NRS.constants.PV_INVALID_MANIFEST_FILE;
     		plugin['validity_msg'] = invalidManifestFileMsg;
     		console.log("'nrsVersion' attribute in '" + pluginId + "' plugin manifest file is not in correct format ('x.y.z', no additions).");
@@ -147,10 +147,10 @@ var NRS = (function(NRS, $, undefined) {
 
 	NRS.checkPluginNRSCompatibility = function(pluginId) {
 		var plugin = NRS.plugins[pluginId];
-		var pluginNRSVersion = plugin.manifest["nrsVersion"];
-		var pvList = pluginNRSVersion.split('.');
-		var currentNRSVersion = NRS.state.version.replace(/[a-zA-Z]/g,'');
-		var cvList = currentNRSVersion.split('.');
+		var pluginNRSVersion = "NHZ V"+plugin.manifest["nrsVersion"];
+		var pvList = pluginNRSVersion.replace(/[a-zA-Z ]/g,'').split('.');
+		var currentNRSVersion = NRS.state.version;
+		var cvList = currentNRSVersion.replace(/[a-zA-Z ]/g,'').split('.');
         var versionCompare = NRS.versionCompare(pluginNRSVersion, currentNRSVersion);
 		if (versionCompare == 0) {
         	plugin['nrs_compatibility'] = NRS.constants.PNC_COMPATIBLE;

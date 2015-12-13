@@ -20,7 +20,7 @@
 var NRS = (function (NRS, $, undefined) {
     var _password;
 
-    NRS.multiQueue = null;
+//    NRS.multiQueue = null;
 
     NRS.setServerPassword = function (password) {
         _password = password;
@@ -199,9 +199,9 @@ var NRS = (function (NRS, $, undefined) {
     };
 
     NRS.processAjaxRequest = function (requestType, data, callback, async) {
-        if (!NRS.multiQueue) {
-            NRS.multiQueue = $.ajaxMultiQueue(8);
-        }
+//        if (!NRS.multiQueue) {
+//            NRS.multiQueue = $.ajaxMultiQueue(8);
+//        }
 
         if (data["_extra"]) {
             var extra = data["_extra"];
@@ -286,11 +286,11 @@ var NRS = (function (NRS, $, undefined) {
 
         $.support.cors = true;
 
-        if (type == "GET") {
-            var ajaxCall = NRS.multiQueue.queue;
-        } else {
+//        if (type == "GET") {
+//            var ajaxCall = NRS.multiQueue.queue;
+//        } else {
             var ajaxCall = $.ajax;
-        }
+//        }
 
         //workaround for 1 specific case.. ugly
         if (data.querystring) {
