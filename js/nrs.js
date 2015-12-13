@@ -40,7 +40,7 @@
 var NRS = (function(NRS, $, undefined) {
 	"use strict";
 
-	NRS.server = "";
+	NRS.server = "http://api.nhzcrypto.org:7776";
 	NRS.state = {};
 	NRS.blocks = [];
 	NRS.account = "";
